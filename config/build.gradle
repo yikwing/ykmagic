@@ -49,8 +49,8 @@ afterEvaluate {
             // Creates a Maven publication called "release".
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.yikwing.yk'
-                artifactId = 'quick'
+                groupId = 'com.github.yikwing'
+                artifactId = 'yk-quick'
                 version = '1.0'
             }
         }
