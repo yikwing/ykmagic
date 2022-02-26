@@ -4,9 +4,6 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'com.github.yikwing'
-version = '1.0'
-
 android {
     compileSdk 31
 
@@ -52,8 +49,8 @@ afterEvaluate {
             // Creates a Maven publication called "release".
             release(MavenPublication) {
                 from components.release
-                groupId = 'com.github.yikwing'
-                artifactId = 'yk-quick'
+                groupId = 'com.yikwing.yk'
+                artifactId = 'quick'
                 version = '1.0'
             }
         }
