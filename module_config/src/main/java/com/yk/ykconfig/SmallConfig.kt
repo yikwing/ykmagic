@@ -5,7 +5,7 @@ import com.yk.ykconfig.annotations.YkConfigValue
 
 
 @YkConfigNode
-data class TestConfig(
+data class SmallConfig(
     @YkConfigValue(name = "base_url")
     val baseUrl: String
 )

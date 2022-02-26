@@ -25,7 +25,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
             }
 
             onSuccess = { data: Headers ->
-                binding.tvTitle.text = data.userAgent
+                binding.tvTitle.text = data.userAgent + "\n" + data.traceId
             }
 
             onError = { e ->

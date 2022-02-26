@@ -18,7 +18,7 @@ class RetrofitFactory private constructor() {
 
     private val logger by lazy {
         HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.HEADERS
+            level = HttpLoggingInterceptor.Level.BODY
         }
     }
 

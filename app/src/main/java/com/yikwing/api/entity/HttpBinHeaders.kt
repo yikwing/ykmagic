@@ -9,8 +9,8 @@ data class HttpBinHeaders(
 data class Headers(
     @SerializedName(value = "host")
     val host: String,
-    @SerializedName(value = "Referer")
-    val referer: String,
     @SerializedName(value = "User-Agent")
     val userAgent: String,
+    @SerializedName(value = "X-Amzn-Trace-Id")
+    val traceId: String,
 )

@@ -33,6 +33,6 @@ class ExampleUnitTest {
 
     @Test
     fun addition_isCorrect() {
-        assertEquals("www.baidu.com", YkConfigManager.getConfig(TestConfig::class.java).baseUrl)
+        assertEquals("www.baidu.com", YkConfigManager.getConfig(SmallConfig::class.java).baseUrl)
     }
 }
