@@ -15,5 +15,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "YkQuickDev"
 include ':app'
-include ':config'
+include ':module_config'
 include ':module_network'

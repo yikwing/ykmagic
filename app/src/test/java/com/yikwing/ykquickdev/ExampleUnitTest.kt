@@ -1,4 +1,4 @@
-package com.example.module_network
+package com.yikwing.ykquickdev
 
 import org.junit.Test
 
