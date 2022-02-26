@@ -1,22 +1,19 @@
 package com.yikwing.ykquickdev
 
-import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.yikwing.api.entity.Headers
-import com.yikwing.api.provider.HttpBinProvider
+import com.yikwing.ykquickdev.databinding.ActivityMainBinding
 import com.yk.yknetwork.observeState
+import com.yk.ykproxy.BaseActivity
 
-class MainActivity : AppCompatActivity() {
-
+class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
     private val viewModel by viewModels<MyViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+    override fun initView() {
+        super.initView()
 
         viewModel.initData()
 
@@ -28,7 +25,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             onSuccess = { data: Headers ->
-                Log.d("headers", data.userAgent)
+                binding.tvTitle.text = data.userAgent
             }
 
             onError = { e ->
@@ -37,6 +34,6 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-
     }
+
 }

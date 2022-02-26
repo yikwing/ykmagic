@@ -17,3 +17,4 @@ rootProject.name = "YkQuickDev"
 include ':app'
 include ':module_config'
 include ':module_network'
+include ':module_proxy'
