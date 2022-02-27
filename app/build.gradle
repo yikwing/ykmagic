@@ -1,6 +1,9 @@
 
 import groovy.json.JsonOutput
 
+
+
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
@@ -8,6 +11,10 @@ plugins {
 }
 
 def isRelease = false
+
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdk 31
@@ -30,11 +37,22 @@ android {
         }
     }
 
+    signingConfigs {
+        config {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
     buildTypes {
         debug {
+            signingConfig signingConfigs.config
             buildConfigField "String", "YK_CONFIG", "\"" + JsonOutput.toJson(rootProject.ext.injectEnv).replaceAll("\"", "\\\\\"") + "\""
         }
         release {
+            signingConfig signingConfigs.config
             buildConfigField "String", "YK_CONFIG", "\"" + JsonOutput.toJson(rootProject.ext.injectEnv).replaceAll("\"", "\\\\\"") + "\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
