@@ -29,6 +29,4 @@ jobs:
       uses: actions/upload-artifact@v2.3.1
       with:
         name: upload-apk
-        path: |
-            ${{github.workspace}}/app/build/outputs/apk/tencent/release/*.apk
-            ${{github.workspace}}/app/build/outputs/apk/xiaomi/release/*.apk
+        path: ${{github.workspace}}/app/build/outputs/apk/release/*.apk
