@@ -24,9 +24,3 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew assembleRelease
-    - uses: actions/upload-artifact@v2
-        with:
-          name: upload-apk
-          path: |
-            ${{github.workspace}}/app/build/outputs/apk/tencent/release/*.apk
-            ${{github.workspace}}/app/build/outputs/apk/xiaomi/release/*.apk
