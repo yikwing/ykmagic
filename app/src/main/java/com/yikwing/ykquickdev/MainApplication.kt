@@ -22,7 +22,7 @@ class MainApplication : Application() {
             this, BuildConfig.YK_CONFIG
         )
         RetrofitFactory.instance.setup(
-            YkConfigManager.getConfig(SmallConfig::class.java).baseUrl
+            YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl
         )
     }
 

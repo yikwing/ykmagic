@@ -15,11 +15,11 @@ class ExampleUnitTest {
     val jsonStr = """
     
     {
-        "base_url":"www.baidu.com",
-        "wxInfo":{
-            "wxid":"123456",
-            "wxtype":999,
-            "wxIsOpen":false
+        "test_string":"www.baidu.com",
+        "test_other":{
+            "test_double":3333.5555,
+            "test_int":999,
+            "test_boolean":false
         }
     }
     
@@ -33,6 +33,11 @@ class ExampleUnitTest {
 
     @Test
     fun addition_isCorrect() {
-        assertEquals("www.baidu.com", YkConfigManager.getConfig(SmallConfig::class.java).baseUrl)
+
+        print(YkConfigManager.getConfig(SmallConfig::class.java).testDouble)
+
+        assertEquals("www.baidu.com", YkConfigManager.getConfig(SmallConfig::class.java).testString)
+        assertEquals(999, YkConfigManager.getConfig(SmallConfig::class.java).testInt)
+        assertEquals(false, YkConfigManager.getConfig(SmallConfig::class.java).testBoolean)
     }
 }

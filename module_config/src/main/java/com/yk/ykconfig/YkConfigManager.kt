@@ -1,20 +1,24 @@
 package com.yk.ykconfig
 
-import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.Types
 import com.yk.ykconfig.annotations.YkConfigNode
 import com.yk.ykconfig.annotations.YkConfigValue
 
 object YkConfigManager {
 
-    private lateinit var config: JsonElement
+    private lateinit var config: Map<String, Any>
 
     private val cacheConfigMap = mutableMapOf<Class<*>, Any>()
 
+    private val moshi: Moshi = Moshi.Builder().build()
+    private val mapAdapter = moshi.adapter<Map<String, Any>>(
+        Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
+    )
+
+
     fun setUp(ykConfigStr: String) {
-        config = JsonParser.parseString(ykConfigStr)
+        config = mapAdapter.fromJson(ykConfigStr)!!
     }
 
     fun <T> getConfig(cls: Class<T>): T {
@@ -30,15 +34,21 @@ object YkConfigManager {
         }
     }
 
-    private fun getJsonElement(path: String): JsonElement {
+    private fun <T> getJsonElement(path: String): T? {
 
         val splits = path.split(".")
 
-        var result = config
+        var baseConfigModel = config
+
+        var result: T? = null
 
 
-        splits.forEach {
-            result = result.asJsonObject.get(it)
+        splits.forEachIndexed { index, s ->
+            if (index == splits.size - 1) {
+                result = baseConfigModel.get(s) as T
+            } else {
+                baseConfigModel = baseConfigModel.get(s) as Map<String, Any>
+            }
         }
 
 
@@ -48,7 +58,7 @@ object YkConfigManager {
     }
 
     private fun <T> getConfigNode(cls: Class<T>): T {
-        val node = JsonObject()
+        val node = mutableMapOf<String, Any?>()
 
         val fields = cls.declaredFields
 
@@ -56,29 +66,26 @@ object YkConfigManager {
             val ykConfigValue = field.getAnnotation(YkConfigValue::class.java)
             ykConfigValue?.let {
                 val configName = it.name
-                val value = getJsonElement(configName)
 
                 when (field.type) {
                     String::class.java -> {
-                        node.addProperty(field.name, value.asString)
+                        val value = getJsonElement<String>(configName)
+                        node.put(field.name, value)
                     }
                     Boolean::class.java -> {
-                        node.addProperty(field.name, value.asBoolean)
+                        val value = getJsonElement<Boolean>(configName)
+                        node.put(field.name, value)
                     }
                     Int::class.java -> {
-                        node.addProperty(field.name, value.asInt)
-                    }
-                    Long::class.java -> {
-                        node.addProperty(field.name, value.asLong)
-                    }
-                    Float::class.java -> {
-                        node.addProperty(field.name, value.asFloat)
+                        val value = getJsonElement<Double>(configName)
+                        node.put(field.name, value?.toInt())
                     }
                     Double::class.java -> {
-                        node.addProperty(field.name, value.asDouble)
+                        val value = getJsonElement<Double>(configName)
+                        node.put(field.name, value)
                     }
                     else -> {
-                        node.addProperty(field.name, value.asNumber)
+                        throw  Exception("Not Found")
                     }
                 }
 
@@ -86,8 +93,7 @@ object YkConfigManager {
 
         }
 
-        return Gson().fromJson(node, cls)
-
+        return moshi.adapter(cls).fromJson(mapAdapter.toJson(node as Map<String, Any>))!!
     }
 
 }

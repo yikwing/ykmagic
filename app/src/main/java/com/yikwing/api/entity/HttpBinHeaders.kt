@@ -1,16 +1,19 @@
 package com.yikwing.api.entity
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class HttpBinHeaders(
     val headers: Headers
 )
 
+@JsonClass(generateAdapter = true)
 data class Headers(
-    @SerializedName(value = "host")
+    @Json(name = "Host")
     val host: String,
-    @SerializedName(value = "User-Agent")
+    @Json(name = "User-Agent")
     val userAgent: String,
-    @SerializedName(value = "X-Amzn-Trace-Id")
+    @Json(name = "X-Amzn-Trace-Id")
     val traceId: String,
 )
