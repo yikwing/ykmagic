@@ -19,11 +19,7 @@ class MainApplication : Application() {
 
     private fun initSetup() {
         YkQuickManager.setUp(
-            this, """
-            {
-                "base_url":"https://httpbin.org"
-            }
-        """.trimIndent()
+            this, BuildConfig.YK_CONFIG
         )
         RetrofitFactory.instance.setup(
             YkConfigManager.getConfig(SmallConfig::class.java).baseUrl

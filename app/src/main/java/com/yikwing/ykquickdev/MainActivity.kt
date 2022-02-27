@@ -2,14 +2,25 @@ package com.yikwing.ykquickdev
 
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.yikwing.api.entity.Headers
+import com.yikwing.db.User
+import com.yikwing.db.UserDatabase
 import com.yikwing.ykquickdev.databinding.ActivityMainBinding
+import com.yk.ykconfig.YkQuickManager
 import com.yk.yknetwork.observeState
 import com.yk.ykproxy.BaseActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
 
     private val viewModel by viewModels<MyViewModel>()
+
+    private val userDao by lazy {
+        UserDatabase.getInstance(this).getUserDao()
+    }
 
 
     override fun initView() {
@@ -34,6 +45,14 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
         }
 
+
+        binding.tvTitle.setOnClickListener {
+            lifecycleScope.launch() {
+                withContext(Dispatchers.IO) {
+                    userDao.insertUser(User(firstName = "z", lastName = "s", age = 23))
+                }
+            }
+        }
     }
 
 }

@@ -1,0 +1,8 @@
+import groovy.json.JsonSlurper
+
+def jsonEnvFile = rootProject.file('./android_env.json')
+def InjectJson = new JsonSlurper().parseText(jsonEnvFile.text)
+
+ext {
+    injectEnv = InjectJson
+}
