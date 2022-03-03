@@ -1,8 +1,4 @@
-
 import groovy.json.JsonOutput
-
-
-
 
 plugins {
     id 'com.android.application'
