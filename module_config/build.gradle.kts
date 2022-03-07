@@ -1,7 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("maven-publish")
 }
 
@@ -33,7 +33,7 @@ android {
 dependencies {
 
     implementation("com.squareup.moshi:moshi:1.13.0")
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
 
     testImplementation("junit:junit:4.13.2")
 }
