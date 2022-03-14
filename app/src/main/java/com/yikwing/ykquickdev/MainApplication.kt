@@ -5,16 +5,15 @@ import com.yk.ykconfig.SmallConfig
 import com.yk.ykconfig.YkConfigManager
 import com.yk.ykconfig.YkQuickManager
 import com.yk.yknetwork.RetrofitFactory
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class MainApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-
         initSetup()
-
-
     }
 
     private fun initSetup() {

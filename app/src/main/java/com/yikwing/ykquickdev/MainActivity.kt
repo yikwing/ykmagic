@@ -14,11 +14,19 @@ import com.yk.yknetwork.doError
 import com.yk.yknetwork.doSuccess
 import com.yk.yknetwork.observeState
 import com.yk.ykproxy.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
+
+@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
+
+    @Inject
+    lateinit var hiltDemo: HiltDemo
+
 
     private val viewModel by viewModels<MyViewModel>()
 
@@ -29,6 +37,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
     override fun initView() {
         super.initView()
+
+
+        hiltDemo.printEnv()
 
         viewModel.initData()
 
