@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yikwing.ykquickdev.api.entity.Headers
+import com.yikwing.ykquickdev.api.entity.HttpBinHeaders
 import com.yikwing.ykquickdev.api.provider.HttpBinProvider
 import com.yk.yknetwork.RequestState
 import kotlinx.coroutines.Dispatchers
@@ -35,14 +36,11 @@ class MyViewModel : ViewModel() {
 
     fun initData() {
         viewModelScope.launch {
-            getIpInfo()
-                .onStart {
-                    Log.d("onStart", "onStart表示最开始调用方法之前执行的操作，这里是展示一个 loading ui；")
-                }
+            launchWithLoadingGetFlow {
+                HttpBinProvider.providerHeader().getHeaders()
+            }
                 .catch { exception ->
                     _headers.value = RequestState.Error(exception)
-                }.onCompletion {
-                    Log.d("onCompletion", "onCompletion表示所有执行完成，不管有没有异常都会执行这个回调。")
                 }
                 .collect { result ->
                     _headers.value = RequestState.Success(result.headers)
@@ -54,4 +52,14 @@ class MyViewModel : ViewModel() {
         emit(HttpBinProvider.providerHeader().getHeaders())
     }.flowOn(Dispatchers.IO)
 
+
+    private fun launchWithLoadingGetFlow(block: suspend () -> HttpBinHeaders) = flow {
+        emit(HttpBinProvider.providerHeader().getHeaders())
+    }.flowOn(Dispatchers.IO)
+        .onStart {
+            Log.d("onStart", "onStart表示最开始调用方法之前执行的操作，这里是展示一个 loading ui；")
+        }
+        .onCompletion {
+            Log.d("onCompletion", "onCompletion表示所有执行完成，不管有没有异常都会执行这个回调。")
+        }
 }
