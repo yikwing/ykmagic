@@ -1,7 +1,6 @@
-package com.yikwing.api.apiserver
+package com.yikwing.ykquickdev.api.apiserver
 
-import com.yikwing.api.entity.HttpBinHeaders
-import kotlinx.coroutines.flow.Flow
+import com.yikwing.ykquickdev.api.entity.HttpBinHeaders
 import retrofit2.http.GET
 
 interface ApiServer {

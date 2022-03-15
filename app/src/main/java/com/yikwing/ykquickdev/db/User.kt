@@ -1,4 +1,4 @@
-package com.yikwing.db
+package com.yikwing.ykquickdev.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

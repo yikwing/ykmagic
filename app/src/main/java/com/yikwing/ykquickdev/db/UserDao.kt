@@ -1,4 +1,4 @@
-package com.yikwing.db
+package com.yikwing.ykquickdev.db
 
 import androidx.room.Dao
 import androidx.room.Insert

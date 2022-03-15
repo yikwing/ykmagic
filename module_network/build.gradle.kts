@@ -30,14 +30,13 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-
-    api("com.squareup.okhttp3:okhttp:5.0.0-alpha.5")
-    api("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.5")
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.5")
+    implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.5")
     api("com.squareup.retrofit2:retrofit:2.9.0")
-    api("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+
 
     testImplementation("junit:junit:4.13.2")
 }

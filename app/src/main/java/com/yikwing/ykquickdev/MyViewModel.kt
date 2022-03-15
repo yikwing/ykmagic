@@ -1,11 +1,10 @@
 package com.yikwing.ykquickdev
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yikwing.api.entity.Headers
-import com.yikwing.api.provider.HttpBinProvider
+import com.yikwing.ykquickdev.api.entity.Headers
+import com.yikwing.ykquickdev.api.provider.HttpBinProvider
 import com.yk.yknetwork.RequestState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -22,7 +21,7 @@ class MyViewModel : ViewModel() {
 //
 //        viewModelScope.launch {
 //            _headers.value = try {
-//                RequestState.Success(HttpBinProvider.providerHeader().getHeaders().headers)
+//                RequestState.Success(HttpBinProvider.providerHeader(        ).getHeaders().headers)
 //            } catch (exception: Exception) {
 //                RequestState.Error(exception)
 //            }
@@ -51,7 +50,7 @@ class MyViewModel : ViewModel() {
         }
     }
 
-    fun getIpInfo() = flow {
+    private fun getIpInfo() = flow {
         emit(HttpBinProvider.providerHeader().getHeaders())
     }.flowOn(Dispatchers.IO)
 

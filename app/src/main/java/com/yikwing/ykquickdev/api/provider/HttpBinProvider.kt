@@ -1,6 +1,6 @@
-package com.yikwing.api.provider
+package com.yikwing.ykquickdev.api.provider
 
-import com.yikwing.api.apiserver.ApiServer
+import com.yikwing.ykquickdev.api.apiserver.ApiServer
 import com.yk.yknetwork.RetrofitFactory
 
 object HttpBinProvider {

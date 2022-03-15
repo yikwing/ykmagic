@@ -3,6 +3,7 @@ package com.yk.yknetwork
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.StateFlow
 
 sealed class RequestState<out T> {
     object Loading : RequestState<Nothing>()
@@ -39,6 +40,21 @@ inline fun <T> LiveData<RequestState<T>>.observeState(
     val result = ResultBuilder<T>().apply(init)
 
     observe(owner) { state ->
+        when (state) {
+            is RequestState.Loading -> result.onLoading.invoke()
+            is RequestState.Success -> result.onSuccess(state.value)
+            is RequestState.Error -> result.onError(state.throwable)
+        }
+    }
+}
+
+@MainThread
+suspend inline fun <T> StateFlow<RequestState<T>>.collectState(
+    init: ResultBuilder<T>.() -> Unit
+) {
+    val result = ResultBuilder<T>().apply(init)
+
+    collect { state ->
         when (state) {
             is RequestState.Loading -> result.onLoading.invoke()
             is RequestState.Success -> result.onSuccess(state.value)

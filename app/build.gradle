@@ -4,8 +4,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
 }
 
 def isRelease = false
@@ -71,7 +69,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("com.google.android.material:material:1.5.0")
@@ -98,11 +95,6 @@ dependencies {
         implementation project(path: ':module_network')
         implementation project(path: ':module_proxy')
     }
-
-
-    implementation("com.google.dagger:hilt-android:2.41")
-    kapt("com.google.dagger:hilt-android-compiler:2.41")
-
 
     implementation("io.coil-kt:coil:2.0.0-rc01")
 

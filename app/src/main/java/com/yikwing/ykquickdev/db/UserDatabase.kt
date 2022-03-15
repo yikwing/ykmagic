@@ -1,4 +1,4 @@
-package com.yikwing.db
+package com.yikwing.ykquickdev.db
 
 import android.content.Context
 import android.util.Log

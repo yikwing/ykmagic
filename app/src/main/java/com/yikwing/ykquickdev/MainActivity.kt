@@ -5,27 +5,18 @@ import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.yikwing.api.entity.Headers
-import com.yikwing.db.User
-import com.yikwing.db.UserDatabase
+import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.databinding.ActivityMainBinding
-import com.yk.ykconfig.YkQuickManager
-import com.yk.yknetwork.doError
-import com.yk.yknetwork.doSuccess
-import com.yk.yknetwork.observeState
+import com.yikwing.ykquickdev.db.User
+import com.yikwing.ykquickdev.db.UserDatabase
+import com.yk.yknetwork.collectState
 import com.yk.ykproxy.BaseActivity
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 
-@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::inflate) {
-
-    @Inject
-    lateinit var hiltDemo: HiltDemo
 
 
     private val viewModel by viewModels<MyViewModel>()
@@ -38,8 +29,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     override fun initView() {
         super.initView()
 
-
-        hiltDemo.printEnv()
 
         viewModel.initData()
 
@@ -63,13 +52,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.headers.collect {
-                    it.doSuccess { data: Headers ->
+                viewModel.headers.collectState {
+                    onLoading = {
+                        Log.d("headers", "加载中")
+                    }
+
+                    onSuccess = { data: Headers ->
                         binding.tvTitle.text = data.userAgent + "\n" + data.traceId
                     }
 
-                    it.doError { e ->
-                        Log.e("headers", e?.message ?: "Not Error")
+                    onError = { e ->
+                        Log.e("headers", e.message ?: "Not Error")
                     }
                 }
             }
