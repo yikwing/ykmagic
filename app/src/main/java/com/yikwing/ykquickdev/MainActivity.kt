@@ -9,6 +9,7 @@ import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.databinding.ActivityMainBinding
 import com.yikwing.ykquickdev.db.User
 import com.yikwing.ykquickdev.db.UserDatabase
+import com.yk.yknetwork.ApiException
 import com.yk.yknetwork.collectState
 import com.yk.ykproxy.BaseActivity
 import kotlinx.coroutines.Dispatchers
@@ -57,12 +58,17 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                         Log.d("headers", "加载中")
                     }
 
-                    onSuccess = { data: Headers ->
-                        binding.tvTitle.text = data.userAgent + "\n" + data.traceId
+                    onSuccess = { data ->
+                        binding.tvTitle.text = data.toString()
                     }
 
                     onError = { e ->
-                        Log.e("headers", e.message ?: "Not Error")
+
+                        when (e) {
+                            is ApiException -> Log.e("headers", "${e.code} === ${e.message}")
+                            else -> Log.e("headers", e.message ?: "Not Error")
+                        }
+
                     }
                 }
             }
