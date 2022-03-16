@@ -2,12 +2,12 @@ package com.yikwing.ykquickdev
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yikwing.ykquickdev.api.entity.ChaptersBean
-import com.yikwing.ykquickdev.api.provider.WanAndroidProvider
+import com.yikwing.ykquickdev.api.entity.ChapterBean
+import com.yikwing.ykquickdev.api.provider.ApiProvider
 import com.yk.yknetwork.RequestState
 import com.yk.yknetwork.transformApi
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -30,14 +30,14 @@ class MyViewModel : ViewModel() {
 //
 //    }
 
-    private val _headers = MutableStateFlow<RequestState<List<ChaptersBean>?>>(RequestState.Loading)
+    private val _headers = MutableStateFlow<RequestState<List<ChapterBean>?>>(RequestState.Loading)
 
-    val headers: StateFlow<RequestState<List<ChaptersBean>?>> = _headers
+    val headers = _headers.asStateFlow()
 
     fun initData() {
         viewModelScope.launch {
             transformApi(
-                WanAndroidProvider.providerWanAndroid().getChapters()
+                ApiProvider.createWanAndroidService().getChapters()
             )
                 .catch { exception ->
                     _headers.value = RequestState.Error(exception)

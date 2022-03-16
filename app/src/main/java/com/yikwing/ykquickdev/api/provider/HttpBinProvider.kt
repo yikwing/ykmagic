@@ -4,13 +4,13 @@ import com.yikwing.ykquickdev.api.apiserver.HttpBinApiServer
 import com.yikwing.ykquickdev.api.apiserver.WanAndroidApiService
 import com.yk.yknetwork.RetrofitFactory
 
-object HttpBinProvider {
+
+object ApiProvider {
+
     fun providerHeader(): HttpBinApiServer =
         RetrofitFactory.instance.createService(HttpBinApiServer::class.java)
-}
 
-
-object WanAndroidProvider {
-    fun providerWanAndroid(): WanAndroidApiService =
+    fun createWanAndroidService(): WanAndroidApiService =
         RetrofitFactory.instance.createService(WanAndroidApiService::class.java)
 }
+

@@ -26,6 +26,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         UserDatabase.getInstance(this).getUserDao()
     }
 
+    private val chapterDao by lazy {
+        UserDatabase.getInstance(this).getChapterDao()
+    }
+
 
     override fun initView() {
         super.initView()
@@ -59,6 +63,16 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
                     }
 
                     onSuccess = { data ->
+                        data?.let {
+
+                            lifecycleScope.launch {
+                                withContext(Dispatchers.IO) {
+                                    chapterDao.insertUser(it)
+                                }
+                            }
+
+                        }
+
                         binding.tvTitle.text = data.toString()
                     }
 
