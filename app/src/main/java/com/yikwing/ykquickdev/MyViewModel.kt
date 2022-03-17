@@ -36,9 +36,9 @@ class MyViewModel : ViewModel() {
 
     fun initData() {
         viewModelScope.launch {
-            transformApi(
+            transformApi {
                 ApiProvider.createWanAndroidService().getChapters()
-            )
+            }
                 .catch { exception ->
                     _headers.value = RequestState.Error(exception)
                 }

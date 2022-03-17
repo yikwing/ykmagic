@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.*
  *
  * 判断errorCode的状态
  * */
-fun <T> transformApi(block: BaseHttpResult<T>) = flow {
-    emit(block)
+fun <T> transformApi(block: suspend () -> BaseHttpResult<T>) = flow {
+    emit(block.invoke())
 }.flowOn(Dispatchers.IO)
     .onStart {
         Log.d("onStart", "onStart表示最开始调用方法之前执行的操作，这里是展示一个 loading ui；")
