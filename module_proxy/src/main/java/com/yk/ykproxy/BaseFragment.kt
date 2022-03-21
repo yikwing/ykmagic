@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
-open class BaseFragment<VB : ViewBinding>(val bindingBlock: (LayoutInflater, ViewGroup?, Boolean) -> VB) :
-    Fragment() {
+abstract class BaseFragment<VB : ViewBinding>(val bindingBlock: (LayoutInflater, ViewGroup?, Boolean) -> VB) :
+    LazyFragment() {
 
     private var _binding: VB? = null
     protected val binding get() = _binding!!
@@ -28,6 +28,5 @@ open class BaseFragment<VB : ViewBinding>(val bindingBlock: (LayoutInflater, Vie
         super.onDestroyView()
         _binding = null
     }
-
 
 }

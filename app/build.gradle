@@ -99,15 +99,18 @@ dependencies {
         implementation("com.github.yikwing.ykmagic:yk-network:0.0.5")
         implementation("com.github.yikwing.ykmagic:yk-config:0.0.5")
         implementation("com.github.yikwing.ykmagic:yk-proxy:0.0.5")
+        implementation("com.github.yikwing.ykmagic:yk-extension:0.0.5")
     } else {
         implementation project(path: ':module_config')
         implementation project(path: ':module_network')
         implementation project(path: ':module_proxy')
+        implementation project(path: ':module_extension')
     }
 
     implementation("io.coil-kt:coil:${rootProject.ext.coilVersion}")
 
     debugImplementation("com.guolindev.glance:glance:${rootProject.ext.glanceVersion}")
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8.1")
 
     testImplementation("junit:junit:${rootProject.ext.junit}")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
