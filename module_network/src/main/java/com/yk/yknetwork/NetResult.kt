@@ -3,19 +3,16 @@ package com.yk.yknetwork
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+
+typealias StatefulLiveData<T> = LiveData<RequestState<T>>
+typealias StatefulFlow<T> = StateFlow<RequestState<T>>
 
 sealed class RequestState<out T> {
     object Loading : RequestState<Nothing>()
     class Success<out T>(val value: T) : RequestState<T>()
     class Error(val throwable: Throwable) : RequestState<Nothing>()
-}
-
-
-class ResultBuilder<T> {
-    var onLoading: () -> Unit = {}
-    var onSuccess: (data: T) -> Unit = { }
-    var onError: (e: Throwable) -> Unit = { }
 }
 
 inline fun <reified T> RequestState<T>.doSuccess(success: (T) -> Unit) {
@@ -24,16 +21,21 @@ inline fun <reified T> RequestState<T>.doSuccess(success: (T) -> Unit) {
     }
 }
 
-
 inline fun <reified T> RequestState<T>.doError(failure: (Throwable?) -> Unit) {
     if (this is RequestState.Error) {
         failure(throwable)
     }
 }
 
+class ResultBuilder<T> {
+    var onLoading: () -> Unit = {}
+    var onSuccess: (data: T) -> Unit = { }
+    var onError: (e: Throwable) -> Unit = { }
+}
+
 
 @MainThread
-inline fun <T> LiveData<RequestState<T>>.observeState(
+inline fun <T> StatefulLiveData<T>.observeState(
     owner: LifecycleOwner,
     init: ResultBuilder<T>.() -> Unit
 ) {
@@ -49,7 +51,7 @@ inline fun <T> LiveData<RequestState<T>>.observeState(
 }
 
 @MainThread
-suspend inline fun <T> StateFlow<RequestState<T>>.collectState(
+suspend inline fun <T> StatefulFlow<T>.collectState(
     init: ResultBuilder<T>.() -> Unit
 ) {
     val result = ResultBuilder<T>().apply(init)
