@@ -1,11 +1,13 @@
 package com.yikwing.ykquickdev
 
+import android.graphics.Color
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.yikwing.ykquickdev.api.entity.Headers
+import com.glance.guolindev.extension.dp
+import com.yikwing.ykextension.backGroundRadiusColor
 import com.yikwing.ykquickdev.databinding.ActivityMainBinding
 import com.yikwing.ykquickdev.db.User
 import com.yikwing.ykquickdev.db.UserDatabase
@@ -73,7 +75,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
                         }
 
-                        binding.tvTitle.text = data.toString()
+                        binding.tvMainTitle.text = data.toString()
                     }
 
                     onError = { e ->
@@ -89,7 +91,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
         }
 
 
-        binding.tvTitle.setOnClickListener {
+        binding.tvMainTitle.setOnClickListener {
+
+            it.backGroundRadiusColor(Color.parseColor("#0D60B4"), 16f.dp)
+
             lifecycleScope.launch() {
                 withContext(Dispatchers.IO) {
                     userDao.insertUser(User(firstName = "z", lastName = "s", age = 23))
