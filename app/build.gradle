@@ -12,6 +12,22 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
+//资源重定向
+def listSubFile = {
+    //新资源目录
+    def resFolder = 'src/main/res/layouts'
+    //新资源目录下的文件夹
+    def files = file(resFolder).listFiles()
+    def folders = []
+    //遍历路径
+    files.each {
+        item -> folders.add(item.absolutePath)
+    }
+    //资源整合
+    folders.add(file(resFolder).parentFile.absolutePath)
+    return folders
+}
+
 android {
     compileSdk = 31
 
@@ -75,6 +91,11 @@ android {
         checkDependencies true
     }
 
+    sourceSets {
+        main {
+            res.srcDirs = listSubFile()
+        }
+    }
 }
 
 dependencies {
