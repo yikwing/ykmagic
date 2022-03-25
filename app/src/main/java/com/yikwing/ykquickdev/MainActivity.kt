@@ -11,6 +11,8 @@ import com.yikwing.ykextension.dp
 import com.yikwing.ykquickdev.databinding.ActivityMainBinding
 import com.yikwing.ykquickdev.db.User
 import com.yikwing.ykquickdev.db.UserDatabase
+import com.yk.ykconfig.YkConfigManager
+import com.yk.ykconfig.YkQuickManager
 import com.yk.yknetwork.ApiException
 import com.yk.yknetwork.collectState
 import com.yk.ykproxy.BaseActivity
@@ -25,11 +27,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     private val viewModel by viewModels<MyViewModel>()
 
     private val userDao by lazy {
-        UserDatabase.getInstance(this).getUserDao()
+        UserDatabase.getInstance(YkQuickManager.getApplication()).getUserDao()
     }
 
     private val chapterDao by lazy {
-        UserDatabase.getInstance(this).getChapterDao()
+        UserDatabase.getInstance(YkQuickManager.getApplication()).getChapterDao()
     }
 
 
