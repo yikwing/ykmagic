@@ -1,7 +1,9 @@
 package com.yikwing.ykquickdev
 
+import android.Manifest
 import android.graphics.Color
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -9,9 +11,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.yikwing.ykextension.backGroundRadiusColor
 import com.yikwing.ykextension.dp
 import com.yikwing.ykquickdev.databinding.ActivityMainBinding
-import com.yikwing.ykquickdev.db.User
 import com.yikwing.ykquickdev.db.UserDatabase
-import com.yk.ykconfig.YkConfigManager
+import com.yikwing.ykquickdev.permission.PermissionX
 import com.yk.ykconfig.YkQuickManager
 import com.yk.yknetwork.ApiException
 import com.yk.yknetwork.collectState
@@ -97,11 +98,18 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
 
             it.backGroundRadiusColor(Color.parseColor("#0D60B4"), 16f.dp)
 
-            lifecycleScope.launch() {
-                withContext(Dispatchers.IO) {
-                    userDao.insertUser(User(firstName = "z", lastName = "s", age = 23))
+            PermissionX.request(
+                this,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.CAMERA,
+            ) { allGranted, deniedList ->
+                if (allGranted) {
+                    Toast.makeText(this, "已全部同意", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "已拒绝 $deniedList", Toast.LENGTH_SHORT).show()
                 }
             }
+
         }
     }
 
