@@ -1,4 +1,4 @@
-package com.yikwing.ykquickdev.permission
+package com.yk.ykpermission
 
 import androidx.fragment.app.FragmentActivity
 

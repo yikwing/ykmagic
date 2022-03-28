@@ -12,7 +12,7 @@ import com.yikwing.ykextension.backGroundRadiusColor
 import com.yikwing.ykextension.dp
 import com.yikwing.ykquickdev.databinding.ActivityMainBinding
 import com.yikwing.ykquickdev.db.UserDatabase
-import com.yikwing.ykquickdev.permission.PermissionX
+import com.yk.ykpermission.PermissionX
 import com.yk.ykconfig.YkQuickManager
 import com.yk.yknetwork.ApiException
 import com.yk.yknetwork.collectState
