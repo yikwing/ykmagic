@@ -1,5 +1,6 @@
 package com.yikwing.ykquickdev.api.entity
 
+import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -8,6 +9,7 @@ import com.squareup.moshi.JsonClass
 
 @Entity(tableName = "t_chapter")
 @JsonClass(generateAdapter = true)
+@Keep
 data class ChapterBean(
     @ColumnInfo(name = "course_id")
     val courseId: Int,

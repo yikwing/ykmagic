@@ -1,7 +1,6 @@
 package com.yk.yknetwork
 
-import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerInterceptor
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -24,18 +23,22 @@ class RetrofitFactory private constructor() {
         }
     }
 
-    fun setup(baseUrl: String, context: Context) {
+    fun setup(baseUrl: String, interceptor: Interceptor?) {
         retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(MoshiConverterFactory.create())
-            .client(initClient(context))
+            .client(initClient(interceptor))
             .build()
     }
 
-    private fun initClient(context: Context): OkHttpClient {
+    private fun initClient(interceptor: Interceptor?): OkHttpClient {
         return OkHttpClient.Builder()
             .addNetworkInterceptor(logger)
-            .addInterceptor(ChuckerInterceptor(context))
+            .apply {
+                interceptor?.let {
+                    addInterceptor(it)
+                }
+            }
             .connectTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
             .build()

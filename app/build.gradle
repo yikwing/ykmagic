@@ -117,11 +117,12 @@ dependencies {
 
 
     if (isRelease) {
-        implementation("com.github.yikwing.ykmagic:yk-network:0.0.5")
-        implementation("com.github.yikwing.ykmagic:yk-config:0.0.5")
-        implementation("com.github.yikwing.ykmagic:yk-proxy:0.0.5")
-        implementation("com.github.yikwing.ykmagic:yk-extension:0.0.5")
-        implementation("com.github.yikwing.ykmagic:yk-permisssion:0.0.5")
+        implementation("com.github.yikwing.ykmagic:config:0.1.0")
+        implementation("com.github.yikwing.ykmagic:network:0.1.0")
+        implementation("com.github.yikwing.ykmagic:proxy:0.1.0")
+        implementation("com.github.yikwing.ykmagic:extension:0.1.0")
+        implementation("com.github.yikwing.ykmagic:permission:0.1.0")
+        implementation("com.github.yikwing.ykmagic:logger:0.1.0")
     } else {
         implementation project(path: ':module_config')
         implementation project(path: ':module_network')
@@ -135,6 +136,9 @@ dependencies {
 
     debugImplementation("com.guolindev.glance:glance:${rootProject.ext.glanceVersion}")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.8.1")
+
+    debugImplementation("com.github.chuckerteam.chucker:library:3.5.2")
+    releaseImplementation("com.github.chuckerteam.chucker:library-no-op:3.5.2")
 
     testImplementation("junit:junit:${rootProject.ext.junit}")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")

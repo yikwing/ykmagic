@@ -1,6 +1,7 @@
 package com.yikwing.ykquickdev
 
 import android.app.Application
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.yikwing.logger.AndroidLogAdapter
 import com.yikwing.logger.Logger
 import com.yikwing.logger.PrettyFormatStrategy
@@ -26,7 +27,7 @@ class MainApplication : Application() {
         //  初始化网络请求base url
         RetrofitFactory.instance.setup(
             YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl,
-            this
+            ChuckerInterceptor(this)
         )
 
         Logger.addLogAdapter(
