@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.yikwing.logger.Logger
 import com.yikwing.ykquickdev.databinding.MainFragmentBinding
 import com.yk.yknetwork.ApiException
 import com.yk.yknetwork.collectState
@@ -25,7 +26,7 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
 
     override fun lazyInit() {
 
-        Log.d("=====", "lazyInit")
+        Logger.d("===%s===", "lazyInit")
 
         viewModel.initData()
     }
@@ -33,7 +34,7 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        Log.d("=====", "onActivityCreated")
+        Logger.d("===%s===", "onActivityCreated")
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

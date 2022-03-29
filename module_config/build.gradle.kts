@@ -50,7 +50,7 @@ afterEvaluate {
             register("release", MavenPublication::class) {
                 from(components["release"])
                 groupId = "com.yikwing"
-                artifactId = "yk-config"
+                artifactId = "config"
                 version = "1.0"
             }
         }

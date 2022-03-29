@@ -128,6 +128,7 @@ dependencies {
         implementation project(path: ':module_proxy')
         implementation project(path: ':module_extension')
         implementation project(path: ':module_permission')
+        implementation project(path: ':module_logger')
     }
 
     implementation("io.coil-kt:coil:${rootProject.ext.coilVersion}")

@@ -1,6 +1,9 @@
 package com.yikwing.ykquickdev
 
 import android.app.Application
+import com.yikwing.logger.AndroidLogAdapter
+import com.yikwing.logger.Logger
+import com.yikwing.logger.PrettyFormatStrategy
 import com.yk.ykconfig.YkConfigManager
 import com.yk.ykconfig.YkQuickManager
 import com.yk.yknetwork.RetrofitFactory
@@ -24,6 +27,18 @@ class MainApplication : Application() {
         RetrofitFactory.instance.setup(
             YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl,
             this
+        )
+
+        Logger.addLogAdapter(
+            object : AndroidLogAdapter(
+                PrettyFormatStrategy.newBuilder()
+                    .tag("yk")
+                    .build()
+            ) {
+                override fun isLoggable(priority: Int, tag: String?): Boolean {
+                    return BuildConfig.DEBUG
+                }
+            }
         )
 
     }
