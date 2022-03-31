@@ -1,8 +1,11 @@
 package com.yikwing.ykquickdev
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -31,8 +34,8 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
         viewModel.initData()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         Logger.d("===%s===", "onActivityCreated")
 
@@ -69,13 +72,16 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
             ) { allGranted, deniedList ->
                 if (allGranted) {
                     Toast.makeText(context, "已全部同意", Toast.LENGTH_SHORT).show()
+
+                    //  <a href ="yikwing://yk:9001/props?macthId=222&time=10001">打开源生应用指定的页面</a>
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?macthId=222&time=10001")))
+
                 } else {
                     Toast.makeText(context, "已拒绝 $deniedList", Toast.LENGTH_SHORT).show()
                 }
             }
 
         }
-
     }
 
 }
