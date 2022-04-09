@@ -12,7 +12,7 @@ buildscript {
 
     dependencies {
         classpath("com.android.tools.build:gradle:7.1.2")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20")
         classpath("com.google.dagger:hilt-android-gradle-plugin:2.41")
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -21,7 +21,7 @@ buildscript {
 }
 
 plugins {
-    id("com.google.devtools.ksp") version "1.6.10-1.0.4" apply false
+    id("com.google.devtools.ksp") version "1.6.20-1.0.4" apply false
 }
 
 apply(from = "ykext.gradle")
