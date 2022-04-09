@@ -73,15 +73,19 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
                 if (allGranted) {
                     Toast.makeText(context, "已全部同意", Toast.LENGTH_SHORT).show()
 
-                    //  <a href ="yikwing://yk:9001/props?macthId=222&time=10001">打开源生应用指定的页面</a>
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?macthId=222&time=10001")))
-
+                    goToLinkActivity()
                 } else {
                     Toast.makeText(context, "已拒绝 $deniedList", Toast.LENGTH_SHORT).show()
                 }
             }
 
         }
+    }
+
+
+    fun goToLinkActivity() {
+        //  <a href ="yikwing://yk:9001/props?macthId=222&time=10001">打开源生应用指定的页面</a>
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?macthId=222&time=10001")))
     }
 
 }

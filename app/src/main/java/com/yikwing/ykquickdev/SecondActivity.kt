@@ -1,10 +1,21 @@
 package com.yikwing.ykquickdev
 
+import android.os.Bundle
 import android.util.Log
-import com.yikwing.ykquickdev.databinding.SecondActivityBinding
+import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import com.yk.ykproxy.BaseActivity
 
-class SecondActivity : BaseActivity<SecondActivityBinding>(SecondActivityBinding::inflate) {
+class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::inflate) {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, HiltFragment.newInstance())
+                .commitNow()
+        }
+    }
+
     override fun initView() {
         super.initView()
 

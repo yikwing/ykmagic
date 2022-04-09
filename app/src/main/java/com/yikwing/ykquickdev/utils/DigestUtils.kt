@@ -19,4 +19,13 @@ object DigestUtils {
 
         return cryptoResult.joinToString(separator = "") { byte -> "%02x".format(byte) }
     }
+
+    fun crypto2capital(buffer: ByteArray, algorithm: String): String {
+        val cryptoResult = MessageDigest.getInstance(algorithm).run {
+            update(buffer)
+            digest()
+        }
+
+        return cryptoResult.joinToString(separator = ":") { byte -> "%02x".format(byte) }.toUpperCase()
+    }
 }
