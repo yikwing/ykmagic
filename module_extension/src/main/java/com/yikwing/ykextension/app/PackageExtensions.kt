@@ -1,9 +1,12 @@
-package com.yikwing.ykquickdev.utils
+package com.yikwing.ykextension.app
 
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
-import com.yikwing.logger.Logger
+import android.util.Log
+import com.yikwing.ykextension.common.DigestUtils
+
+const val TAG = "PackageUtils"
 
 data class PackageInfo(
     var appIcon: Drawable,
@@ -35,11 +38,8 @@ fun Context.getPackageInfo(packageName: String): PackageInfo? {
             DigestUtils.crypto2capital(packageInfo.signatures[0].toByteArray(), DigestUtils.SHA1)
         )
 
-    } catch (e: PackageManager.NameNotFoundException) {
-        Logger.e(e, "PackageManager.NameNotFoundException")
-        return null
     } catch (e: Exception) {
-        Logger.e(e, "Other Exception")
+        Log.e(TAG, e.toString())
         return null
     }
 }

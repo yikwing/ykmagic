@@ -3,14 +3,12 @@ package com.yikwing.ykquickdev
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getSystemService
 import coil.load
+import com.yikwing.ykextension.app.getPackageInfo
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
-import com.yikwing.ykquickdev.utils.getPackageInfo
 import com.yk.ykproxy.BaseFragment
 
 class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::inflate) {

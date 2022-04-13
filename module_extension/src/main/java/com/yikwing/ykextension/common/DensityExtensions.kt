@@ -4,6 +4,11 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.TypedValue
 
+/**
+ * @Author yikwing
+ * @Date 13/4/2022-13:30
+ * @Description: sp dp px转化
+ */
 
 private val displayMetrics = Resources.getSystem().displayMetrics
 
