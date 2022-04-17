@@ -1,4 +1,4 @@
-package com.yikwing.ykextension
+package com.yikwing.ykextension.view
 
 import android.view.View
 import kotlinx.coroutines.channels.awaitClose

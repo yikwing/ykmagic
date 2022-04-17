@@ -2,6 +2,7 @@
   "scripts": {
     "dev": "./gradlew assembleDebug",
     "build": "./gradlew assembleRelease",
+    "push": "git push origin main",
     "installR": "adb install app/build/outputs/apk/release/app-release.apk"
   }
 }

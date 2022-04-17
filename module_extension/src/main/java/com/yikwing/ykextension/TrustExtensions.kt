@@ -1,5 +1,6 @@
 package com.yikwing.ykextension
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlin.properties.ReadOnlyProperty
@@ -10,8 +11,8 @@ import kotlin.reflect.KProperty
  * 获取activity intent参数
  *
  * */
-class IntentWrapper<T>(private val default: T) : ReadOnlyProperty<AppCompatActivity, T> {
-    override fun getValue(thisRef: AppCompatActivity, property: KProperty<*>): T {
+class IntentWrapper<T>(private val default: T) : ReadOnlyProperty<Activity, T> {
+    override fun getValue(thisRef: Activity, property: KProperty<*>): T {
         return when (default) {
             is Int -> thisRef.intent.getIntExtra(property.name, default)
             is String -> thisRef.intent.getStringExtra(property.name) ?: default

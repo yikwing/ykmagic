@@ -1,4 +1,4 @@
-package com.yikwing.ykextension
+package com.yikwing.ykextension.view
 
 import android.graphics.drawable.GradientDrawable
 import android.view.View
