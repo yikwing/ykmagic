@@ -6,6 +6,15 @@ import androidx.fragment.app.Fragment
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
+// 线程安全
+fun <T> safeLazy(initializer: () -> T): Lazy<T> =
+    lazy(LazyThreadSafetyMode.SYNCHRONIZED, initializer)
+
+// 非线程安全
+fun <T> unSafeLazy(initializer: () -> T): Lazy<T> =
+    lazy(LazyThreadSafetyMode.NONE, initializer)
+
+
 /**
  *
  * 获取activity intent参数

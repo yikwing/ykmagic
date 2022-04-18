@@ -12,12 +12,12 @@ class RetrofitFactory private constructor() {
     private lateinit var retrofit: Retrofit
 
     companion object {
-        val instance by lazy {
+        val instance by lazy(LazyThreadSafetyMode.NONE) {
             RetrofitFactory()
         }
     }
 
-    private val logger by lazy {
+    private val logger by lazy(LazyThreadSafetyMode.NONE) {
         HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }

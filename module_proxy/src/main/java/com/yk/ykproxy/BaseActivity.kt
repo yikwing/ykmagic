@@ -8,7 +8,7 @@ import androidx.viewbinding.ViewBinding
 abstract class BaseActivity<VB : ViewBinding>(val block: (LayoutInflater) -> VB) :
     AppCompatActivity() {
 
-    protected val binding: VB by lazy {
+    protected val binding: VB by lazy(LazyThreadSafetyMode.NONE) {
         block(layoutInflater)
     }
 
