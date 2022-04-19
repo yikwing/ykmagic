@@ -18,13 +18,6 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
     }
 
     override fun lazyInit() {
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
         val packageInfo = requireContext().getPackageInfo("com.yktc.nutritiondiet")
         binding.appIcon.load(packageInfo?.appIcon)
 
@@ -53,8 +46,6 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
                 Toast.makeText(context, "SHA1值已复制", Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
 
 }

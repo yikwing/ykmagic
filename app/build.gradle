@@ -105,6 +105,9 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout:${rootProject.ext.constraintlayoutVersion}")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:${rootProject.ext.lifecycleRuntimeKtxVersion}")
 
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
+
+
     implementation("androidx.room:room-runtime:${rootProject.ext.roomVersion}")
     ksp("androidx.room:room-compiler:${rootProject.ext.roomVersion}")
     implementation("androidx.room:room-ktx:${rootProject.ext.roomVersion}")
