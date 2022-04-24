@@ -8,6 +8,7 @@ import com.yk.yknetwork.RequestState
 import com.yk.yknetwork.StatefulFlow
 import com.yk.yknetwork.transformApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
@@ -32,7 +33,7 @@ class MyViewModel : ViewModel() {
 
     private val _headers = MutableStateFlow<RequestState<List<ChapterBean>?>>(RequestState.Loading)
 
-    val headers: StatefulFlow<List<ChapterBean>?> = _headers
+    val headers = _headers.asStateFlow()
 
     fun initData() {
         viewModelScope.launch {
@@ -46,5 +47,14 @@ class MyViewModel : ViewModel() {
                     _headers.value = RequestState.Success(result)
                 }
         }
+    }
+
+    fun removeItem(position: Int, list: MutableList<ChapterBean>) {
+
+        val newData = mutableListOf<ChapterBean>()
+        newData.addAll(list)
+        newData.removeAt(position)
+
+        _headers.value = RequestState.Success(newData)
     }
 }

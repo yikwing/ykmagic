@@ -12,7 +12,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yikwing.logger.Logger
 import com.yikwing.ykextension.unSafeLazy
-import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.databinding.MainFragmentBinding
 import com.yk.yknetwork.ApiException
 import com.yk.yknetwork.collectState
@@ -48,7 +47,7 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
 
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.headers.collectState {
                     onLoading = {
                         Log.d("headers", "加载中")
@@ -97,10 +96,7 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
     }
 
     override fun removeItem(position: Int) {
-        val newData = mutableListOf<ChapterBean>()
-        newData.addAll(adapter.currentList)
-        newData.removeAt(position)
-        adapter.submitList(newData)
+        viewModel.removeItem(position, adapter.currentList)
     }
 
 }
