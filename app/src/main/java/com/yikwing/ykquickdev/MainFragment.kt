@@ -96,6 +96,10 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
     }
 
     override fun removeItem(position: Int) {
+        if (position == 0) {
+            goToLinkActivity()
+            return
+        }
         viewModel.removeItem(position, adapter.currentList)
     }
 
