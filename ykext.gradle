@@ -8,21 +8,22 @@ ext {
     injectEnv = InjectJson
 
     // App dependencies
-    coreKtxVersion = "1.7.0"
-    appCompatVersion = '1.4.1'
-    materialVersiob = "1.5.0"
+    coreKtxVersion = "1.9.0-alpha03"
+    appCompatVersion = '1.6.0-alpha03'
     constraintlayoutVersion = "2.1.3"
-    lifecycleRuntimeKtxVersion = '2.4.0'
+    lifecycleRuntimeKtxVersion = '2.5.0-beta01'
+    fragmentKtxVersion = "1.5.0-beta01"
 
-    roomVersion = '2.4.2'
+    materialVersiob = "1.7.0-alpha01"
+
+    roomVersion = '2.5.0-alpha01'
 
     moshiVersion = "1.13.0"
 
     coroutinesVersion = "1.6.1"
 
-    fragmentKtxVersion = "1.3.6"
 
-    okhttpVersion = "4.9.3"
+    okhttpVersion = "5.0.0-alpha.7"
 
     retrofitVersion = "2.9.0"
 
