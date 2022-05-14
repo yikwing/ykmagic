@@ -23,7 +23,7 @@ class RetrofitFactory private constructor() {
         }
     }
 
-    fun setup(baseUrl: String, interceptor: Interceptor?) {
+    fun setup(baseUrl: String, vararg interceptor: Interceptor) {
         retrofit = Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(MoshiConverterFactory.create())
@@ -31,11 +31,11 @@ class RetrofitFactory private constructor() {
             .build()
     }
 
-    private fun initClient(interceptor: Interceptor?): OkHttpClient {
+    private fun initClient(interceptorList: Array<out Interceptor>): OkHttpClient {
         return OkHttpClient.Builder()
             .addNetworkInterceptor(logger)
             .apply {
-                interceptor?.let {
+                interceptorList.forEach {
                     addInterceptor(it)
                 }
             }
