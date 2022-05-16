@@ -37,6 +37,11 @@
    implementation("com.github.yikwing.ykmagic:logger:0.1.0")
    ```
 
+## Tips
+
+- 使用空 node package.json `scripts` 配置快速命令行命令
+- sh 文件夹配置了 **签名** / **校验签名** 脚本
+
 ## TODO
 
 - [ ] 抽取 commom 模块,其他模块依赖基础模块
