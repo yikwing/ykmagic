@@ -137,6 +137,8 @@ dependencies {
 
     implementation("io.coil-kt:coil:${rootProject.ext.coilVersion}")
 
+    implementation("com.squareup.okio:okio:3.1.0")
+
     debugImplementation("com.guolindev.glance:glance:${rootProject.ext.glanceVersion}")
     debugImplementation('com.squareup.leakcanary:leakcanary-android:2.9.1')
 

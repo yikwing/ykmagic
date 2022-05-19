@@ -3,13 +3,15 @@ package com.yikwing.ykquickdev
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import coil.load
 import com.yikwing.ykextension.app.getPackageInfo
+import com.yikwing.ykextension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
 import com.yk.ykproxy.BaseFragment
+import okio.buffer
+import okio.source
+import java.io.File
 
 class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::inflate) {
 
@@ -17,8 +19,12 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
         fun newInstance() = HiltFragment()
     }
 
+    private val packageInfo by unSafeLazy {
+        requireContext().getPackageInfo("com.yktc.nutritiondiet")
+    }
+
     override fun lazyInit() {
-        val packageInfo = requireContext().getPackageInfo("com.yktc.nutritiondiet")
+
         binding.appIcon.load(packageInfo?.appIcon)
 
         binding.tvAppName.text = packageInfo?.appName
@@ -30,22 +36,23 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
         binding.tvHiltMd5.apply {
             text = packageInfo?.signMD5
             setOnClickListener {
-                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("simple text", packageInfo?.signMD5)
-                clipboard.setPrimaryClip(clip)
-                Toast.makeText(context, "MD5值已复制", Toast.LENGTH_SHORT).show()
+                copyToClipboard(context, packageInfo?.signMD5, "MD5值已复制")
             }
         }
 
         binding.tvHiltSha1.apply {
             text = packageInfo?.signSHA1
             setOnClickListener {
-                val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("simple text", packageInfo?.signSHA1)
-                clipboard.setPrimaryClip(clip)
-                Toast.makeText(context, "SHA1值已复制", Toast.LENGTH_SHORT).show()
+                copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
             }
         }
+    }
+
+    private fun copyToClipboard(context: Context, copyStr: String?, tips: String) {
+        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("simple text", copyStr)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(context, tips, Toast.LENGTH_SHORT).show()
     }
 
 }

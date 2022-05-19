@@ -1,7 +1,6 @@
 package com.yikwing.ykextension
 
 import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
