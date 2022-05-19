@@ -28,7 +28,7 @@ ext {
     retrofitVersion = "2.9.0"
 
 
-    coilVersion = "2.0.0"
+    coilVersion = "2.1.0"
     glanceVersion = "1.1.0"
 
     junit = "4.13.2"

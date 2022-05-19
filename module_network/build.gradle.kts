@@ -51,11 +51,13 @@ dependencies {
 afterEvaluate {
     publishing {
         publications {
-            register("release", MavenPublication::class) {
-                from(components["release"])
+            register<MavenPublication>("release") {
                 groupId = "com.yikwing"
                 artifactId = "network"
                 version = "1.0"
+                afterEvaluate {
+                    from(components["release"])
+                }
             }
         }
     }

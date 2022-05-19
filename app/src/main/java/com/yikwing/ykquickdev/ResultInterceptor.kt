@@ -21,29 +21,32 @@ class ResultInterceptor : Interceptor {
         val responseBodyString = body.string()
 
         val contentType = response.body.contentType()
-        val responseBody = """
-            {
-                "data": [
-                    {
-                        "lisenseLink": "",
-                        "parentChapterId": 407,
-                        "name": "\u9e3f\u6d0b",
-                        "lisense": "",
-                        "desc": "",
-                        "cover": "",
-                        "id": 408,
-                        "children": [],
-                        "author": "",
-                        "order": 190000,
-                        "userControlSetTop": false,
-                        "courseId": 13,
-                        "visible": 1
-                    }
-                ],
-                "errorCode": 0,
-                "errorMsg": ""
-            }
-        """.trimIndent().toResponseBody(contentType)
+//        val responseBody = """
+//            {
+//                "data": [
+//                    {
+//                        "lisenseLink": "",
+//                        "parentChapterId": 407,
+//                        "name": "\u9e3f\u6d0b",
+//                        "lisense": "",
+//                        "desc": "",
+//                        "cover": "",
+//                        "id": 408,
+//                        "children": [],
+//                        "author": "",
+//                        "order": 190000,
+//                        "userControlSetTop": false,
+//                        "courseId": 13,
+//                        "visible": 1
+//                    }
+//                ],
+//                "errorCode": 0,
+//                "errorMsg": ""
+//            }
+//        """.trimIndent().toResponseBody(contentType)
+
+        val responseBody = responseBodyString.toResponseBody(contentType)
+
         val originResponse = response.newBuilder().body(responseBody).build()
 
         return originResponse
