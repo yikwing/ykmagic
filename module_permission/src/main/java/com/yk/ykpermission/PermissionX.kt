@@ -8,7 +8,7 @@ object PermissionX {
 
     fun request(
         activity: FragmentActivity,
-        vararg permissions: String,
+        permissions: Array<String>,
         callback: PermissionCallback
     ) {
 
@@ -25,7 +25,7 @@ object PermissionX {
             invisibleFragment
         }
 
-        fragment.requestNow(callback, *permissions)
+        fragment.requestNow(callback, permissions)
 
     }
 }

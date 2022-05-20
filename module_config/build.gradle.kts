@@ -5,6 +5,17 @@ plugins {
     id("maven-publish")
 }
 
+/**
+ * 统一获取默认依赖
+ */
+fun safeExtGet(prop: String, fallback: String): String {
+    return if (rootProject.ext.has(prop)) {
+        rootProject.ext.get(prop) as String
+    } else {
+        fallback
+    }
+}
+
 android {
     compileSdk = 31
 
@@ -33,14 +44,10 @@ android {
 
 dependencies {
 
-    implementation("com.squareup.moshi:moshi:1.13.0")
-    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
+    implementation("com.squareup.moshi:moshi:${safeExtGet("moshi_version", "1.13.0")}")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:${safeExtGet("moshi_version", "1.13.0")}")
 
-    testImplementation("junit:junit:4.13.2")
-
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-
+    testImplementation("junit:junit:${safeExtGet("junit_version", "4.13.2")}")
 }
 
 afterEvaluate {

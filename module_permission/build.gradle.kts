@@ -4,6 +4,18 @@ plugins {
     id("maven-publish")
 }
 
+
+/**
+ * 统一获取默认依赖
+ */
+fun safeExtGet(prop: String, fallback: String): String {
+    return if (rootProject.ext.has(prop)) {
+        rootProject.ext.get(prop) as String
+    } else {
+        fallback
+    }
+}
+
 android {
     compileSdk = 31
 
@@ -32,12 +44,12 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.5.0")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    implementation("androidx.core:core-ktx:${safeExtGet("core_ktx_version", "1.7.0")}")
+    implementation("androidx.appcompat:appcompat:${safeExtGet("appcompat_version", "1.3.0")}")
+
+    implementation("com.google.android.material:material:${safeExtGet("material_version", "1.5.0")}")
+    testImplementation("junit:junit:${safeExtGet("junit_version", "4.13.2")}")
+
 }
 
 

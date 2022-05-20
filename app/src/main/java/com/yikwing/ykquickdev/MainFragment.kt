@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -15,6 +16,7 @@ import com.yikwing.ykextension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.MainFragmentBinding
 import com.yk.yknetwork.ApiException
 import com.yk.yknetwork.collectState
+import com.yk.ykpermission.PermissionX
 import com.yk.ykproxy.BaseFragment
 import kotlinx.coroutines.launch
 
@@ -89,6 +91,24 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
 //        }
     }
 
+    private fun requestPermission() {
+        PermissionX.request(
+            requireActivity(),
+            arrayOf(
+                android.Manifest.permission.CALL_PHONE,
+                android.Manifest.permission.CAMERA,
+            )
+        ) { allGranted, deniedList ->
+            if (allGranted) {
+                Toast.makeText(context, "已全部同意", Toast.LENGTH_SHORT).show()
+
+                goToLinkActivity()
+            } else {
+                Toast.makeText(context, "已拒绝 $deniedList", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
 
     private fun goToLinkActivity() {
         //  <a href ="yikwing://yk:9001/props?macthId=222&time=10001">打开源生应用指定的页面</a>
@@ -98,6 +118,9 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
     override fun removeItem(position: Int) {
         if (position == 0) {
             goToLinkActivity()
+            return
+        } else if (position == 1) {
+            requestPermission()
             return
         }
         viewModel.removeItem(position, adapter.currentList)
