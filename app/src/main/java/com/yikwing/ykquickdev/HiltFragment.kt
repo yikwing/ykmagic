@@ -4,9 +4,11 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import coil.load
+import com.yikwing.logger.Logger
+import com.yikwing.ykextension.*
 import com.yikwing.ykextension.app.getPackageInfo
-import com.yikwing.ykextension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
 import com.yk.ykproxy.BaseFragment
 import okio.buffer
@@ -15,8 +17,14 @@ import java.io.File
 
 class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::inflate) {
 
+    private var param1: Int by FragmentArgumentDelegate(0)
+    private var param2: String by FragmentArgumentDelegate("")
+
     companion object {
-        fun newInstance() = HiltFragment()
+        fun newInstance(a: Int = 23, b: String = "zs") = HiltFragment().apply {
+            param1 = a
+            param2 = b
+        }
     }
 
     private val packageInfo by unSafeLazy {
@@ -24,7 +32,6 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
     }
 
     override fun lazyInit() {
-
         binding.appIcon.load(packageInfo?.appIcon)
 
         binding.tvAppName.text = packageInfo?.appName
