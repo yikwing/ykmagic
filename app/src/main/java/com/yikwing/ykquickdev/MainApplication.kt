@@ -2,6 +2,7 @@ package com.yikwing.ykquickdev
 
 import android.app.Application
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.facebook.spectrum.SpectrumSoLoader
 import com.yikwing.logger.AndroidLogAdapter
 import com.yikwing.logger.Logger
 import com.yikwing.logger.PrettyFormatStrategy
@@ -42,6 +43,9 @@ class MainApplication : Application() {
                 }
             }
         )
+
+
+        SpectrumSoLoader.init(this)
 
     }
 

@@ -4,16 +4,19 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
-import androidx.core.os.bundleOf
+import androidx.lifecycle.lifecycleScope
 import coil.load
 import com.yikwing.logger.Logger
-import com.yikwing.ykextension.*
+import com.yikwing.ykextension.FragmentArgumentDelegate
 import com.yikwing.ykextension.app.getPackageInfo
+import com.yikwing.ykextension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
+import com.yk.compress.compress
+import com.yk.compress.compressBitmap
 import com.yk.ykproxy.BaseFragment
-import okio.buffer
-import okio.source
+import kotlinx.coroutines.launch
 import java.io.File
+import kotlin.concurrent.thread
 
 class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::inflate) {
 
@@ -30,6 +33,7 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
     private val packageInfo by unSafeLazy {
         requireContext().getPackageInfo("com.yktc.nutritiondiet")
     }
+
 
     override fun lazyInit() {
         binding.appIcon.load(packageInfo?.appIcon)
@@ -52,6 +56,27 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
             setOnClickListener {
                 copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
             }
+
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                compress(
+                    context, listOf(
+                        File(context.filesDir, "result_11.webp"),
+                        File(context.filesDir, "default_image.jpg"),
+                        File(context.filesDir, "result.webp"),
+                    )
+                ) {
+                    Logger.d(it.joinToString())
+                }
+            }
+
+
+            thread {
+                val file = File(context.cacheDir, System.currentTimeMillis().toString() + "android.webp")
+                compressBitmap(File(context.filesDir, "default_image.jpg").absolutePath, 200, file.absolutePath)
+            }
+
+
         }
     }
 
