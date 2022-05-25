@@ -1,5 +1,6 @@
 package com.yk.compress
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
@@ -59,7 +60,7 @@ fun compressByResolution(filePath: String, w: Int = 960, h: Int = 1280): Bitmap 
  *
  * 图片压缩
  */
-fun compressBitmap(filePath: String, ImageSize: Int, savePath: String): Boolean {
+fun compressBitmap(context: Context, filePath: String, ImageSize: Int, savePath: (File) -> Unit): Boolean {
 
     /**
      * 质量因子
@@ -113,11 +114,15 @@ fun compressBitmap(filePath: String, ImageSize: Int, savePath: String): Boolean 
 
     Log.i("compressBitmap", "图片处理完成：" + baos.toByteArray().size / 1024 + "KB")
 
+    val file = File(context.cacheDir, System.currentTimeMillis().toString() + "android.webp")
+
     try {
-        val fos = FileOutputStream(File(savePath))
+        val fos = FileOutputStream(file)
         fos.write(baos.toByteArray())
         fos.flush()
         fos.close()
+
+        savePath(file)
     } catch (e: Exception) {
         e.printStackTrace()
     }

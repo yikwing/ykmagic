@@ -72,8 +72,9 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
 
 
             thread {
-                val file = File(context.cacheDir, System.currentTimeMillis().toString() + "android.webp")
-                compressBitmap(File(context.filesDir, "default_image.jpg").absolutePath, 200, file.absolutePath)
+                compressBitmap(context, File(context.filesDir, "cc.jpg").absolutePath, 200) { file ->
+                    Logger.d(file.absolutePath)
+                }
             }
 
 
