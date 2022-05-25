@@ -60,7 +60,7 @@ fun compressByResolution(filePath: String, w: Int = 960, h: Int = 1280): Bitmap 
  *
  * 图片压缩
  */
-fun compressBitmap(context: Context, filePath: String, ImageSize: Int, savePath: (File) -> Unit): Boolean {
+fun compressBitmap(context: Context, filePath: String, ImageSize: Int, savePath: (File) -> Unit) {
 
     /**
      * 质量因子
@@ -128,7 +128,4 @@ fun compressBitmap(context: Context, filePath: String, ImageSize: Int, savePath:
     }
 
     bitmap.recycle()
-
-    return true
-
 }
