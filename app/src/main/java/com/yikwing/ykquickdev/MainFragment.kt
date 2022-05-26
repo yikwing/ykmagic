@@ -1,11 +1,15 @@
 package com.yikwing.ykquickdev
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +31,22 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
     }
 
     private val viewModel by viewModels<MyViewModel>()
+
+    var forActivityResultLauncher = registerForActivityResult(object : ActivityResultContract<String, String>() {
+        override fun createIntent(context: Context, input: String): Intent {
+            return Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?$input"))
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): String {
+            return if (resultCode == Activity.RESULT_OK) {
+                intent?.getStringExtra("result") ?: "empty"
+            } else {
+                ""
+            }
+        }
+    }) {
+        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+    }
 
     private val adapter by unSafeLazy {
         CustomListAdapter(this)
@@ -70,25 +90,6 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
                 }
             }
         }
-
-
-//        binding.message.setOnClickListener {
-//
-//            PermissionX.request(
-//                requireActivity(),
-//                Manifest.permission.CALL_PHONE,
-//                Manifest.permission.CAMERA,
-//            ) { allGranted, deniedList ->
-//                if (allGranted) {
-//                    Toast.makeText(context, "已全部同意", Toast.LENGTH_SHORT).show()
-//
-//                    goToLinkActivity()
-//                } else {
-//                    Toast.makeText(context, "已拒绝 $deniedList", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//
-//        }
     }
 
     private fun requestPermission() {
@@ -104,6 +105,12 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
 
                 goToLinkActivity()
             } else {
+                deniedList.forEach { permissionName ->
+                    if (!shouldShowRequestPermissionRationale(permissionName)) {
+                        //用户拒绝权限并且系统不再弹出请求权限的弹窗
+                        Logger.d("已拒绝并不再提示 === $permissionName")
+                    }
+                }
                 Toast.makeText(context, "已拒绝 $deniedList", Toast.LENGTH_SHORT).show()
             }
         }
@@ -112,7 +119,9 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
 
     private fun goToLinkActivity() {
         //  <a href ="yikwing://yk:9001/props?macthId=222&time=10001">打开源生应用指定的页面</a>
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?macthId=222&time=10001")))
+//        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?macthId=222&time=10001")))
+
+        forActivityResultLauncher.launch("macthId=222&time=10001")
     }
 
     override fun removeItem(position: Int) {

@@ -1,5 +1,7 @@
 package com.yikwing.ykquickdev
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
@@ -38,5 +40,12 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
         Log.e("TAG", "port===========" + data?.port)
 
 
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra("result", "result from A")
+        })
+        super.onBackPressed()
     }
 }
