@@ -24,7 +24,7 @@ ext {
     coroutines_version = "1.6.2"
 
 
-    okhttp_version = "5.0.0-alpha.7"
+    okhttp_version = "4.10.0"
 
     retrofit_version = "2.9.0"
 

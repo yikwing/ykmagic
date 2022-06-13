@@ -17,10 +17,10 @@ class ResultInterceptor : Interceptor {
         // get response
         val response = chain.proceed(request)
 
-        val body = response.body
+        val body = response.body!!
         val responseBodyString = body.string()
 
-        val contentType = response.body.contentType()
+        val contentType = body.contentType()
 //        val responseBody = """
 //            {
 //                "data": [
