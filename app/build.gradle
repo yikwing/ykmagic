@@ -29,12 +29,12 @@ def listSubFile = {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 33
 
     defaultConfig {
         applicationId "com.yikwing.ykquickdev"
         minSdk = 24
-        targetSdk = 31
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -141,17 +141,17 @@ dependencies {
 
     implementation("io.coil-kt:coil:${rootProject.ext.coil_version}")
 
-    implementation("com.squareup.okio:okio:3.1.0")
+    implementation("com.squareup.okio:okio:${rootProject.ext.okio_version}")
 
     debugImplementation("com.guolindev.glance:glance:${rootProject.ext.glance_version}")
-    debugImplementation('com.squareup.leakcanary:leakcanary-android:2.9.1')
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:${rootProject.ext.leakcanary_version}")
 
     debugImplementation("com.github.chuckerteam.chucker:library:3.5.2")
     releaseImplementation("com.github.chuckerteam.chucker:library-no-op:3.5.2")
 
-    testImplementation 'org.hamcrest:hamcrest:2.2'
-    testImplementation 'org.hamcrest:hamcrest-library:2.2'
-    testImplementation 'junit:junit:4.13.2'
+    testImplementation("org.hamcrest:hamcrest:${rootProject.ext.hamcrest_version}")
+    testImplementation("org.hamcrest:hamcrest-library:${rootProject.ext.hamcrest_version}")
+    testImplementation("junit:junit:${rootProject.ext.junit_version}")
     testImplementation 'org.mockito:mockito-core:4.6.1'
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
