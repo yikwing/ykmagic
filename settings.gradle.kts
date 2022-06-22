@@ -3,7 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        mavenLocal()
     }
 }
 
@@ -15,7 +14,6 @@ dependencyResolutionManagement {
         maven {
             url = uri("https://jitpack.io")
         }
-        mavenLocal()
     }
 }
 
@@ -28,4 +26,3 @@ include(":module_extension")
 include(":module_permission")
 include(":module_logger")
 include(":module_compress")
-include(":plugin")

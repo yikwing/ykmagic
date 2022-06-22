@@ -6,8 +6,6 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
-apply plugin: "com.yikwing.jiagu"
-
 def isRelease = false
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -100,11 +98,6 @@ android {
     lint {
         checkDependencies true
     }
-}
-
-yikwing {
-    userName "yikwing"
-    password "123456"
 }
 
 dependencies {
