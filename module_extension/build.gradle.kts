@@ -7,20 +7,18 @@ plugins {
 /**
  * 统一获取默认依赖
  */
-fun safeExtGet(prop: String, fallback: String): String {
+fun safeExtGet(prop: String): String {
     return if (rootProject.ext.has(prop)) {
         rootProject.ext.get(prop) as String
-    } else {
-        fallback
-    }
+    } else throw Error()
 }
 
 android {
-    compileSdk = 31
+    compileSdk = rootProject.ext.get("compileSdk") as Int
 
     defaultConfig {
-        minSdk = 21
-        targetSdk = 31
+        minSdk = rootProject.ext.get("minSdk") as Int
+        targetSdk = rootProject.ext.get("targetSdk") as Int
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -42,8 +40,8 @@ android {
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:${safeExtGet("appcompat_version", "1.3.0")}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${safeExtGet("coroutines_version", "1.6.1")}")
+    implementation("androidx.appcompat:appcompat:${safeExtGet("appcompat_version")}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${safeExtGet("coroutines_version")}")
 }
 
 afterEvaluate {
