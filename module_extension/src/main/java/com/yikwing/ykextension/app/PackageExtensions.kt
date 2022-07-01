@@ -18,7 +18,11 @@ data class PackageInfo(
     var signSHA1: String
 )
 
-
+/**
+ *
+ * 获取App Package数据
+ *
+ */
 fun Context.getPackageInfo(packageName: String): PackageInfo? {
     val pm = packageManager
 
@@ -41,5 +45,22 @@ fun Context.getPackageInfo(packageName: String): PackageInfo? {
     } catch (e: Exception) {
         Log.e(TAG, e.toString())
         return null
+    }
+}
+
+/**
+ *
+ * 获取App元数据
+ *
+ */
+fun Context.getMetaData(key: String): String? {
+    return try {
+        val pm = packageManager
+        val appInfo = pm.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+        val channel = appInfo.metaData.getString(key)
+        channel
+    } catch (e: Exception) {
+        Log.e("PackageUtils - getMetaData", e.toString())
+        null
     }
 }
