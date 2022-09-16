@@ -38,6 +38,7 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    namespace = "com.yikwing.config"
 }
 
 dependencies {

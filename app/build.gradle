@@ -21,8 +21,7 @@ def listSubFile = {
     def files = file(resFolder).listFiles()
     def folders = []
     //遍历路径
-    files.each {
-        item -> folders.add(item.absolutePath)
+    files.each { item -> folders.add(item.absolutePath)
     }
     //资源整合
     folders.add(file(resFolder).parentFile.absolutePath)
@@ -99,6 +98,7 @@ android {
     lint {
         checkDependencies true
     }
+    namespace 'com.yikwing.ykquickdev'
 }
 
 dependencies {
@@ -155,7 +155,7 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest:${rootProject.ext.hamcrest_version}")
     testImplementation("org.hamcrest:hamcrest-library:${rootProject.ext.hamcrest_version}")
     testImplementation("junit:junit:${rootProject.ext.junit_version}")
-    testImplementation("io.mockk:mockk:1.12.4")
+    testImplementation("io.mockk:mockk:1.12.8")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
 

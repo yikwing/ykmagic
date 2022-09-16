@@ -64,7 +64,7 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
 
         Logger.d("===%s===", "onActivityCreated")
 
-        binding.wxRecycler.layoutManager = LinearLayoutManager(context)
+        binding.wxRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.wxRecycler.adapter = adapter
 
 
