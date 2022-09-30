@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import com.yk.ykproxy.BaseActivity
 
@@ -11,10 +12,19 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra("result", "result from A")
+                })
+            }
+        }
+
+        onBackPressedDispatcher.addCallback(onBackPressedCallback)
+
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, HiltFragment.newInstance())
-                .commitNow()
+            supportFragmentManager.beginTransaction().replace(R.id.container, HiltFragment.newInstance()).commitNow()
         }
     }
 
@@ -42,10 +52,4 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
 
     }
 
-    override fun onBackPressed() {
-        setResult(Activity.RESULT_OK, Intent().apply {
-            putExtra("result", "result from A")
-        })
-        super.onBackPressed()
-    }
 }

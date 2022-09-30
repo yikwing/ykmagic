@@ -3,6 +3,8 @@ package com.yikwing.ykquickdev
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
@@ -19,14 +21,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance())
-                .commitNow()
-        }
-    }
 
-    override fun onBackPressed() {
-        backPressTime = System.currentTimeMillis()
+        val onBackPressedCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                backPressTime = System.currentTimeMillis()
+            }
+        }
+
+        onBackPressedDispatcher.addCallback(onBackPressedCallback)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction().replace(R.id.container, MainFragment.newInstance()).commitNow()
+        }
     }
 }
