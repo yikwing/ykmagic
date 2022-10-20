@@ -18,6 +18,8 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
                 setResult(Activity.RESULT_OK, Intent().apply {
                     putExtra("result", "result from A")
                 })
+
+                finish()
             }
         }
 

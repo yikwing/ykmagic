@@ -72,6 +72,11 @@ fun compressBitmap(context: Context, filePath: String, ImageSize: Int, savePath:
      */
     var compressCount = 0
 
+    if (!File(filePath).exists()) {
+        Log.e("compressBitmap", "File Not Exists")
+        return
+    }
+
 
     /**
      * 基础分辨率 仿微信

@@ -36,7 +36,7 @@ ext {
     retrofit_version = "2.9.0"
 
 
-    coil_version = "2.2.1"
+    coil_version = "2.2.2"
 
     okio_version = "3.2.0"
 
