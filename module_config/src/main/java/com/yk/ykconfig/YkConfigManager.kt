@@ -15,6 +15,7 @@ object YkConfigManager {
     private val cacheConfigMap = mutableMapOf<Class<*>, Any>()
 
     private val moshi: Moshi = Moshi.Builder().build()
+
     private val mapAdapter = moshi.adapter<Map<String, Any>>(
         Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
     )
