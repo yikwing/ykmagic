@@ -24,7 +24,8 @@ import com.yk.ykpermission.PermissionX
 import com.yk.ykproxy.BaseFragment
 import kotlinx.coroutines.launch
 
-class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::inflate), CustomListAdapterCallBack {
+class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::inflate),
+    CustomListAdapterCallBack {
 
     companion object {
         fun newInstance() = MainFragment()
@@ -32,21 +33,22 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
 
     private val viewModel by viewModels<MyViewModel>()
 
-    var forActivityResultLauncher = registerForActivityResult(object : ActivityResultContract<String, String>() {
-        override fun createIntent(context: Context, input: String): Intent {
-            return Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?$input"))
-        }
-
-        override fun parseResult(resultCode: Int, intent: Intent?): String {
-            return if (resultCode == Activity.RESULT_OK) {
-                intent?.getStringExtra("result") ?: "empty"
-            } else {
-                ""
+    var forActivityResultLauncher =
+        registerForActivityResult(object : ActivityResultContract<String, String>() {
+            override fun createIntent(context: Context, input: String): Intent {
+                return Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?$input"))
             }
+
+            override fun parseResult(resultCode: Int, intent: Intent?): String {
+                return if (resultCode == Activity.RESULT_OK) {
+                    intent?.getStringExtra("result") ?: "empty"
+                } else {
+                    ""
+                }
+            }
+        }) {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
-    }) {
-        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-    }
 
     private val adapter by unSafeLazy {
         CustomListAdapter(this)
@@ -68,25 +70,50 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
         binding.wxRecycler.adapter = adapter
 
 
-        lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.headers.collectState {
-                    onLoading = {
-                        Log.d("headers", "加载中")
+//        lifecycleScope.launch {
+//            // 可重启生命周期感知型协程
+//            // 网络请求不需要重复请求
+//            // 例如重复定位 socket链接
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                viewModel.headers.collectState {
+//                    onLoading = {
+//                        Log.d("headers", "加载中")
+//                    }
+//
+//                    onSuccess = { data ->
+//                        adapter.submitList(data)
+//                    }
+//
+//                    onError = { e ->
+//
+//                        when (e) {
+//                            is ApiException -> Log.e("headers", "${e.code} === ${e.message}")
+//                            else -> Log.e("headers", e.message ?: "Not Error")
+//                        }
+//
+//                    }
+//                }
+//            }
+//        }
+
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.headers.collectState {
+                onLoading = {
+                    Log.d("headers", "加载中")
+                }
+
+                onSuccess = { data ->
+                    adapter.submitList(data)
+                }
+
+                onError = { e ->
+
+                    when (e) {
+                        is ApiException -> Log.e("headers", "${e.code} === ${e.message}")
+                        else -> Log.e("headers", e.message ?: "Not Error")
                     }
 
-                    onSuccess = { data ->
-                        adapter.submitList(data)
-                    }
-
-                    onError = { e ->
-
-                        when (e) {
-                            is ApiException -> Log.e("headers", "${e.code} === ${e.message}")
-                            else -> Log.e("headers", e.message ?: "Not Error")
-                        }
-
-                    }
                 }
             }
         }
