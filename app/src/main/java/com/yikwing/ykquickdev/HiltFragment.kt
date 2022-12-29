@@ -72,7 +72,11 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
 
 
             thread {
-                compressBitmap(context, File(context.filesDir, "cc.jpg").absolutePath, 200) { file ->
+                compressBitmap(
+                    context,
+                    File(context.filesDir, "cc.jpg").absolutePath,
+                    200
+                ) { file ->
                     Logger.d(file.absolutePath)
                 }
             }

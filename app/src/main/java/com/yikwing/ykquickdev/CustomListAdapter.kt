@@ -28,7 +28,8 @@ class CustomListAdapter(private val listener: CustomListAdapterCallBack) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomListHolder {
-        val binding = ItemTextAdapterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val inflater = LayoutInflater.from(parent.context)
+        val binding = ItemTextAdapterBinding.inflate(inflater, parent, false)
         return CustomListHolder(binding)
     }
 
@@ -36,14 +37,16 @@ class CustomListAdapter(private val listener: CustomListAdapterCallBack) :
         val repo = getItem(position)
 
         if (repo != null) {
-            holder.binding.itemWxText.text = getItem(position).name
+            holder.binding.itemWxText.text = repo.name
             holder.binding.mainRoot.setOnClickListener {
                 listener.removeItem(position)
             }
         }
     }
 
-    class CustomListHolder(val binding: ItemTextAdapterBinding) : RecyclerView.ViewHolder(binding.root)
+
+    class CustomListHolder(val binding: ItemTextAdapterBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }
 
 

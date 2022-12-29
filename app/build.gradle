@@ -155,7 +155,7 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest:${rootProject.ext.hamcrest_version}")
     testImplementation("org.hamcrest:hamcrest-library:${rootProject.ext.hamcrest_version}")
     testImplementation("junit:junit:${rootProject.ext.junit_version}")
-    testImplementation("io.mockk:mockk:1.13.2")
+    testImplementation("io.mockk:mockk:1.13.3")
     androidTestImplementation("androidx.test.ext:junit:1.1.4")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
 

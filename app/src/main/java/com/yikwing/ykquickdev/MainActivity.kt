@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().replace(R.id.container, MainFragment.newInstance()).commitNow()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, MainFragment.newInstance()).commitNow()
         }
     }
 }
