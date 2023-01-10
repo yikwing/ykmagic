@@ -3,6 +3,7 @@ import groovy.json.JsonOutput
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
     id("com.google.devtools.ksp")
     id("com.github.ben-manes.versions") version "0.44.0"
 }

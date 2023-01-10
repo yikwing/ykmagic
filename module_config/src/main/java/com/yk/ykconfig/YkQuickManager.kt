@@ -8,7 +8,7 @@ object YkQuickManager {
     private var isSetUp: Boolean = false
 
     fun setUp(application: Application, ykConfigStr: String) {
-        YkQuickManager.app = application
+        app = application
         isSetUp = true
         YkConfigManager.setUp(ykConfigStr)
     }
