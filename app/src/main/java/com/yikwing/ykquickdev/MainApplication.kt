@@ -2,7 +2,6 @@ package com.yikwing.ykquickdev
 
 import android.app.Application
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.facebook.spectrum.SpectrumSoLoader
 import com.yikwing.logger.AndroidLogAdapter
 import com.yikwing.logger.Logger
 import com.yikwing.logger.PrettyFormatStrategy
@@ -32,18 +31,15 @@ class MainApplication : Application() {
             ResultInterceptor(),
         )
 
+        // 配置log config
         Logger.addLogAdapter(
             object : AndroidLogAdapter(
-                PrettyFormatStrategy.newBuilder()
-                    .tag("yk")
-                    .build(),
+                PrettyFormatStrategy.newBuilder().tag("yk").build(),
             ) {
                 override fun isLoggable(priority: Int, tag: String?): Boolean {
                     return BuildConfig.DEBUG
                 }
             },
         )
-
-        SpectrumSoLoader.init(this)
     }
 }
