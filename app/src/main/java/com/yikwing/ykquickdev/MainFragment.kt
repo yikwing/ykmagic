@@ -4,16 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yikwing.logger.Logger
 import com.yikwing.ykextension.unSafeLazy
@@ -24,7 +21,8 @@ import com.yk.ykpermission.PermissionX
 import com.yk.ykproxy.BaseFragment
 import kotlinx.coroutines.launch
 
-class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::inflate),
+class MainFragment :
+    BaseFragment<MainFragmentBinding>(MainFragmentBinding::inflate),
     CustomListAdapterCallBack {
 
     companion object {
@@ -55,7 +53,6 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
     }
 
     override fun lazyInit() {
-
         Logger.d("===%s===", "lazyInit")
 
         viewModel.initData()
@@ -68,7 +65,6 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
 
         binding.wxRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.wxRecycler.adapter = adapter
-
 
 //        lifecycleScope.launch {
 //            // 可重启生命周期感知型协程
@@ -96,7 +92,6 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
 //            }
 //        }
 
-
         lifecycleScope.launchWhenCreated {
             viewModel.headers.collectState {
                 onLoading = {
@@ -113,7 +108,6 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
                         is ApiException -> Log.e("headers", "${e.code} === ${e.message}")
                         else -> Log.e("headers", e.message ?: "Not Error")
                     }
-
                 }
             }
         }
@@ -125,7 +119,7 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
             arrayOf(
                 android.Manifest.permission.CALL_PHONE,
                 android.Manifest.permission.CAMERA,
-            )
+            ),
         ) { allGranted, deniedList ->
             if (allGranted) {
                 Toast.makeText(context, "已全部同意", Toast.LENGTH_SHORT).show()
@@ -134,7 +128,7 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
             } else {
                 deniedList.forEach { permissionName ->
                     if (!shouldShowRequestPermissionRationale(permissionName)) {
-                        //用户拒绝权限并且系统不再弹出请求权限的弹窗
+                        // 用户拒绝权限并且系统不再弹出请求权限的弹窗
                         Logger.d("已拒绝并不再提示 === $permissionName")
                     }
                 }
@@ -142,7 +136,6 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
             }
         }
     }
-
 
     private fun goToLinkActivity() {
         //  <a href ="yikwing://yk:9001/props?macthId=222&time=10001">打开源生应用指定的页面</a>
@@ -161,5 +154,4 @@ class MainFragment : BaseFragment<MainFragmentBinding>(MainFragmentBinding::infl
         }
         viewModel.removeItem(position, adapter.currentList)
     }
-
 }

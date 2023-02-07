@@ -4,10 +4,8 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
 
-
 class ResultInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-
         // add cached cookie into request
         val originRequest = chain.request()
         val newBuilder = originRequest.newBuilder()
@@ -50,6 +48,5 @@ class ResultInterceptor : Interceptor {
         val originResponse = response.newBuilder().body(responseBody).build()
 
         return originResponse
-
     }
 }

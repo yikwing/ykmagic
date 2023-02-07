@@ -1,10 +1,9 @@
 package com.yikwing.ykquickdev
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
+import androidx.appcompat.app.AppCompatActivity
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 

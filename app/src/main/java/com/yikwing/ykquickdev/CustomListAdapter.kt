@@ -44,15 +44,10 @@ class CustomListAdapter(private val listener: CustomListAdapterCallBack) :
         }
     }
 
-
     class CustomListHolder(val binding: ItemTextAdapterBinding) :
         RecyclerView.ViewHolder(binding.root)
 }
 
-
 interface CustomListAdapterCallBack {
     fun removeItem(position: Int)
 }
-
-
-

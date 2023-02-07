@@ -12,9 +12,8 @@ import com.yikwing.ykquickdev.api.entity.ChapterBean
     entities = [User::class, ChapterBean::class],
     version = 1,
     exportSchema = true,
-    autoMigrations = []
+    autoMigrations = [],
 )
-
 abstract class UserDatabase : RoomDatabase() {
 
     abstract fun getUserDao(): UserDao
@@ -37,7 +36,7 @@ abstract class UserDatabase : RoomDatabase() {
             return Room.databaseBuilder(
                 context,
                 UserDatabase::class.java,
-                "user_table"
+                "user_table",
             ).addCallback(
                 object : RoomDatabase.Callback() {
                     override fun onCreate(db: SupportSQLiteDatabase) {
@@ -45,7 +44,7 @@ abstract class UserDatabase : RoomDatabase() {
 
                         Log.d("创建数据库", "创建数据库")
                     }
-                }
+                },
             ).build()
 
 //                .addMigrations(
@@ -53,7 +52,6 @@ abstract class UserDatabase : RoomDatabase() {
 //                Migration_2_3,
 //            ).build()
         }
-
 
 //        val Migration_1_2 = object : Migration(1, 2) {
 //            override fun migrate(database: SupportSQLiteDatabase) {
@@ -67,7 +65,5 @@ abstract class UserDatabase : RoomDatabase() {
 //                TODO("Not yet implemented")
 //            }
 //        }
-
     }
-
 }

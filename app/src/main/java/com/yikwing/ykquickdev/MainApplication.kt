@@ -19,34 +19,31 @@ class MainApplication : Application() {
     }
 
     private fun initSetup() {
-
         //  初始化配置
         YkQuickManager.setUp(
-            this, BuildConfig.YK_CONFIG
+            this,
+            BuildConfig.YK_CONFIG,
         )
 
         //  初始化网络请求base url
         RetrofitFactory.instance.setup(
             YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl,
             ChuckerInterceptor(this),
-            ResultInterceptor()
+            ResultInterceptor(),
         )
 
         Logger.addLogAdapter(
             object : AndroidLogAdapter(
                 PrettyFormatStrategy.newBuilder()
                     .tag("yk")
-                    .build()
+                    .build(),
             ) {
                 override fun isLoggable(priority: Int, tag: String?): Boolean {
                     return BuildConfig.DEBUG
                 }
-            }
+            },
         )
 
-
         SpectrumSoLoader.init(this)
-
     }
-
 }

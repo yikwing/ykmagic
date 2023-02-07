@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
-    id("com.github.ben-manes.versions") version "0.44.0"
+    id("com.github.ben-manes.versions") version "0.45.0"
 }
 
 def isRelease = false
@@ -156,8 +156,13 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest:${rootProject.ext.hamcrest_version}")
     testImplementation("org.hamcrest:hamcrest-library:${rootProject.ext.hamcrest_version}")
     testImplementation("junit:junit:${rootProject.ext.junit_version}")
-    testImplementation("io.mockk:mockk:1.13.3")
-    androidTestImplementation("androidx.test.ext:junit:1.1.4")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
 
+    testImplementation("io.mockk:mockk:1.13.4")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+}
+
+kotlin {
+    jvmToolchain(11)
 }

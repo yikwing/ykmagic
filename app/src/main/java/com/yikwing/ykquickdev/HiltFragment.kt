@@ -34,7 +34,6 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
         requireContext().getPackageInfo("com.yktc.nutritiondiet")
     }
 
-
     override fun lazyInit() {
         binding.appIcon.load(packageInfo?.appIcon)
 
@@ -57,31 +56,28 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
                 copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
             }
 
-
             viewLifecycleOwner.lifecycleScope.launch {
                 compress(
-                    context, listOf(
+                    context,
+                    listOf(
                         File(context.filesDir, "result_11.webp"),
                         File(context.filesDir, "default_image.jpg"),
                         File(context.filesDir, "result.webp"),
-                    )
+                    ),
                 ) {
                     Logger.d(it.joinToString())
                 }
             }
 
-
             thread {
                 compressBitmap(
                     context,
                     File(context.filesDir, "cc.jpg").absolutePath,
-                    200
+                    200,
                 ) { file ->
                     Logger.d(file.absolutePath)
                 }
             }
-
-
         }
     }
 
@@ -91,5 +87,4 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
         clipboard.setPrimaryClip(clip)
         Toast.makeText(context, tips, Toast.LENGTH_SHORT).show()
     }
-
 }
