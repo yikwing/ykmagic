@@ -3,7 +3,6 @@ package com.yk.yknetwork
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 typealias StatefulLiveData<T> = LiveData<RequestState<T>>
@@ -33,11 +32,10 @@ class ResultBuilder<T> {
     var onError: (e: Throwable) -> Unit = { }
 }
 
-
 @MainThread
 inline fun <T> StatefulLiveData<T>.observeState(
     owner: LifecycleOwner,
-    init: ResultBuilder<T>.() -> Unit
+    init: ResultBuilder<T>.() -> Unit,
 ) {
     val result = ResultBuilder<T>().apply(init)
 
@@ -52,7 +50,7 @@ inline fun <T> StatefulLiveData<T>.observeState(
 
 @MainThread
 suspend inline fun <T> StatefulFlow<T>.collectState(
-    init: ResultBuilder<T>.() -> Unit
+    init: ResultBuilder<T>.() -> Unit,
 ) {
     val result = ResultBuilder<T>().apply(init)
 

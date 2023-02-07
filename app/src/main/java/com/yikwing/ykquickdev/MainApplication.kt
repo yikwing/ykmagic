@@ -27,8 +27,10 @@ class MainApplication : Application() {
         //  初始化网络请求base url
         RetrofitFactory.instance.setup(
             YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl,
-            ChuckerInterceptor(this),
-            ResultInterceptor(),
+            arrayOf(
+                ChuckerInterceptor(this),
+                ResultInterceptor(),
+            ),
         )
 
         // 配置log config

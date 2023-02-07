@@ -23,30 +23,21 @@ class RetrofitFactory private constructor() {
         }
     }
 
-    fun setup(baseUrl: String, vararg interceptor: Interceptor) {
-        retrofit = Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(MoshiConverterFactory.create())
-            .client(initClient(interceptor))
-            .build()
+    fun setup(baseUrl: String, interceptor: Array<Interceptor>) {
+        retrofit =
+            Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(MoshiConverterFactory.create())
+                .client(initClient(interceptor)).build()
     }
 
-    private fun initClient(interceptorList: Array<out Interceptor>): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addNetworkInterceptor(logger)
-            .apply {
-                interceptorList.forEach {
-                    addInterceptor(it)
-                }
+    private fun initClient(interceptorList: Array<Interceptor>): OkHttpClient {
+        return OkHttpClient.Builder().addNetworkInterceptor(logger).apply {
+            interceptorList.forEach {
+                addInterceptor(it)
             }
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .build()
+        }.connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
     }
-
 
     fun <T> createService(service: Class<T>): T {
         return retrofit.create(service)
     }
-
 }

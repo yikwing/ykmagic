@@ -1,8 +1,6 @@
 package com.yikwing.logger
 
 import android.util.Log
-import com.yikwing.logger.LogStrategy
-import com.yikwing.logger.LogcatLogStrategy
 
 /**
  * LogCat implementation for [LogStrategy]

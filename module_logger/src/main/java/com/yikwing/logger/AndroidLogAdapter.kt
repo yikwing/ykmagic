@@ -16,7 +16,7 @@ package com.yikwing.logger
  */
 open class AndroidLogAdapter(
     private val formatStrategy: FormatStrategy =
-        PrettyFormatStrategy.newBuilder().build()
+        PrettyFormatStrategy.newBuilder().build(),
 ) : LogAdapter {
 
     override fun isLoggable(priority: Int, tag: String?): Boolean {
@@ -26,5 +26,4 @@ open class AndroidLogAdapter(
     override fun log(priority: Int, tag: String?, message: String) {
         formatStrategy.log(priority, tag, message)
     }
-
 }

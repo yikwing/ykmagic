@@ -9,9 +9,8 @@ object PermissionX {
     fun request(
         activity: FragmentActivity,
         permissions: Array<String>,
-        callback: PermissionCallback
+        callback: PermissionCallback,
     ) {
-
         val fragmentManager = activity.supportFragmentManager
         val existedFragment = fragmentManager.findFragmentByTag(TAG)
 
@@ -19,13 +18,10 @@ object PermissionX {
             existedFragment as InvisibleFragment
         } else {
             val invisibleFragment = InvisibleFragment()
-            fragmentManager.beginTransaction()
-                .add(invisibleFragment, TAG)
-                .commitNow()
+            fragmentManager.beginTransaction().add(invisibleFragment, TAG).commitNow()
             invisibleFragment
         }
 
         fragment.requestNow(callback, permissions)
-
     }
 }
