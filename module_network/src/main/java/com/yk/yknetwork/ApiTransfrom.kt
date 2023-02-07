@@ -11,17 +11,14 @@ import kotlinx.coroutines.flow.*
  * */
 fun <T> transformApi(block: suspend () -> BaseHttpResult<T>) = flow {
     emit(block.invoke())
-}.flowOn(Dispatchers.IO)
-    .onStart {
-        Log.d("onStart", "onStart表示最开始调用方法之前执行的操作，这里是展示一个 loading ui；")
+}.flowOn(Dispatchers.IO).onStart {
+    Log.d("onStart", "onStart表示最开始调用方法之前执行的操作，这里是展示一个 loading ui；")
+}.transform { value ->
+    if (value.errorCode == 0) {
+        emit(value.data)
+    } else {
+        throw ApiException(value.errorCode, value.errorMsg)
     }
-    .transform { value ->
-        if (value.errorCode == 0) {
-            emit(value.data)
-        } else {
-            throw ApiException(value.errorCode, value.errorMsg)
-        }
-    }
-    .onCompletion {
-        Log.d("onCompletion", "onCompletion表示所有执行完成，不管有没有异常都会执行这个回调。")
-    }
+}.onCompletion {
+    Log.d("onCompletion", "onCompletion表示所有执行完成，不管有没有异常都会执行这个回调。")
+}

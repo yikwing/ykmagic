@@ -9,7 +9,9 @@ plugins {
 fun safeExtGet(prop: String): String {
     return if (rootProject.ext.has(prop)) {
         rootProject.ext.get(prop) as String
-    } else throw Error()
+    } else {
+        throw Error()
+    }
 }
 
 android {
@@ -26,7 +28,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
     compileOptions {

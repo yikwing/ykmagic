@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.provider.ApiProvider
 import com.yk.yknetwork.RequestState
-import com.yk.yknetwork.StatefulFlow
 import com.yk.yknetwork.transformApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -50,7 +49,6 @@ class MyViewModel : ViewModel() {
     }
 
     fun removeItem(position: Int, list: MutableList<ChapterBean>) {
-
         val newData = mutableListOf<ChapterBean>()
         newData.addAll(list)
         newData.removeAt(position)

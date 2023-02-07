@@ -10,7 +10,6 @@ interface HttpBinApiServer {
     suspend fun getHeaders(): HttpBinHeaders
 }
 
-
 interface WanAndroidApiService {
     @GET("wxarticle/chapters/json")
     suspend fun getChapters(): BaseHttpResult<List<ChapterBean>>

@@ -4,14 +4,15 @@ plugins {
     id("maven-publish")
 }
 
-
 /**
  * 统一获取默认依赖
  */
 fun safeExtGet(prop: String): String {
     return if (rootProject.ext.has(prop)) {
         rootProject.ext.get(prop) as String
-    } else throw Error()
+    } else {
+        throw Error()
+    }
 }
 
 android {
@@ -28,7 +29,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
     compileOptions {
@@ -48,9 +52,7 @@ dependencies {
 
     implementation("com.google.android.material:material:${safeExtGet("material_version")}")
     testImplementation("junit:junit:${safeExtGet("junit_version")}")
-
 }
-
 
 afterEvaluate {
     publishing {

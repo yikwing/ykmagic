@@ -11,7 +11,9 @@ plugins {
 fun safeExtGet(prop: String): String {
     return if (rootProject.ext.has(prop)) {
         rootProject.ext.get(prop) as String
-    } else throw Error()
+    } else {
+        throw Error()
+    }
 }
 
 android {
@@ -28,7 +30,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
     compileOptions {
@@ -47,7 +52,7 @@ dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:${safeExtGet("okhttp_version")}")
     implementation("com.squareup.okhttp3:logging-interceptor:${safeExtGet("okhttp_version")}")
-    api("com.squareup.retrofit2:retrofit:${safeExtGet("retrofit_version")}")
+    implementation("com.squareup.retrofit2:retrofit:${safeExtGet("retrofit_version")}")
     implementation("com.squareup.retrofit2:converter-moshi:${safeExtGet("retrofit_version")}")
 
     implementation("com.squareup.moshi:moshi:${safeExtGet("moshi_version")}")
