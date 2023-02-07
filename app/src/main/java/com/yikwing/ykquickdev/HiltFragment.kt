@@ -4,19 +4,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import coil.load
-import com.yikwing.logger.Logger
 import com.yikwing.ykextension.FragmentArgumentDelegate
 import com.yikwing.ykextension.app.getPackageInfo
 import com.yikwing.ykextension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
-import com.yk.compress.compress
-import com.yk.compress.compressBitmap
 import com.yk.ykproxy.BaseFragment
-import kotlinx.coroutines.launch
-import java.io.File
-import kotlin.concurrent.thread
 
 class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::inflate) {
 
@@ -54,29 +47,6 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
             text = packageInfo?.signSHA1
             setOnClickListener {
                 copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
-            }
-
-            viewLifecycleOwner.lifecycleScope.launch {
-                compress(
-                    context,
-                    listOf(
-                        File(context.filesDir, "result_11.webp"),
-                        File(context.filesDir, "default_image.jpg"),
-                        File(context.filesDir, "result.webp"),
-                    ),
-                ) {
-                    Logger.d(it.joinToString())
-                }
-            }
-
-            thread {
-                compressBitmap(
-                    context,
-                    File(context.filesDir, "cc.jpg").absolutePath,
-                    200,
-                ) { file ->
-                    Logger.d(file.absolutePath)
-                }
             }
         }
     }
