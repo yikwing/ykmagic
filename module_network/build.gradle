@@ -1,0 +1,73 @@
+plugins {
+    id("com.android.library")
+    id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
+    id("maven-publish")
+}
+
+def cfg = rootProject.ext.android
+def androidDep = rootProject.ext.androidDep
+def thirdDep = rootProject.ext.thirdDep
+def testDep = rootProject.ext.testDep
+
+android {
+    compileSdk cfg.compileSdk
+
+    defaultConfig {
+        minSdk cfg.minSdk
+        targetSdk cfg.targetSdk
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+    }
+
+    buildTypes {
+        release {
+            // 启用代码压缩、优化及混淆
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+
+    namespace = "com.yikwing.network"
+}
+
+dependencies {
+    implementation("androidx.core:core-ktx:${androidDep.core_ktx_version}")
+    implementation("androidx.appcompat:appcompat:${androidDep.appcompat_version}")
+
+    implementation("com.squareup.okhttp3:okhttp:${thirdDep.okhttp_version}")
+    implementation("com.squareup.okhttp3:logging-interceptor:${thirdDep.okhttp_version}")
+    implementation("com.squareup.retrofit2:retrofit:${thirdDep.retrofit_version}")
+    implementation("com.squareup.retrofit2:converter-moshi:${thirdDep.retrofit_version}")
+
+    implementation("com.squareup.moshi:moshi:${thirdDep.moshi_version}")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:${thirdDep.moshi_version}")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${thirdDep.coroutines_version}")
+
+    testImplementation("junit:junit:${testDep.junit_version}")
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = 'com.yikwing'
+                artifactId = 'network'
+                version = '1.0'
+            }
+        }
+    }
+}

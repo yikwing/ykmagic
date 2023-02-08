@@ -9,3 +9,9 @@
 > 统一依赖管理
 >
 > 96fd607ff1a77f0576aa89fa7eb39c2ddbcccf23
+
+#### 2023-02-06 移除image compress
+
+> 移除image compress
+>
+> 40cb906438567c901b7ecc334f2283d006a70f93
