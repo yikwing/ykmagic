@@ -15,7 +15,7 @@ data class PackageInfo(
     var versionCode: Int,
     var versionName: String,
     var signMD5: String,
-    var signSHA1: String
+    var signSHA1: String,
 )
 
 /**
@@ -39,9 +39,8 @@ fun Context.getPackageInfo(packageName: String): PackageInfo? {
             packageInfo.versionCode,
             packageInfo.versionName,
             DigestUtils.crypto(packageInfo.signatures[0].toByteArray(), DigestUtils.MD5),
-            DigestUtils.crypto2capital(packageInfo.signatures[0].toByteArray(), DigestUtils.SHA1)
+            DigestUtils.crypto2capital(packageInfo.signatures[0].toByteArray(), DigestUtils.SHA1),
         )
-
     } catch (e: Exception) {
         Log.e(TAG, e.toString())
         return null

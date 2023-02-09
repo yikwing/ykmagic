@@ -40,6 +40,7 @@ object DigestUtils {
             digest()
         }
 
-        return cryptoResult.joinToString(separator = ":") { byte -> "%02x".format(byte) }.toUpperCase()
+        return cryptoResult.joinToString(separator = ":") { byte -> "%02x".format(byte) }
+            .uppercase()
     }
 }

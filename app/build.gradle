@@ -86,8 +86,8 @@ android {
         jvmTarget = '11'
     }
 
-    buildFeatures {
-        viewBinding true
+    viewBinding {
+        enabled = true
     }
 
     defaultConfig {
@@ -102,7 +102,7 @@ android {
         }
     }
 
-    lint {
+    lintOptions {
         checkDependencies true
     }
 
@@ -111,14 +111,13 @@ android {
 
 dependencies {
     implementation("androidx.activity:activity-ktx:${androidDep.activity_ktx_version}")
+    implementation("androidx.fragment:fragment-ktx:${androidDep.fragment_ktx_version}")
     implementation("androidx.core:core-ktx:${androidDep.core_ktx_version}")
     implementation("androidx.appcompat:appcompat:${androidDep.appcompat_version}")
-    implementation("androidx.constraintlayout:constraintlayout:${androidDep.constraintlayout_version}")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${androidDep.lifecycle_runtime_ktx_version}")
-    implementation("androidx.recyclerview:recyclerview:${androidDep.recyclerview_version}")
-    implementation("androidx.fragment:fragment-ktx:${androidDep.fragment_ktx_version}")
-
     implementation("com.google.android.material:material:${androidDep.material_version}")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${androidDep.lifecycle_runtime_ktx_version}")
+    implementation("androidx.constraintlayout:constraintlayout:${androidDep.constraintlayout_version}")
+    implementation("androidx.recyclerview:recyclerview:${androidDep.recyclerview_version}")
 
     implementation("androidx.room:room-runtime:${thirdDep.room_version}")
     ksp("androidx.room:room-compiler:${thirdDep.room_version}")
@@ -142,6 +141,7 @@ dependencies {
 
     implementation("io.coil-kt:coil:${thirdDep.coil_version}")
 
+    implementation("com.squareup.okhttp3:okhttp:${thirdDep.okhttp_version}")
     implementation("com.squareup.retrofit2:retrofit:${thirdDep.retrofit_version}")
     implementation("com.squareup.okio:okio:${thirdDep.okio_version}")
 
