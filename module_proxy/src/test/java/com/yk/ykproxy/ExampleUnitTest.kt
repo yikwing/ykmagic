@@ -1,8 +1,7 @@
 package com.yk.ykproxy
 
-import org.junit.Test
-
 import org.junit.Assert.*
+import org.junit.Test
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -11,9 +10,18 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
+    fun bitStatusTest() {
         println(WEATHER_A)
         println(WEATHER_B)
-        println(isRain)
+        println(W_A_IS_RAIN.toString())
+        println(W_B_IS_RAIN.toString())
+        println(W_B_IS_SUN.toString())
+    }
+
+    @Test
+    fun intDefTest() {
+        println(getSexChineseStr(SEX.MAN))
+        println(getSexChineseStr(SEX.WOMAN))
+        println(getSexChineseStr(0x0004))
     }
 }
