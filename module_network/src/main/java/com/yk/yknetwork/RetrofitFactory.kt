@@ -23,18 +23,30 @@ class RetrofitFactory private constructor() {
         }
     }
 
-    fun setup(baseUrl: String, interceptor: Array<Interceptor>) {
+    fun setup(
+        baseUrl: String,
+        applicationInterceptor: Array<Interceptor> = emptyArray(),
+        networkInterceptor: Array<Interceptor> = emptyArray(),
+    ) {
         retrofit =
             Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(MoshiConverterFactory.create())
-                .client(initClient(interceptor)).build()
+                .client(initClient(applicationInterceptor, networkInterceptor)).build()
     }
 
-    private fun initClient(interceptorList: Array<Interceptor>): OkHttpClient {
-        return OkHttpClient.Builder().addNetworkInterceptor(logger).apply {
-            interceptorList.forEach {
+    private fun initClient(
+        applicationInterceptor: Array<Interceptor>,
+        networkInterceptor: Array<Interceptor>,
+    ): OkHttpClient {
+        return OkHttpClient.Builder().apply {
+            applicationInterceptor.forEach {
                 addInterceptor(it)
             }
-        }.connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
+        }.addNetworkInterceptor(logger).apply {
+            networkInterceptor.forEach {
+                addNetworkInterceptor(it)
+            }
+        }.connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS).build()
     }
 
     fun <T> createService(service: Class<T>): T {

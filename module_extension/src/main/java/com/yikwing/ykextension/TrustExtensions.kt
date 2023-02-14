@@ -3,7 +3,6 @@ package com.yikwing.ykextension
 import android.app.Activity
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import androidx.fragment.app.Fragment
 import java.io.Serializable
 import kotlin.properties.ReadOnlyProperty
@@ -15,9 +14,7 @@ fun <T> safeLazy(initializer: () -> T): Lazy<T> =
     lazy(LazyThreadSafetyMode.SYNCHRONIZED, initializer)
 
 // 非线程安全
-fun <T> unSafeLazy(initializer: () -> T): Lazy<T> =
-    lazy(LazyThreadSafetyMode.NONE, initializer)
-
+fun <T> unSafeLazy(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)
 
 /**
  *
@@ -30,7 +27,7 @@ class IntentWrapper<T>(private val default: T) : ReadOnlyProperty<Activity, T> {
             is Int -> thisRef.intent.getIntExtra(property.name, default)
             is String -> thisRef.intent.getStringExtra(property.name) ?: default
             is Boolean -> thisRef.intent.getBooleanExtra(property.name, default)
-            else -> throw  Exception("Not Found Class Type")
+            else -> throw Exception("Not Found Class Type")
         } as T
     }
 }
@@ -66,10 +63,8 @@ fun booleanIntent(default: Boolean = false) = IntentWrapper(default)
  *
  * */
 
-
 class FragmentArgumentDelegate<T>(private val default: T) : ReadWriteProperty<Fragment, T> {
     override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
-
         if (thisRef.arguments == null) {
             thisRef.arguments = Bundle()
         }
@@ -89,13 +84,11 @@ class FragmentArgumentDelegate<T>(private val default: T) : ReadWriteProperty<Fr
     }
 
     override fun setValue(thisRef: Fragment, property: KProperty<*>, value: T) {
-
         if (thisRef.arguments == null) {
             thisRef.arguments = Bundle()
         }
 
         thisRef.arguments?.put(property.name, value)
-
     }
 }
 

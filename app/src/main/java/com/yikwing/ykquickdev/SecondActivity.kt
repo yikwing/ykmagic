@@ -15,9 +15,12 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
 
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                setResult(Activity.RESULT_OK, Intent().apply {
-                    putExtra("result", "result from A")
-                })
+                setResult(
+                    Activity.RESULT_OK,
+                    Intent().apply {
+                        putExtra("result", "result from A")
+                    },
+                )
 
                 finish()
             }
@@ -26,7 +29,8 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
         onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().replace(R.id.container, HiltFragment.newInstance()).commitNow()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, HiltFragment.newInstance()).commitNow()
         }
     }
 
@@ -50,8 +54,5 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
         Log.e("TAG", "host===========" + data?.host)
         Log.e("TAG", "path===========" + data?.path)
         Log.e("TAG", "port===========" + data?.port)
-
-
     }
-
 }

@@ -17,9 +17,8 @@ object YkConfigManager {
     private val moshi: Moshi = Moshi.Builder().build()
 
     private val mapAdapter = moshi.adapter<Map<String, Any>>(
-        Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
+        Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java),
     )
-
 
     /**
      * 初始化
@@ -27,7 +26,6 @@ object YkConfigManager {
     fun setUp(ykConfigStr: String) {
         config = mapAdapter.fromJson(ykConfigStr)!!
     }
-
 
     /**
      * 获取实例对象
@@ -45,12 +43,10 @@ object YkConfigManager {
         }
     }
 
-
     /**
      * 遍历拿出config值
      * */
     private fun <T> getJsonElement(path: String): T? {
-
         val splits = path.split(".")
 
         var baseConfigModel = config
@@ -67,7 +63,6 @@ object YkConfigManager {
 
         return result
     }
-
 
     /**
      * 配置new json对象
@@ -100,15 +95,12 @@ object YkConfigManager {
                         node[field.name] = value
                     }
                     else -> {
-                        throw  Exception("Not Found")
+                        throw Exception("Not Found")
                     }
                 }
-
             }
-
         }
 
         return moshi.adapter(cls).fromJson(mapAdapter.toJson(node as Map<String, Any>))!!
     }
-
 }

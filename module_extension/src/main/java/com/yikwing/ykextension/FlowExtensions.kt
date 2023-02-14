@@ -3,12 +3,10 @@ package com.yikwing.ykextension
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-
 /**
  * 防抖
  * */
 fun <T> Flow<T>.throttleFirst(thresholdMillis: Long): Flow<T> = flow {
-
     var lastTime = 0L
 
     collect { upstream ->

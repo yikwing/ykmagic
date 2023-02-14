@@ -11,16 +11,13 @@ import kotlinx.coroutines.flow.callbackFlow
  * @Description: View 功能扩展
  */
 
-
 /**
  * 点击事件
  * */
 fun View.clickFlow(): Flow<View> = callbackFlow {
-
     setOnClickListener { view ->
         trySend(view)
     }
 
     awaitClose { setOnClickListener(null) }
-
 }
