@@ -17,6 +17,7 @@ import com.yikwing.ykextension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.MainFragmentBinding
 import com.yk.yknetwork.ApiException
 import com.yk.yknetwork.collectState
+import com.yk.yknetwork.observeState
 import com.yk.ykpermission.PermissionX
 import com.yk.ykproxy.BaseFragment
 import kotlinx.coroutines.launch
@@ -55,7 +56,10 @@ class MainFragment :
     override fun lazyInit() {
         Logger.d("===%s===", "lazyInit")
 
-        viewModel.initData()
+//        viewModel.apply {
+//            initData()
+//            initWanAndroidData()
+//        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -92,8 +96,8 @@ class MainFragment :
 //            }
 //        }
 
-        lifecycleScope.launchWhenCreated {
-            viewModel.headers.collectState {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.wanAndroidList.collectState {
                 onLoading = {
                     Log.d("headers", "加载中")
                 }
@@ -108,6 +112,24 @@ class MainFragment :
                         is ApiException -> Log.e("headers", "${e.code} === ${e.message}")
                         else -> Log.e("headers", e.message ?: "Not Error")
                     }
+                }
+            }
+        }
+
+        viewModel.headers.observeState(viewLifecycleOwner) {
+            onLoading = {
+                Log.d("headers", "加载中")
+            }
+
+            onSuccess = { data ->
+                Log.d("===========", data.userAgent)
+            }
+
+            onError = { e ->
+
+                when (e) {
+                    is ApiException -> Log.e("headers", "${e.code} === ${e.message}")
+                    else -> Log.e("headers", e.message ?: "Not Error")
                 }
             }
         }
