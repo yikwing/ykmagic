@@ -1,8 +1,10 @@
 package com.yikwing.ykquickdev
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yikwing.ykquickdev.api.entity.ChapterBean
+import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.api.provider.ApiProvider
 import com.yk.yknetwork.RequestState
 import com.yk.yknetwork.transformApi
@@ -13,38 +15,39 @@ import kotlinx.coroutines.launch
 
 class MyViewModel : ViewModel() {
 
-//    private val _headers = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
-//
-//    val headers = _headers
-//
-//
-//    fun initData() {
-//
-//        viewModelScope.launch {
-//            _headers.value = try {
-//                RequestState.Success(HttpBinProvider.providerHeader(        ).getHeaders().headers)
-//            } catch (exception: Exception) {
-//                RequestState.Error(exception)
-//            }
-//        }
-//
-//    }
+    init {
+        initHttpBinData()
+        initWanAndroidData()
+    }
 
-    private val _headers = MutableStateFlow<RequestState<List<ChapterBean>?>>(RequestState.Loading)
+    private val _headers = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
 
-    val headers = _headers.asStateFlow()
+    val headers = _headers
 
-    fun initData() {
+    fun initHttpBinData() {
+        viewModelScope.launch {
+            _headers.value = try {
+                RequestState.Success(ApiProvider.createHttpBinService().getOtherHeaders().headers)
+            } catch (exception: Exception) {
+                RequestState.Error(exception)
+            }
+        }
+    }
+
+    private val _wanAndroidList =
+        MutableStateFlow<RequestState<List<ChapterBean>?>>(RequestState.Loading)
+
+    val wanAndroidList = _wanAndroidList.asStateFlow()
+
+    fun initWanAndroidData() {
         viewModelScope.launch {
             transformApi {
                 ApiProvider.createWanAndroidService().getChapters()
+            }.catch { exception ->
+                _wanAndroidList.value = RequestState.Error(exception)
+            }.collect { result ->
+                _wanAndroidList.value = RequestState.Success(result)
             }
-                .catch { exception ->
-                    _headers.value = RequestState.Error(exception)
-                }
-                .collect { result ->
-                    _headers.value = RequestState.Success(result)
-                }
         }
     }
 
@@ -53,6 +56,6 @@ class MyViewModel : ViewModel() {
         newData.addAll(list)
         newData.removeAt(position)
 
-        _headers.value = RequestState.Success(newData)
+        _wanAndroidList.value = RequestState.Success(newData)
     }
 }
