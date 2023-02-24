@@ -57,7 +57,7 @@ class MainFragment :
         Logger.d("===%s===", "lazyInit")
 
 //        viewModel.apply {
-//            initData()
+//            initHttpBinData()
 //            initWanAndroidData()
 //        }
     }
@@ -161,9 +161,9 @@ class MainFragment :
 
     private fun goToLinkActivity() {
         //  <a href ="yikwing://yk:9001/props?macthId=222&time=10001">打开源生应用指定的页面</a>
-//        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?macthId=222&time=10001")))
+//        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?matchId=222&time=10001")))
 
-        forActivityResultLauncher.launch("macthId=222&time=10001")
+        forActivityResultLauncher.launch("matchId=222&time=10001")
     }
 
     override fun removeItem(position: Int) {
