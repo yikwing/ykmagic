@@ -1,5 +1,6 @@
 package com.yikwing.ykquickdev
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,16 +16,12 @@ import kotlinx.coroutines.launch
 
 class MyViewModel : ViewModel() {
 
-    init {
-        initHttpBinData()
-        initWanAndroidData()
-    }
-
     private val _headers = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
 
-    val headers = _headers
+    val headers: LiveData<RequestState<Headers>>
+        get() = _headers
 
-    fun initHttpBinData() {
+    private fun initHttpBinData() {
         viewModelScope.launch {
             _headers.value = try {
                 RequestState.Success(ApiProvider.createHttpBinService().getOtherHeaders().headers)
@@ -39,7 +36,7 @@ class MyViewModel : ViewModel() {
 
     val wanAndroidList = _wanAndroidList.asStateFlow()
 
-    fun initWanAndroidData() {
+    private fun initWanAndroidData() {
         viewModelScope.launch {
             transformApi {
                 ApiProvider.createWanAndroidService().getChapters()
@@ -57,5 +54,11 @@ class MyViewModel : ViewModel() {
         newData.removeAt(position)
 
         _wanAndroidList.value = RequestState.Success(newData)
+    }
+
+    // 初始化代码应该在最后面
+    init {
+        initHttpBinData()
+        initWanAndroidData()
     }
 }
