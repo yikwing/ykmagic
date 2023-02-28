@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import com.yikwing.ykquickdev.ui.screens.MainScreenFragment
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
@@ -30,8 +31,8 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance()).commitNow()
+            supportFragmentManager.beginTransaction().replace(R.id.container, MainScreenFragment())
+                .commitNow()
         }
     }
 }
