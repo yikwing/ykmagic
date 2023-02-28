@@ -119,6 +119,8 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:${androidDep.recyclerview_version}")
     implementation("androidx.datastore:datastore-preferences:${androidDep.datastore_version}")
 
+    implementation("com.google.android.material:material:${androidDep.google_android_material_version}")
+
     implementation("androidx.room:room-runtime:${androidDep.room_version}")
     ksp("androidx.room:room-compiler:${androidDep.room_version}")
     implementation("androidx.room:room-ktx:${androidDep.room_version}")
@@ -144,7 +146,6 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:${thirdDep.okhttp_version}")
     implementation("com.squareup.retrofit2:retrofit:${thirdDep.retrofit_version}")
     implementation("com.squareup.okio:okio:${thirdDep.okio_version}")
-
 
     debugImplementation("com.guolindev.glance:glance:${debugDep.glance_version}")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:${debugDep.leakcanary_version}")
