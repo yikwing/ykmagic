@@ -133,20 +133,19 @@ dependencies {
 
     implementation("androidx.constraintlayout:constraintlayout:${androidDep.constraintlayout_version}")
     implementation("androidx.recyclerview:recyclerview:${androidDep.recyclerview_version}")
-    implementation("androidx.datastore:datastore-preferences:${androidDep.datastore_version}")
-
     implementation("com.google.android.material:material:${androidDep.android_material_version}")
-    implementation("androidx.compose.material:material:${composeDep.compose_material_version}")
-
-//    implementation platform("androidx.compose:compose-bom:${composeDep.compose_bom_version}")
-    implementation("androidx.compose.ui:ui:${composeDep.compose_ui_version}")
-    implementation("androidx.compose.ui:ui-graphics:${composeDep.compose_ui_version}")
-    implementation("androidx.compose.ui:ui-tooling-preview:${composeDep.compose_ui_version}")
-    implementation("androidx.compose.material3:material3:${composeDep.compose_material3_version}")
 
     implementation("androidx.room:room-runtime:${androidDep.room_version}")
-    ksp("androidx.room:room-compiler:${androidDep.room_version}")
     implementation("androidx.room:room-ktx:${androidDep.room_version}")
+    ksp("androidx.room:room-compiler:${androidDep.room_version}")
+
+    implementation platform("androidx.compose:compose-bom:${composeDep.compose_bom_version}")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.material3:material3")
 
     implementation("com.squareup.moshi:moshi:${thirdDep.moshi_version}")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:${thirdDep.moshi_version}")
@@ -186,8 +185,8 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
     // compose debugImplementation
-//    androidTestImplementation platform("androidx.compose:compose-bom:${composeDep.compose_bom_version}")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:${composeDep.compose_ui_version}")
-    debugImplementation("androidx.compose.ui:ui-tooling:${composeDep.compose_ui_version}")
-    debugImplementation("androidx.compose.ui:ui-test-manifest:${composeDep.compose_ui_version}")
+    androidTestImplementation platform("androidx.compose:compose-bom:${composeDep.compose_bom_version}")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
