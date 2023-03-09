@@ -14,14 +14,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import androidx.fragment.app.Fragment
 import coil.compose.AsyncImage
 import com.yikwing.ykextension.app.PackageInfo
@@ -95,21 +97,39 @@ private fun copyToClipboard(context: Context, copyStr: String?, tips: String) {
 
 @Composable
 fun TopHeader(packageInfo: PackageInfo?) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    val decoupledConstraints = ConstraintSet {
+        val cover = createRefFor("cover")
+        val appName = createRefFor("appName")
+        val appPackageName = createRefFor("appPackageName")
+
+        constrain(cover) {
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+        }
+        constrain(appName) {
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            top.linkTo(cover.bottom, margin = 8.dp)
+        }
+        constrain(appPackageName) {
+            start.linkTo(parent.start)
+            end.linkTo(parent.end)
+            top.linkTo(appName.bottom, margin = 8.dp)
+        }
+    }
+
+    ConstraintLayout(decoupledConstraints, modifier = Modifier.fillMaxWidth()) {
         AsyncImage(
             model = packageInfo?.appIcon,
             contentDescription = null,
-            modifier = Modifier.size(120.dp),
+            modifier = Modifier.size(120.dp).layoutId("cover"),
         )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(packageInfo?.appName ?: "")
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(packageInfo?.appPackageName ?: "")
+        Text(packageInfo?.appName ?: "", modifier = Modifier.layoutId("appName"))
+        Text(
+            packageInfo?.appPackageName ?: "",
+            modifier = Modifier.layoutId("appPackageName").padding(bottom = 30.dp),
+        )
     }
-    Spacer(modifier = Modifier.height(30.dp))
 }
 
 @Composable
@@ -133,4 +153,10 @@ fun PackageInfoDes(
 @Composable
 fun PackageInfoDesPreview() {
     PackageInfoDes("123", "456")
+}
+
+@Preview
+@Composable
+fun TopHeaderPreview() {
+    TopHeader(null)
 }

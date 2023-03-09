@@ -122,33 +122,32 @@ android {
 }
 
 dependencies {
+    // 官方依赖库
     implementation("androidx.activity:activity-ktx:${androidDep.activity_ktx_version}")
     implementation("androidx.fragment:fragment-ktx:${androidDep.fragment_ktx_version}")
     implementation("androidx.core:core-ktx:${androidDep.core_ktx_version}")
     implementation("androidx.appcompat:appcompat:${androidDep.appcompat_version}")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${androidDep.lifecycle_ktx_version}")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${androidDep.lifecycle_ktx_version}")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:${androidDep.lifecycle_ktx_version}")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${androidDep.lifecycle_ktx_version}")
 
     implementation("androidx.constraintlayout:constraintlayout:${androidDep.constraintlayout_version}")
     implementation("androidx.recyclerview:recyclerview:${androidDep.recyclerview_version}")
     implementation("com.google.android.material:material:${androidDep.android_material_version}")
 
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${androidDep.lifecycle_ktx_version}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:${androidDep.lifecycle_ktx_version}")
+
     implementation("androidx.room:room-runtime:${androidDep.room_version}")
     implementation("androidx.room:room-ktx:${androidDep.room_version}")
     ksp("androidx.room:room-compiler:${androidDep.room_version}")
 
-    implementation platform("androidx.compose:compose-bom:${composeDep.compose_bom_version}")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material:material-icons-extended")
-    implementation("androidx.compose.material:material")
-    implementation("androidx.compose.material3:material3")
+    // 三方依赖库
+    implementation("com.squareup.okhttp3:okhttp:${thirdDep.okhttp_version}")
+    implementation("com.squareup.retrofit2:retrofit:${thirdDep.retrofit_version}")
+    implementation("com.squareup.okio:okio:${thirdDep.okio_version}")
 
     implementation("com.squareup.moshi:moshi:${thirdDep.moshi_version}")
     ksp("com.squareup.moshi:moshi-kotlin-codegen:${thirdDep.moshi_version}")
+
+    implementation("io.coil-kt:coil:${thirdDep.coil_version}")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${thirdDep.coroutines_version}")
 
@@ -163,19 +162,31 @@ dependencies {
         nativeDep.each { dep -> implementation project(path: dep) }
     }
 
-    implementation("io.coil-kt:coil:${thirdDep.coil_version}")
+    // compose依赖库
+    implementation platform("androidx.compose:compose-bom:${composeDep.compose_bom_version}")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material:material")
+    implementation("androidx.compose.material:material-icons-extended")
+    implementation("androidx.compose.material3:material3")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:${androidDep.lifecycle_ktx_version}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${androidDep.lifecycle_ktx_version}")
+
+    implementation("androidx.constraintlayout:constraintlayout-compose:${composeDep.constraintlayout_compose_version}")
+    implementation("androidx.navigation:navigation-compose:${composeDep.navigation_compose_version}")
+
     implementation("io.coil-kt:coil-compose:${thirdDep.coil_version}")
 
-    implementation("com.squareup.okhttp3:okhttp:${thirdDep.okhttp_version}")
-    implementation("com.squareup.retrofit2:retrofit:${thirdDep.retrofit_version}")
-    implementation("com.squareup.okio:okio:${thirdDep.okio_version}")
-
+    // Debug依赖库
     debugImplementation("com.guolindev.glance:glance:${debugDep.glance_version}")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:${debugDep.leakcanary_version}")
 
     debugImplementation("com.github.chuckerteam.chucker:library:3.5.2")
     releaseImplementation("com.github.chuckerteam.chucker:library-no-op:3.5.2")
 
+    // 测试依赖库
     testImplementation("org.hamcrest:hamcrest:${testDep.hamcrest_version}")
     testImplementation("org.hamcrest:hamcrest-library:${testDep.hamcrest_version}")
     testImplementation("junit:junit:${testDep.junit_version}")
@@ -184,7 +195,6 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    // compose debugImplementation
     androidTestImplementation platform("androidx.compose:compose-bom:${composeDep.compose_bom_version}")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
