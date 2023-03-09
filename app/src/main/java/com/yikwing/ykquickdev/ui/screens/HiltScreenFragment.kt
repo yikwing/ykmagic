@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import coil.compose.AsyncImage
-import com.yikwing.logger.Logger
 import com.yikwing.ykextension.app.PackageInfo
 import com.yikwing.ykextension.app.getPackageInfo
 import com.yikwing.ykextension.unSafeLazy
@@ -117,13 +116,15 @@ fun TopHeader(packageInfo: PackageInfo?) {
 fun PackageInfoDes(
     title: String,
     info: String,
-    onClick: () -> Unit = {
-        Logger.d("$111=== $title")
-    },
+    onClick: () -> Unit = {},
 ) {
     Column {
         Text(title, color = Color(0xFF999999))
-        Text(info, color = Color(0xFF666666), modifier = Modifier.clickable { onClick() })
+        Text(
+            info,
+            color = Color(0xFF666666),
+            modifier = Modifier.fillMaxWidth().clickable { onClick() },
+        )
         Spacer(modifier = Modifier.height(30.dp))
     }
 }
