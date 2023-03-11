@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
+import com.yikwing.ykquickdev.ui.screens.HiltScreenFragment
 import com.yk.ykproxy.BaseActivity
 
 class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::inflate) {
@@ -29,8 +30,8 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
         onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.container, HiltFragment.newInstance()).commitNow()
+            supportFragmentManager.beginTransaction().replace(R.id.container, HiltScreenFragment())
+                .commitNow()
         }
     }
 
