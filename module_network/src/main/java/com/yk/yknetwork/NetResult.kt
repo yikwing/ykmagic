@@ -8,10 +8,10 @@ import kotlinx.coroutines.flow.StateFlow
 typealias StatefulLiveData<T> = LiveData<RequestState<T>>
 typealias StatefulFlow<T> = StateFlow<RequestState<T>>
 
-sealed class RequestState<out T> {
-    object Loading : RequestState<Nothing>()
-    class Success<out T>(val value: T) : RequestState<T>()
-    class Error(val throwable: Throwable) : RequestState<Nothing>()
+sealed interface RequestState<out T> {
+    object Loading : RequestState<Nothing>
+    class Success<out T>(val value: T) : RequestState<T>
+    class Error(val throwable: Throwable) : RequestState<Nothing>
 }
 
 inline fun <reified T> RequestState<T>.doSuccess(success: (T) -> Unit) {
