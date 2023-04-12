@@ -1,10 +1,10 @@
 package com.yikwing.ykquickdev
 
 import android.app.Application
-import com.yk.ykproxy.startup.AppInitializer
 import com.yikwing.ykquickdev.task.ConfigInjectInitTask
 import com.yikwing.ykquickdev.task.LoggerInitTask
 import com.yikwing.ykquickdev.task.NetworkInitTask
+import com.yk.ykproxy.startup.AppInitializer
 
 class MainApplication : Application() {
 
@@ -15,7 +15,10 @@ class MainApplication : Application() {
     }
 
     private fun initSetup() {
-        AppInitializer.getInstance(this).addTask(ConfigInjectInitTask()).addTask(LoggerInitTask())
-            .addTask(NetworkInitTask()).build(debug = true)
+        AppInitializer.getInstance(this)
+            .addTask(ConfigInjectInitTask())
+            .addTask(LoggerInitTask())
+            .addTask(NetworkInitTask())
+            .build(debug = true)
     }
 }

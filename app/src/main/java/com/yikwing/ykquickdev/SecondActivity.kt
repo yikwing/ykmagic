@@ -30,8 +30,10 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
         onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().replace(R.id.container, HiltScreenFragment())
-                .commitNow()
+            with(supportFragmentManager.beginTransaction()) {
+                replace(R.id.container, HiltScreenFragment())
+                commit()
+            }
         }
     }
 
