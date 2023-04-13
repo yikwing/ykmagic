@@ -7,12 +7,12 @@ ext {
     injectEnv = InjectJson
 
     android = [
-            compileSdk   : 33,
-            minSdk       : 24,
-            targetSdk    : 33,
-            versionCode  : 1,
-            versionName  : "1.0.0",
-            isApplication: false
+            compileSdk     : 33,
+            minSdk         : 24,
+            targetSdk      : 33,
+            versionCode    : 1,
+            versionName    : "1.0.0",
+            useRemoteModule: false
     ]
 
     nativeDep = [
