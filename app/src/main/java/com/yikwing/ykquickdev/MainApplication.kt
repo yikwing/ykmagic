@@ -1,13 +1,10 @@
 package com.yikwing.ykquickdev
 
 import android.app.Application
-import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.yikwing.logger.AndroidLogAdapter
-import com.yikwing.logger.Logger
-import com.yikwing.logger.PrettyFormatStrategy
-import com.yk.ykconfig.YkConfigManager
-import com.yk.ykconfig.YkQuickManager
-import com.yk.yknetwork.RetrofitFactory
+import com.yikwing.ykquickdev.task.ConfigInjectInitTask
+import com.yikwing.ykquickdev.task.LoggerInitTask
+import com.yikwing.ykquickdev.task.NetworkInitTask
+import com.yk.ykproxy.startup.AppInitializer
 
 class MainApplication : Application() {
 
@@ -18,30 +15,10 @@ class MainApplication : Application() {
     }
 
     private fun initSetup() {
-        //  初始化配置
-        YkQuickManager.setUp(
-            this,
-            BuildConfig.YK_CONFIG,
-        )
-
-        //  初始化网络请求base url
-        RetrofitFactory.instance.setup(
-            YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl,
-            arrayOf(
-                ChuckerInterceptor(this),
-                ResultInterceptor(),
-            ),
-        )
-
-        // 配置log config
-        Logger.addLogAdapter(
-            object : AndroidLogAdapter(
-                PrettyFormatStrategy.newBuilder().tag("yk").build(),
-            ) {
-                override fun isLoggable(priority: Int, tag: String?): Boolean {
-                    return BuildConfig.DEBUG
-                }
-            },
-        )
+        AppInitializer.getInstance(this)
+            .addTask(ConfigInjectInitTask())
+            .addTask(LoggerInitTask())
+            .addTask(NetworkInitTask())
+            .build(debug = true)
     }
 }

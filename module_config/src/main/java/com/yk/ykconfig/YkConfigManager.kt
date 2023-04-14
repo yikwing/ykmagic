@@ -31,76 +31,40 @@ object YkConfigManager {
      * 获取实例对象
      * */
     fun <T> getConfig(cls: Class<T>): T {
-        return if (cacheConfigMap.containsKey(cls)) {
-            cacheConfigMap[cls] as T
-        } else {
+        return cacheConfigMap.getOrPut(cls) {
             val ykConfigNode = cls.getAnnotation(YkConfigNode::class.java)
-            assert(ykConfigNode != null)
-
-            val t = getConfigNode(cls)
-            cacheConfigMap[cls] = t!!
-            t
-        }
-    }
-
-    /**
-     * 遍历拿出config值
-     * */
-    private fun <T> getJsonElement(path: String): T? {
-        val splits = path.split(".")
-
-        var baseConfigModel = config
-
-        var result: T? = null
-
-        splits.forEachIndexed { index, s ->
-            if (index == splits.size - 1) {
-                result = baseConfigModel[s] as T
-            } else {
-                baseConfigModel = baseConfigModel[s] as Map<String, Any>
+            requireNotNull(ykConfigNode) {
+                "Not Add YkConfigNode Tag"
             }
-        }
 
-        return result
-    }
+            val finalNode = mutableMapOf<String, Any?>()
 
-    /**
-     * 配置new json对象
-     * */
-    private fun <T> getConfigNode(cls: Class<T>): T {
-        val node = mutableMapOf<String, Any?>()
-
-        val fields = cls.declaredFields
-
-        fields.forEach { field ->
-            val ykConfigValue = field.getAnnotation(YkConfigValue::class.java)
-            ykConfigValue?.let {
-                val configName = it.name
-
-                when (field.type) {
-                    String::class.java -> {
-                        val value = getJsonElement<String>(configName)
-                        node[field.name] = value
-                    }
-                    Boolean::class.java -> {
-                        val value = getJsonElement<Boolean>(configName)
-                        node[field.name] = value
-                    }
-                    Int::class.java -> {
-                        val value = getJsonElement<Double>(configName)
-                        node[field.name] = value?.toInt()
-                    }
-                    Double::class.java -> {
-                        val value = getJsonElement<Double>(configName)
-                        node[field.name] = value
-                    }
-                    else -> {
-                        throw Exception("Not Found")
+            cls.declaredFields.forEach { field ->
+                var tmpNode = config
+                val ykConfigValue = field.getAnnotation(YkConfigValue::class.java)
+                ykConfigValue?.let {
+                    val nodePath = it.path
+                    val splits = nodePath.split(".")
+                    splits.forEachIndexed { index, s ->
+                        if (index == splits.size - 1) {
+                            val result = when (field.type) {
+                                String::class.java -> tmpNode.getOrDefault(s, "")
+                                Int::class.java -> tmpNode.getOrDefault(s, -1)
+                                Double::class.java -> tmpNode.getOrDefault(s, -1.0)
+                                Boolean::class.java -> tmpNode.getOrDefault(s, false)
+                                else -> throw Error("Not impl Type")
+                            }
+                            finalNode.put(field.name, result)
+                        } else {
+                            tmpNode = tmpNode.get(s) as Map<String, Any>
+                        }
                     }
                 }
             }
-        }
 
-        return moshi.adapter(cls).fromJson(mapAdapter.toJson(node as Map<String, Any>))!!
+            moshi.adapter(cls).fromJson(
+                mapAdapter.toJson(finalNode as Map<String, Any>),
+            )!!
+        } as T
     }
 }

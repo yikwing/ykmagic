@@ -9,5 +9,5 @@ import com.yk.ykconfig.annotations.YkConfigValue
 @JsonClass(generateAdapter = true)
 @Keep
 data class NetworkConfig(
-    @YkConfigValue(name = "base_url") val baseUrl: String,
+    @YkConfigValue(path = "base_url") val baseUrl: String,
 )

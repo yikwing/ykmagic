@@ -26,10 +26,7 @@ abstract class BaseActivity<VB : ViewBinding>(val block: (LayoutInflater) -> VB)
         initListener()
     }
 
-
     open fun initView() {}
     open fun initData() {}
     open fun initListener() {}
-
-
 }

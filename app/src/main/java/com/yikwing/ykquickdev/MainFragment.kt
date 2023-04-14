@@ -30,7 +30,7 @@ class MainFragment :
         fun newInstance() = MainFragment()
     }
 
-    private val viewModel by viewModels<MyViewModel>()
+    private val viewModel: MyViewModel by viewModels()
 
     var forActivityResultLauncher =
         registerForActivityResult(object : ActivityResultContract<String, String>() {

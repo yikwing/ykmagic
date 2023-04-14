@@ -1,9 +1,8 @@
 package com.yk.ykconfig
 
-import org.junit.Test
-
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Test
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -19,25 +18,22 @@ class ExampleUnitTest {
         "test_other":{
             "test_double":3333.5555,
             "test_int":999,
-            "test_boolean":false
+            "test_boolean":true
         }
     }
     
-""".trimIndent()
+    """.trimIndent()
 
     @Before
     fun setUp() {
         YkConfigManager.setUp(jsonStr)
     }
 
-
     @Test
     fun addition_isCorrect() {
-
-        print(YkConfigManager.getConfig(SmallConfig::class.java).testDouble)
-
         assertEquals("www.baidu.com", YkConfigManager.getConfig(SmallConfig::class.java).testString)
         assertEquals(999, YkConfigManager.getConfig(SmallConfig::class.java).testInt)
-        assertEquals(false, YkConfigManager.getConfig(SmallConfig::class.java).testBoolean)
+        require(3333.5555 == YkConfigManager.getConfig(SmallConfig::class.java).testDouble)
+        assertEquals(true, YkConfigManager.getConfig(SmallConfig::class.java).testBoolean)
     }
 }

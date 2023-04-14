@@ -38,9 +38,7 @@ android {
     compileSdk cfg.compileSdk
 
     defaultConfig {
-        if (cfg.isApplication) {
-            applicationId "com.yikwing.ykquickdev"
-        }
+        applicationId "com.yikwing.ykquickdev"
         minSdk cfg.minSdk
         targetSdk cfg.targetSdk
         versionCode cfg.versionCode
@@ -93,7 +91,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.3'
+        kotlinCompilerExtensionVersion '1.4.4'
     }
 
     packagingOptions {
@@ -151,7 +149,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${thirdDep.coroutines_version}")
 
-    if (cfg.isApplication) {
+    if (cfg.useRemoteModule) {
         implementation("com.github.yikwing.ykmagic:config:0.1.0")
         implementation("com.github.yikwing.ykmagic:network:0.1.0")
         implementation("com.github.yikwing.ykmagic:proxy:0.1.0")
