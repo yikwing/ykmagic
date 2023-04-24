@@ -97,7 +97,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.4'
+        kotlinCompilerExtensionVersion '1.4.6'
     }
 
     packagingOptions {
@@ -194,7 +194,7 @@ dependencies {
     testImplementation("org.hamcrest:hamcrest-library:${testDep.hamcrest_version}")
     testImplementation("junit:junit:${testDep.junit_version}")
 
-    testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation("io.mockk:mockk:1.13.5")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
