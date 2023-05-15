@@ -92,15 +92,15 @@ android {
 
     buildFeatures {
         buildConfig = true
-        viewBinding  = true
-        compose  = true
+        viewBinding = true
+        compose = true
     }
 
     composeOptions {
         kotlinCompilerExtensionVersion '1.4.7'
     }
 
-    packagingOptions {
+    packaging {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
