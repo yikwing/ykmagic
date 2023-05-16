@@ -3,6 +3,7 @@ package com.yikwing.ykquickdev
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.yikwing.ykquickdev.ui.screens.MainScreenFragment
 import kotlin.properties.Delegates
@@ -18,9 +19,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    private val vm: DataStoreViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
+
+        vm.initX()
 
         val onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

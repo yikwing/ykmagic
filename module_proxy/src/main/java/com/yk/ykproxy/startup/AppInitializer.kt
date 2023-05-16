@@ -1,11 +1,11 @@
 package com.yk.ykproxy.startup
 
 import android.annotation.SuppressLint
+import android.app.Application
 import android.content.Context
 import android.util.Log
-import com.example.studydemo.startup.Initializer
 
-class AppInitializer(private val context: Context) {
+class AppInitializer(private val context: Application) {
 
     private val taskList = mutableListOf<Initializer<*>>()
 
@@ -14,7 +14,7 @@ class AppInitializer(private val context: Context) {
         @Volatile
         private var instance: AppInitializer? = null
 
-        fun getInstance(context: Context): AppInitializer {
+        fun getInstance(context: Application): AppInitializer {
             return instance ?: synchronized(this) {
                 instance ?: AppInitializer(context).also { instance = it }
             }
