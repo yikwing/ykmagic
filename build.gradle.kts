@@ -8,3 +8,12 @@ plugins {
 }
 
 apply(from = "config.gradle")
+
+// 强制制定依赖
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.1")
+        }
+    }
+}
