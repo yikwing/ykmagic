@@ -1,9 +1,9 @@
-package com.example.studydemo.startup
+package com.yk.ykproxy.startup
 
-import android.content.Context
+import android.app.Application
 
 interface Initializer<T> {
-    fun create(context: Context): T
+    fun create(context: Application): T
 
     fun dependencies(): Set<Class<out Initializer<*>>>
 }

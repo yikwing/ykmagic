@@ -21,7 +21,8 @@ ext {
             ":module_proxy",
             ":module_extension",
             ":module_permission",
-            ":module_logger"
+            ":module_logger",
+            ":module_datastore",
     ]
 
     androidDep = [
