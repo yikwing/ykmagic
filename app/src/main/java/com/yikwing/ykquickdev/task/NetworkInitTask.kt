@@ -1,16 +1,15 @@
 package com.yikwing.ykquickdev.task
 
-import android.app.Application
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.yk.ykproxy.startup.Initializer
 import com.yikwing.ykquickdev.NetworkConfig
 import com.yikwing.ykquickdev.ResultInterceptor
 import com.yk.ykconfig.YkConfigManager
 import com.yk.yknetwork.RetrofitFactory
+import com.yk.ykproxy.startup.Initializer
 
 class NetworkInitTask : Initializer<Unit> {
-    override fun create(context: Application) {
+    override fun create(context: Context) {
         RetrofitFactory.instance.setup(
             YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl,
             arrayOf(

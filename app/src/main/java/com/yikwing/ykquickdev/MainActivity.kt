@@ -19,8 +19,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    private val vm: DataStoreViewModel by viewModels()
+    private val vm: DataStoreViewModel by viewModels { DataStoreViewModel.Factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

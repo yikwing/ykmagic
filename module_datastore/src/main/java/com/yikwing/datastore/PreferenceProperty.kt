@@ -6,21 +6,15 @@ import kotlin.reflect.KProperty
 
 class PreferenceProperty<V>(
     private val key: (String) -> Preferences.Key<V>,
-    private val default: V? = null
-) : ReadOnlyProperty<IDataStoreOwner, DataStorePreferences<V>> {
-
-    private var cache: DataStorePreferences<V>? = null
+    private val default: V? = null,
+) : ReadOnlyProperty<IDataStoreOwner, DataStorePreference<V>> {
+    private var cache: DataStorePreference<V>? = null
 
     override fun getValue(
         thisRef: IDataStoreOwner,
-        property: KProperty<*>
-    ): DataStorePreferences<V> {
-        return cache ?: DataStorePreferences(
-            thisRef.dataStore,
-            key(property.name),
-            default
-        ).also {
+        property: KProperty<*>,
+    ): DataStorePreference<V> =
+        cache ?: DataStorePreference(thisRef.dataStore, key(property.name), default).also {
             cache = it
         }
-    }
 }

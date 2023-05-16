@@ -9,7 +9,7 @@ import com.yikwing.logger.PrettyFormatStrategy
 import com.yikwing.ykquickdev.BuildConfig
 
 class LoggerInitTask : Initializer<Unit> {
-    override fun create(context: Application) {
+    override fun create(context: Context) {
         Logger.addLogAdapter(
             object : AndroidLogAdapter(
                 PrettyFormatStrategy.newBuilder().tag("yk").build(),

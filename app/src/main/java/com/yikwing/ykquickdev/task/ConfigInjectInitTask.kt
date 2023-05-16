@@ -7,7 +7,7 @@ import com.yikwing.ykquickdev.BuildConfig
 import com.yk.ykconfig.YkQuickManager
 
 class ConfigInjectInitTask : Initializer<Unit> {
-    override fun create(context: Application) {
+    override fun create(context: Context) {
         YkQuickManager.setUp(
             BuildConfig.YK_CONFIG,
         )
