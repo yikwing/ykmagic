@@ -136,14 +136,11 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
 
-    implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
     // 三方依赖库
-    implementation(libs.okhttp3)
-    implementation(libs.retrofit2)
-    implementation(libs.okio)
+    implementation(libs.bundles.network)
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)

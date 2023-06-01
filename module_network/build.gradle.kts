@@ -45,10 +45,7 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
 
-    implementation(libs.okhttp3)
-    implementation(libs.okhttp3.logging.interceptor)
-    implementation(libs.retrofit2)
-    implementation(libs.retrofit2.moshi)
+    implementation(libs.bundles.network)
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
