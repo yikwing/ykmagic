@@ -34,12 +34,12 @@ fun listSubFile(): List<String> {
 
 android {
     namespace = "com.yikwing.ykquickdev"
-    compileSdk = 33
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.yikwing.ykquickdev"
-        minSdk = 24
-        targetSdk = 33
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.compileSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -78,6 +78,11 @@ android {
             isMinifyEnabled = true
             // 启用资源压缩
             isShrinkResources = true
+            buildConfigField(
+                "String",
+                "YK_CONFIG",
+                "\"\"\"\n${injectJson}\"\"\""
+            )
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -110,13 +115,9 @@ android {
         }
     }
 
-
-
     sourceSets.getByName("main") {
         res.setSrcDirs(listSubFile())
     }
-
-
 
     lint {
         checkDependencies = true
@@ -175,7 +176,7 @@ dependencies {
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material.icons.extended)
-    implementation(libs.material3)
+    implementation(libs.compose.material3)
 
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.lifecycle.viewmodel.compose)
