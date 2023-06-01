@@ -16,11 +16,15 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
     private var param1: Int by FragmentArgumentDelegate(0)
     private var param2: String by FragmentArgumentDelegate("")
 
+
     companion object {
-        fun newInstance(a: Int = 23, b: String = "zs") = HiltFragment().apply {
-            param1 = a
-            param2 = b
-        }
+
+        @JvmStatic
+        fun newInstance(a: Int = 23, b: String = "zs") =
+            HiltFragment().apply {
+                param1 = a
+                param2 = b
+            }
     }
 
     private val packageInfo by unSafeLazy {

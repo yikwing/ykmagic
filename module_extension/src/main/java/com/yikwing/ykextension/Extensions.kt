@@ -10,18 +10,18 @@ import kotlin.math.abs
 
 /**
  * 获取最后几个数据
- * listOf(1,2,3).lastNum(-1)
+ * listOf(1,2,3).lastOf(-1)
  */
-fun <T> List<T>.lastNum(num: Int): T? {
+fun <T> List<T>.lastOf(num: Int): T? {
     val absNum = abs(num)
     return if (isEmpty() || num >= 0 || size < absNum) null else this[size - absNum]
 }
 
 /**
  * 获取最后几个数据
- * arrayOf(1,2,3).lastNum(-1)
+ * arrayOf(1,2,3).lastOf(-1)
  */
-fun <T> Array<out T>.lastNum(num: Int): T? {
+fun <T> Array<out T>.lastOf(num: Int): T? {
     val absNum = abs(num)
     return if (isEmpty() || num >= 0 || size < absNum) null else this[size - absNum]
 }
