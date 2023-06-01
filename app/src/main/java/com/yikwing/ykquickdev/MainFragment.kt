@@ -10,7 +10,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yikwing.logger.Logger
 import com.yikwing.ykextension.unSafeLazy
@@ -70,11 +72,11 @@ class MainFragment :
         binding.wxRecycler.layoutManager = LinearLayoutManager(requireContext())
         binding.wxRecycler.adapter = adapter
 
-//        lifecycleScope.launch {
+//        viewLifecycleOwner.lifecycleScope.launch {
 //            // 可重启生命周期感知型协程
 //            // 网络请求不需要重复请求
 //            // 例如重复定位 socket链接
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
 //                viewModel.headers.collectState {
 //                    onLoading = {
 //                        Log.d("headers", "加载中")
@@ -96,7 +98,7 @@ class MainFragment :
 //            }
 //        }
 
-        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.wanAndroidList.collectState {
                 onLoading = {
                     Log.d("headers", "加载中")
