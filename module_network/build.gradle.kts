@@ -14,17 +14,15 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
     }
-
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             // 启用资源压缩
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -45,10 +43,7 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
 
-    implementation(libs.okhttp3)
-    implementation(libs.okhttp3.logging.interceptor)
-    implementation(libs.retrofit2)
-    implementation(libs.retrofit2.moshi)
+    implementation(libs.bundles.network)
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)

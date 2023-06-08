@@ -17,17 +17,17 @@ val injectJson = jsonEnvFile.readText()
 val keystorePropertiesPath: String = rootProject.file("keystore.properties").path
 val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 
-//资源重定向
+// 资源重定向
 fun listSubFile(): List<String> {
-    //新资源目录
+    // 新资源目录
     val resFolder = "src/main/res/layouts"
-    //新资源目录下的文件夹
+    // 新资源目录下的文件夹
     val files = file(resFolder).listFiles()
     val folders = mutableListOf<String>()
 
-    //遍历路径
+    // 遍历路径
     files?.forEach { item -> folders.add(item.absolutePath) }
-    //资源整合
+    // 资源整合
     folders.add(file(resFolder).parentFile.absolutePath)
     return folders
 }
@@ -68,7 +68,7 @@ android {
             buildConfigField(
                 "String",
                 "YK_CONFIG",
-                "\"\"\"\n${injectJson}\"\"\""
+                "\"\"\"\n${injectJson}\"\"\"",
             )
         }
 
@@ -81,11 +81,11 @@ android {
             buildConfigField(
                 "String",
                 "YK_CONFIG",
-                "\"\"\"\n${injectJson}\"\"\""
+                "\"\"\"\n${injectJson}\"\"\"",
             )
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -122,7 +122,6 @@ android {
     lint {
         checkDependencies = true
     }
-
 }
 
 dependencies {
@@ -136,14 +135,11 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
 
-    implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
     // 三方依赖库
-    implementation(libs.okhttp3)
-    implementation(libs.retrofit2)
-    implementation(libs.okio)
+    implementation(libs.bundles.network)
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
