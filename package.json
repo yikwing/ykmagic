@@ -1,9 +1,0 @@
-{
-  "scripts": {
-    "dev": "./gradlew assembleDebug",
-    "build": "./gradlew assembleRelease",
-    "push": "git push origin main",
-    "upgrade": "./gradlew dependencyUpdates",
-    "installR": "adb install app/build/outputs/apk/release/app-release.apk"
-  }
-}

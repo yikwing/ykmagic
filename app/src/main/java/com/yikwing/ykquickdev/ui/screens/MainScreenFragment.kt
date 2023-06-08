@@ -32,6 +32,11 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yikwing.ykquickdev.MyViewModel
+import com.yikwing.ykquickdev.api.entity.ChapterBean
+import com.yikwing.ykquickdev.components.LoadingWidget
+import com.yikwing.ykquickdev.components.NetWorkError
+import com.yk.yknetwork.RequestState
+import com.yk.yknetwork.doError
 import com.yk.yknetwork.doSuccess
 
 class MainScreenFragment : Fragment() {
@@ -82,22 +87,39 @@ fun ItemDepot(
     mainViewModel: MyViewModel = viewModel(),
 ) {
     val data by mainViewModel.wanAndroidList.collectAsState()
-    data.doSuccess {
-        it?.let {
-            LazyColumn {
-                items(it) {
-                    Box(
-                        modifier = Modifier.height(50.dp).fillParentMaxWidth().clickable {
-                            forActivityResultLauncher.launch("matchId=222&time=10001")
-                        }.padding(start = 20.dp),
-                        contentAlignment = Alignment.CenterStart,
-                    ) {
-                        Text(
-                            text = it.name,
-                            style = MaterialTheme.typography.labelLarge,
-                        )
+
+    when (data) {
+        is RequestState.Loading -> {
+            LoadingWidget(modifier = Modifier.fillMaxSize())
+        }
+
+        is RequestState.Success<List<ChapterBean>?> -> {
+            data.doSuccess {
+                it?.let {
+                    LazyColumn {
+                        items(it, key = {
+                            it.id
+                        }) {
+                            Box(
+                                modifier = Modifier.height(50.dp).fillParentMaxWidth().clickable {
+                                    forActivityResultLauncher.launch("matchId=222&time=10001")
+                                }.padding(start = 20.dp),
+                                contentAlignment = Alignment.CenterStart,
+                            ) {
+                                Text(
+                                    text = it.name,
+                                    style = MaterialTheme.typography.labelLarge,
+                                )
+                            }
+                        }
                     }
                 }
+            }
+        }
+
+        is RequestState.Error -> {
+            data.doError { throwable ->
+                NetWorkError(throwable, modifier = Modifier.fillMaxSize())
             }
         }
     }

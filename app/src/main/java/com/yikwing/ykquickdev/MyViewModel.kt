@@ -11,7 +11,6 @@ import com.yk.yknetwork.RequestState
 import com.yk.yknetwork.transformApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class MyViewModel : ViewModel() {
@@ -40,10 +39,8 @@ class MyViewModel : ViewModel() {
         viewModelScope.launch {
             transformApi {
                 ApiProvider.createWanAndroidService().getChapters()
-            }.catch { exception ->
-                _wanAndroidList.value = RequestState.Error(exception)
             }.collect { result ->
-                _wanAndroidList.value = RequestState.Success(result)
+                _wanAndroidList.value = result
             }
         }
     }
