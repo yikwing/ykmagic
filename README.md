@@ -10,6 +10,7 @@
 ## 目前分为六个模块
 
 - **module_config**：inject json 配置数据, 维护 application context
+- **module_datastore**：datastore 扩展方法
 - **module_extension**：各种扩展方法/工具类
 - **module_logger**：统一日志组件/基于 logger
 - **module_network**：封装统一 network 提供注入拦截器/debug 模式增加网络抓包视图
@@ -21,25 +22,28 @@
 1. 添加 jitpack 仓库地址
 
    ```gradle
-    maven {
-        url = uri("https://jitpack.io")
-    }
+   maven {
+      url = uri("https://jitpack.io")
+   }
    ```
 
 2. 按需引入依赖 (以最新版本为主)
 
    ```gradle
-   implementation("com.github.yikwing.ykmagic:config:0.1.0")
-   implementation("com.github.yikwing.ykmagic:network:0.1.0")
-   implementation("com.github.yikwing.ykmagic:proxy:0.1.0")
-   implementation("com.github.yikwing.ykmagic:extension:0.1.0")
-   implementation("com.github.yikwing.ykmagic:permission:0.1.0")
-   implementation("com.github.yikwing.ykmagic:logger:0.1.0")
+   val ykmagicVersion = "0.1.2
+   
+   implementation("com.github.yikwing.ykmagic:config:$ykmagicVersion")
+   implementation("com.github.yikwing.ykmagic:datastore:$ykmagicVersion")
+   implementation("com.github.yikwing.ykmagic:network:$ykmagicVersion")
+   implementation("com.github.yikwing.ykmagic:proxy:$ykmagicVersion")
+   implementation("com.github.yikwing.ykmagic:extension:$ykmagicVersion")
+   implementation("com.github.yikwing.ykmagic:permission:$ykmagicVersion")
+   implementation("com.github.yikwing.ykmagic:logger:$ykmagicVersion")
    ```
 
 ## Tips
 
-- 使用空 node package.json `scripts` 配置快速命令行命令
+- 使用 `makefile` 配置编译脚本
 - sh 文件夹配置了 **签名** / **校验签名** 脚本
 
 ## TODO
