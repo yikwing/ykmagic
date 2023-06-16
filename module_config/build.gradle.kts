@@ -40,11 +40,10 @@ android {
 }
 
 dependencies {
-
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
 
-    testImplementation(libs.junit)
+    testImplementation(libs.bundles.testBundle)
 }
 
 afterEvaluate {

@@ -3,7 +3,6 @@ package com.yk.ykconfig
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 
-
 /**
  *
  * Moshi.Builder().add(SexAdapter()).build()
@@ -28,5 +27,4 @@ class SexAdapter {
             Sex.MALE -> 1
         }
     }
-
 }

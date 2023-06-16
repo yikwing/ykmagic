@@ -1,6 +1,7 @@
 package com.yk.ykconfig
 
-import org.junit.Assert.*
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.`is`
 import org.junit.Before
 import org.junit.Test
 
@@ -31,9 +32,12 @@ class ExampleUnitTest {
 
     @Test
     fun addition_isCorrect() {
-        assertEquals("www.baidu.com", YkConfigManager.getConfig(SmallConfig::class.java).testString)
-        assertEquals(999, YkConfigManager.getConfig(SmallConfig::class.java).testInt)
-        require(3333.5555 == YkConfigManager.getConfig(SmallConfig::class.java).testDouble)
-        assertEquals(true, YkConfigManager.getConfig(SmallConfig::class.java).testBoolean)
+        assertThat(
+            YkConfigManager.getConfig(SmallConfig::class.java).testString,
+            `is`("www.baidu.com"),
+        )
+        assertThat(YkConfigManager.getConfig(SmallConfig::class.java).testInt, `is`(999))
+        assertThat(YkConfigManager.getConfig(SmallConfig::class.java).testDouble, `is`(3333.5555))
+        assertThat(YkConfigManager.getConfig(SmallConfig::class.java).testBoolean, `is`(true))
     }
 }
