@@ -5,7 +5,10 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.ksp)
+    id("kotlin-kapt")
     id("kotlin-parcelize")
+
+    alias(libs.plugins.hilt)
     id("com.github.ben-manes.versions") version "0.47.0"
 }
 
@@ -200,4 +203,13 @@ dependencies {
     androidTestImplementation(libs.ui.test.junit4)
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+
+    // -------------- hilt 代支持ksp 再合并 ----------------
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

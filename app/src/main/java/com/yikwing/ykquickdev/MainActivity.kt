@@ -6,9 +6,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.yikwing.ykquickdev.ui.screens.MainScreenFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private var backPressTime by Delegates.observable(0L) { _: KProperty<*>, oldValue: Long, newValue: Long ->

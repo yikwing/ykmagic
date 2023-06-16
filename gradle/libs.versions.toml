@@ -3,8 +3,11 @@ compileSdk = "33"
 minSdk = "24"
 
 agp = "8.0.2"
-kotlin = "1.8.22"
-ksp = "1.8.22-1.0.11"
+kotlin = "1.8.21"
+ksp = "1.8.21-1.0.11"
+
+# -------------- hilt 代支持ksp 再合并 ----------------
+hilt = "2.46.1"
 
 activity = "1.7.2"
 fragment-ktx = "1.6.0"
@@ -108,13 +111,18 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
-
+# -------------- hilt 代支持ksp 再合并 ----------------
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+# -------------- hilt 代支持ksp 再合并 ----------------
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 [bundles]
 network = ["okhttp3", "okhttp3-logging-interceptor", "retrofit2", "retrofit2-moshi", "okio"]
