@@ -6,7 +6,7 @@ plugins {
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.ksp)
     id("kotlin-parcelize")
-    id("com.github.ben-manes.versions") version "0.46.0"
+    id("com.github.ben-manes.versions") version "0.47.0"
 }
 
 // 读取config
@@ -190,9 +190,7 @@ dependencies {
     releaseImplementation(libs.chuckerteam.no.op)
 
     // 测试依赖库
-    testImplementation(libs.hamcrest)
-    testImplementation(libs.hamcrest.library)
-    testImplementation(libs.junit)
+    testImplementation(libs.bundles.testBundle)
 
     testImplementation(libs.mockk)
     androidTestImplementation(libs.androidx.test.ext.junit)

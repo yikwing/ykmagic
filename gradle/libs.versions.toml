@@ -3,8 +3,8 @@ compileSdk = "33"
 minSdk = "24"
 
 agp = "8.0.2"
-kotlin = "1.8.21"
-ksp = "1.8.21-1.0.11"
+kotlin = "1.8.22"
+ksp = "1.8.22-1.0.11"
 
 activity = "1.7.2"
 fragment-ktx = "1.6.0"
@@ -118,3 +118,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]
 network = ["okhttp3", "okhttp3-logging-interceptor", "retrofit2", "retrofit2-moshi", "okio"]
+testBundle = ["hamcrest", "hamcrest-library", "junit"]
