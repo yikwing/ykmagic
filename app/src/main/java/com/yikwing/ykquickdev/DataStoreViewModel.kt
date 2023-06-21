@@ -2,13 +2,13 @@ package com.yikwing.ykquickdev
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DataStoreViewModel(
+@HiltViewModel
+class DataStoreViewModel @Inject constructor(
     private val repository: DataStoreRepository,
 ) : ViewModel() {
 
@@ -22,11 +22,11 @@ class DataStoreViewModel(
         }
     }
 
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                DataStoreViewModel(DataStoreRepository)
-            }
-        }
-    }
+//    companion object {
+//        val Factory: ViewModelProvider.Factory = viewModelFactory {
+//            initializer {
+//                DataStoreViewModel(DataStoreRepository)
+//            }
+//        }
+//    }
 }

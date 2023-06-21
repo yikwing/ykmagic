@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.konan.properties.Properties
 import org.jetbrains.kotlin.konan.properties.loadProperties
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -33,6 +35,13 @@ fun listSubFile(): List<String> {
     // 资源整合
     folders.add(file(resFolder).parentFile.absolutePath)
     return folders
+}
+
+// 获取当前打包时间
+fun getDateStr(): String {
+    val localDate = LocalDateTime.now()
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+    return localDate.format(formatter)
 }
 
 android {
@@ -73,6 +82,10 @@ android {
                 "YK_CONFIG",
                 "\"\"\"\n${injectJson}\"\"\"",
             )
+
+            manifestPlaceholders.apply {
+                put("debug_time", getDateStr())
+            }
         }
 
         release {
