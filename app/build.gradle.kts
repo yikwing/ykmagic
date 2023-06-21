@@ -63,6 +63,10 @@ android {
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas".toString())
         }
+
+        manifestPlaceholders.apply {
+            put("debug_time", getDateStr())
+        }
     }
 
     signingConfigs {
@@ -82,10 +86,6 @@ android {
                 "YK_CONFIG",
                 "\"\"\"\n${injectJson}\"\"\"",
             )
-
-            manifestPlaceholders.apply {
-                put("debug_time", getDateStr())
-            }
         }
 
         release {
