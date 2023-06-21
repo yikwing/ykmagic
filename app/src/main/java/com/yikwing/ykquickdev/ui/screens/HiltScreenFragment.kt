@@ -9,7 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,7 +32,9 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.fragment.app.Fragment
 import coil.compose.AsyncImage
+import com.yikwing.logger.Logger
 import com.yikwing.ykextension.app.PackageInfo
+import com.yikwing.ykextension.app.getMetaData
 import com.yikwing.ykextension.app.getPackageInfo
 import com.yikwing.ykextension.unSafeLazy
 
@@ -36,12 +44,18 @@ class HiltScreenFragment : Fragment() {
         requireContext().getPackageInfo("com.yktc.nutritiondiet")
     }
 
+    private val buildTime by unSafeLazy {
+        requireContext().getMetaData("com.yikwing.debug.time")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         return ComposeView(requireContext()).apply {
+            Logger.d(buildTime)
+
             // Dispose of the Composition when the view's LifecycleOwner
             // is destroyed
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -122,12 +136,16 @@ fun TopHeader(packageInfo: PackageInfo?) {
         AsyncImage(
             model = packageInfo?.appIcon,
             contentDescription = null,
-            modifier = Modifier.size(120.dp).layoutId("cover"),
+            modifier = Modifier
+                .size(120.dp)
+                .layoutId("cover"),
         )
         Text(packageInfo?.appName ?: "", modifier = Modifier.layoutId("appName"))
         Text(
             packageInfo?.appPackageName ?: "",
-            modifier = Modifier.layoutId("appPackageName").padding(bottom = 30.dp),
+            modifier = Modifier
+                .layoutId("appPackageName")
+                .padding(bottom = 30.dp),
         )
     }
 }
@@ -143,7 +161,9 @@ fun PackageInfoDes(
         Text(
             info,
             color = Color(0xFF666666),
-            modifier = Modifier.fillMaxWidth().clickable { onClick() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick() },
         )
         Spacer(modifier = Modifier.height(30.dp))
     }
