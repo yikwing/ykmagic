@@ -1,3 +1,4 @@
+import com.google.gson.GsonBuilder
 import org.jetbrains.kotlin.konan.properties.Properties
 import org.jetbrains.kotlin.konan.properties.loadProperties
 import java.time.LocalDateTime
@@ -26,14 +27,15 @@ val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 fun listSubFile(): List<String> {
     // 新资源目录
     val resFolder = "src/main/res/layouts"
+    val resFile = file(resFolder)
     // 新资源目录下的文件夹
-    val files = file(resFolder).listFiles()
+    val files = resFile.listFiles()
     val folders = mutableListOf<String>()
 
     // 遍历路径
     files?.forEach { item -> folders.add(item.absolutePath) }
     // 资源整合
-    folders.add(file(resFolder).parentFile.absolutePath)
+    folders.add(resFile.parentFile.absolutePath)
     return folders
 }
 
@@ -42,6 +44,15 @@ fun getDateStr(): String {
     val localDate = LocalDateTime.now()
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
     return localDate.format(formatter)
+}
+
+// json格式化
+fun getJsonStr(): String {
+    val json = with(GsonBuilder()) {
+        setPrettyPrinting()
+        create()
+    }
+    return json.toJson(injectJson)
 }
 
 android {
@@ -61,7 +72,7 @@ android {
         }
 
         ksp {
-            arg("room.schemaLocation", "$projectDir/schemas".toString())
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
 
         manifestPlaceholders.apply {
@@ -84,7 +95,7 @@ android {
             buildConfigField(
                 "String",
                 "YK_CONFIG",
-                "\"\"\"\n${injectJson}\"\"\"",
+                getJsonStr(),
             )
         }
 
@@ -97,7 +108,7 @@ android {
             buildConfigField(
                 "String",
                 "YK_CONFIG",
-                "\"\"\"\n${injectJson}\"\"\"",
+                getJsonStr(),
             )
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -122,7 +133,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion = "1.4.8"
     }
 
     packaging {
