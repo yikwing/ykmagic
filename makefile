@@ -2,15 +2,15 @@
 
 BINARY="gradlew tool"
 
-all: clean buildR install
+all: clean build install
 
 dev:
 	./gradlew assembleDebug
 
-buildR:
+build:
 	./gradlew assembleRelease
 
-version:
+dependency:
 	./gradlew dependencyUpdates
 
 install:
@@ -23,6 +23,6 @@ help:
 	@echo "make - build android apk"
 	@echo "make dev - 编译debug apk"
 	@echo "make build - 编译Release apk"
-	@echo "make version - 查看最新依赖"
+	@echo "make dependency - 查看最新依赖"
 	@echo "make install - 安装release apk"
 	@echo "make clean - clean build"

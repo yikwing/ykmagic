@@ -41,6 +41,8 @@ android {
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.kotlinx.coroutines.android)
+
+    testImplementation(libs.bundles.testBundle)
 }
 
 afterEvaluate {

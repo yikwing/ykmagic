@@ -38,7 +38,9 @@ import com.yikwing.ykquickdev.components.NetWorkError
 import com.yk.yknetwork.RequestState
 import com.yk.yknetwork.doError
 import com.yk.yknetwork.doSuccess
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainScreenFragment : Fragment() {
 
     private var forActivityResultLauncher =
@@ -101,9 +103,13 @@ fun ItemDepot(
                             it.id
                         }) {
                             Box(
-                                modifier = Modifier.height(50.dp).fillParentMaxWidth().clickable {
-                                    forActivityResultLauncher.launch("matchId=222&time=10001")
-                                }.padding(start = 20.dp),
+                                modifier = Modifier
+                                    .height(50.dp)
+                                    .fillParentMaxWidth()
+                                    .clickable {
+                                        forActivityResultLauncher.launch("matchId=222&time=10001")
+                                    }
+                                    .padding(start = 20.dp),
                                 contentAlignment = Alignment.CenterStart,
                             ) {
                                 Text(

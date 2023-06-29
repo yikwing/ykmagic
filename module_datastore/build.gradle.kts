@@ -42,7 +42,7 @@ dependencies {
     // Preferences DataStore
     implementation(libs.datastore.preferences)
 
-    testImplementation(libs.junit)
+    testImplementation(libs.bundles.testBundle)
 }
 
 afterEvaluate {

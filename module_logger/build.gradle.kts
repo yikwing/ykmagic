@@ -40,7 +40,8 @@ android {
 
 dependencies {
     implementation(libs.appcompat)
-    testImplementation(libs.junit)
+
+    testImplementation(libs.bundles.testBundle)
 }
 
 afterEvaluate {

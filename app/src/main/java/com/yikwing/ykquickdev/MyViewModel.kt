@@ -6,14 +6,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
-import com.yikwing.ykquickdev.api.provider.ApiProvider
 import com.yk.yknetwork.RequestState
-import com.yk.yknetwork.transformApi
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MyViewModel : ViewModel() {
+@HiltViewModel
+class MyViewModel @Inject constructor(
+    private val repository: Repository
+) : ViewModel() {
 
     private val _headers = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
 
@@ -22,11 +25,7 @@ class MyViewModel : ViewModel() {
 
     private fun initHttpBinData() {
         viewModelScope.launch {
-            _headers.value = try {
-                RequestState.Success(ApiProvider.createHttpBinService().getOtherHeaders().headers)
-            } catch (exception: Exception) {
-                RequestState.Error(exception)
-            }
+            _headers.value = repository.initHttpBinData()
         }
     }
 
@@ -37,11 +36,10 @@ class MyViewModel : ViewModel() {
 
     private fun initWanAndroidData() {
         viewModelScope.launch {
-            transformApi {
-                ApiProvider.createWanAndroidService().getChapters()
-            }.collect { result ->
-                _wanAndroidList.value = result
-            }
+            repository.initWanAndroidData()
+                .collect { result ->
+                    _wanAndroidList.value = result
+                }
         }
     }
 

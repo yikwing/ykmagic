@@ -11,12 +11,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://jitpack.io")
-        }
-        maven {
-            url = uri("https://repo.huaweicloud.com/repository/maven/")
-        }
+        maven(url = "https://jitpack.io")
+        maven(url = "https://repo.huaweicloud.com/repository/maven/")
     }
 }
 
