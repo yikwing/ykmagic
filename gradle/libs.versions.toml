@@ -33,7 +33,7 @@ constraintlayout-compose = "1.0.1"
 navigation-compose = "2.6.0"
 
 glance = "1.1.0"
-leakcanary = "2.11"
+leakcanary = "2.12"
 chuckerteam = "4.0.0"
 
 hamcrest = "2.2"
