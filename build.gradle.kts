@@ -13,7 +13,7 @@ plugins {
 allprojects {
     configurations.all {
         resolutionStrategy {
-            force("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.1")
+            force("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.7.2")
         }
     }
 }
