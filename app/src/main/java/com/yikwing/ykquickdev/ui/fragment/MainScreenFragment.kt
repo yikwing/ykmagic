@@ -1,4 +1,4 @@
-package com.yikwing.ykquickdev.ui.screens
+package com.yikwing.ykquickdev.ui.fragment
 
 import android.app.Activity
 import android.content.Context
@@ -63,7 +63,7 @@ class MainScreenFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         return ComposeView(requireContext()).apply {
             // Dispose of the Composition when the view's LifecycleOwner
@@ -73,7 +73,7 @@ class MainScreenFragment : Fragment() {
                 MaterialTheme {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background,
+                        color = MaterialTheme.colorScheme.background
                     ) {
                         ItemDepot(forActivityResultLauncher)
                     }
@@ -86,7 +86,7 @@ class MainScreenFragment : Fragment() {
 @Composable
 fun ItemDepot(
     forActivityResultLauncher: ActivityResultLauncher<String>,
-    mainViewModel: MyViewModel = viewModel(),
+    mainViewModel: MyViewModel = viewModel()
 ) {
     val data by mainViewModel.wanAndroidList.collectAsState()
 
@@ -110,11 +110,11 @@ fun ItemDepot(
                                         forActivityResultLauncher.launch("matchId=222&time=10001")
                                     }
                                     .padding(start = 20.dp),
-                                contentAlignment = Alignment.CenterStart,
+                                contentAlignment = Alignment.CenterStart
                             ) {
                                 Text(
                                     text = it.name,
-                                    style = MaterialTheme.typography.labelLarge,
+                                    style = MaterialTheme.typography.labelLarge
                                 )
                             }
                         }

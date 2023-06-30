@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.yikwing.ykquickdev.ui.screens.MainScreenFragment
+import com.yikwing.ykquickdev.ui.fragment.MainScreenFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty

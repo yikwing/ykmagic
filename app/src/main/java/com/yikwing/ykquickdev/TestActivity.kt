@@ -16,7 +16,7 @@ import com.yikwing.ykextension.stringIntent
 
 class TestActivity : ComponentActivity() {
 
-    val fromTag by stringIntent("tag")
+    private val fromTag by stringIntent("tag")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +27,7 @@ class TestActivity : ComponentActivity() {
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background,
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,

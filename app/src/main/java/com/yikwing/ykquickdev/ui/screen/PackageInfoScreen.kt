@@ -1,103 +1,78 @@
-package com.yikwing.ykquickdev.ui.screens
+package com.yikwing.ykquickdev.ui.screen
 
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import androidx.fragment.app.Fragment
 import coil.compose.AsyncImage
-import com.yikwing.logger.Logger
 import com.yikwing.ykextension.app.PackageInfo
 import com.yikwing.ykextension.app.getMetaData
 import com.yikwing.ykextension.app.getPackageInfo
 import com.yikwing.ykextension.unSafeLazy
 
-class HiltScreenFragment : Fragment() {
-
-    private val packageInfo by unSafeLazy {
-        requireContext().getPackageInfo("com.yktc.nutritiondiet")
+@Composable
+fun PackageInfoScreen(
+    navigationToPage: (String) -> Unit = {}
+) {
+    val context: Context = LocalContext.current
+    val packageInfo by unSafeLazy {
+        context.getPackageInfo("com.yktc.nutritiondiet")
     }
 
-    private val buildTime by unSafeLazy {
-        requireContext().getMetaData("com.yikwing.debug.time")
+    val buildTime by unSafeLazy {
+        context.getMetaData("com.yikwing.debug.time")
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        return ComposeView(requireContext()).apply {
-            Logger.d(buildTime)
+    Column(
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 30.dp)
+    ) {
+        TopHeader(packageInfo = packageInfo)
 
-            // Dispose of the Composition when the view's LifecycleOwner
-            // is destroyed
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                MaterialTheme {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background,
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 30.dp),
-                        ) {
-                            TopHeader(packageInfo = packageInfo)
-
-                            val context = LocalContext.current
-
-                            PackageInfoDes(
-                                "versionCode:",
-                                (packageInfo?.versionCode ?: 0).toString(),
-                            )
-                            PackageInfoDes(
-                                "versionName:",
-                                (packageInfo?.versionName ?: "").toString(),
-                            )
-                            PackageInfoDes(
-                                "MD5:",
-                                (packageInfo?.signMD5 ?: "").toString(),
-                                onClick = {
-                                    copyToClipboard(context, packageInfo?.signMD5, "MD5值已复制")
-                                },
-                            )
-                            PackageInfoDes(
-                                "SHA1:",
-                                (packageInfo?.signSHA1 ?: "").toString(),
-                                onClick = {
-                                    copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
-                                },
-                            )
-                        }
-                    }
-                }
+        PackageInfoDes(
+            "versionCode:",
+            (packageInfo?.versionCode ?: 0).toString()
+        )
+        PackageInfoDes(
+            "versionName:",
+            (packageInfo?.versionName ?: "").toString()
+        )
+        PackageInfoDes(
+            "MD5:",
+            (packageInfo?.signMD5 ?: "").toString(),
+            onClick = {
+                copyToClipboard(context, packageInfo?.signMD5, "MD5值已复制")
             }
+        )
+        PackageInfoDes(
+            "SHA1:",
+            (packageInfo?.signSHA1 ?: "").toString(),
+            onClick = {
+                copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
+            }
+        )
+
+        Button(onClick = {
+            navigationToPage("hello")
+        }) {
+            Text(text = "new page")
         }
     }
 }
@@ -138,14 +113,14 @@ fun TopHeader(packageInfo: PackageInfo?) {
             contentDescription = null,
             modifier = Modifier
                 .size(120.dp)
-                .layoutId("cover"),
+                .layoutId("cover")
         )
         Text(packageInfo?.appName ?: "", modifier = Modifier.layoutId("appName"))
         Text(
             packageInfo?.appPackageName ?: "",
             modifier = Modifier
                 .layoutId("appPackageName")
-                .padding(bottom = 30.dp),
+                .padding(bottom = 30.dp)
         )
     }
 }
@@ -154,7 +129,7 @@ fun TopHeader(packageInfo: PackageInfo?) {
 fun PackageInfoDes(
     title: String,
     info: String,
-    onClick: () -> Unit = {},
+    onClick: () -> Unit = {}
 ) {
     Column {
         Text(title, color = Color(0xFF999999))
@@ -163,7 +138,7 @@ fun PackageInfoDes(
             color = Color(0xFF666666),
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable { onClick() },
+                .clickable { onClick() }
         )
         Spacer(modifier = Modifier.height(30.dp))
     }

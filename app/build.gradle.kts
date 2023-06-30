@@ -1,8 +1,8 @@
 import com.google.gson.GsonBuilder
-import org.jetbrains.kotlin.konan.properties.Properties
-import org.jetbrains.kotlin.konan.properties.loadProperties
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import org.jetbrains.kotlin.konan.properties.Properties
+import org.jetbrains.kotlin.konan.properties.loadProperties
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -95,7 +95,7 @@ android {
             buildConfigField(
                 "String",
                 "YK_CONFIG",
-                getJsonStr(),
+                getJsonStr()
             )
         }
 
@@ -108,11 +108,11 @@ android {
             buildConfigField(
                 "String",
                 "YK_CONFIG",
-                getJsonStr(),
+                getJsonStr()
             )
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
         }
     }
@@ -188,7 +188,7 @@ dependencies {
         ":module_extension",
         ":module_permission",
         ":module_logger",
-        ":module_datastore",
+        ":module_datastore"
     ).forEach { dep ->
         implementation(project(dep))
     }
@@ -230,6 +230,7 @@ dependencies {
 
     // -------------- hilt 代支持ksp 再合并 ----------------
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
 }
 

@@ -1,13 +1,12 @@
 package com.yikwing.ykquickdev
 
-import androidx.lifecycle.viewModelScope
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.api.provider.ApiProvider
 import com.yk.yknetwork.RequestState
 import com.yk.yknetwork.transformApi
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 class Repository @Inject constructor() {
 
@@ -24,5 +23,4 @@ class Repository @Inject constructor() {
             ApiProvider.createWanAndroidService().getChapters()
         }
     }
-
 }

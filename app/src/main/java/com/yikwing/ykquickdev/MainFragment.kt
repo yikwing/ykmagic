@@ -10,9 +10,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yikwing.logger.Logger
 import com.yikwing.ykextension.unSafeLazy
@@ -142,8 +140,8 @@ class MainFragment :
             requireActivity(),
             arrayOf(
                 android.Manifest.permission.CALL_PHONE,
-                android.Manifest.permission.CAMERA,
-            ),
+                android.Manifest.permission.CAMERA
+            )
         ) { allGranted, deniedList ->
             if (allGranted) {
                 Toast.makeText(context, "已全部同意", Toast.LENGTH_SHORT).show()
