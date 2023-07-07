@@ -5,13 +5,12 @@ import org.jetbrains.kotlin.konan.properties.Properties
 import org.jetbrains.kotlin.konan.properties.loadProperties
 
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
-    id("kotlin-kapt")
-    id("kotlin-parcelize")
-
     alias(libs.plugins.hilt)
+
     id("com.github.ben-manes.versions") version "0.47.0"
 }
 
