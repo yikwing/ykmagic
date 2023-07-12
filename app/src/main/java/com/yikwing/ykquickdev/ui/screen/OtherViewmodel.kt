@@ -9,24 +9,26 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+data class HttpBinUiState(
+    val repo: RequestState<Headers> = RequestState.Loading
+)
 
 @HiltViewModel
 class OtherViewModel @Inject constructor(
     private val otherRepository: OtherRepository
 ) : ViewModel() {
-    private val _headers = MutableStateFlow<RequestState<Headers>>(RequestState.Loading)
+    private val _headers = MutableStateFlow<HttpBinUiState>(HttpBinUiState())
+    val headers: StateFlow<HttpBinUiState> = _headers.asStateFlow()
 
-    val headers: StateFlow<RequestState<Headers>>
-        get() = _headers.asStateFlow()
-
-    private fun initHttpBinData() {
+    fun initHttpBinData() {
         viewModelScope.launch {
-            _headers.value = otherRepository.initHttpBinData()
+            _headers.update {
+                val repo = otherRepository.initHttpBinData()
+                it.copy(repo = repo)
+            }
         }
-    }
-
-    init {
-        initHttpBinData()
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,9 +29,11 @@ import com.yikwing.ykextension.app.getMetaData
 import com.yikwing.ykextension.app.getPackageInfo
 import com.yikwing.ykextension.unSafeLazy
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PackageInfoScreen(
-    navigationToPage: (String) -> Unit = {}
+    navigationToPage: (String) -> Unit = {},
+    navigationToDiy: () -> Unit = {}
 ) {
     val context: Context = LocalContext.current
     val packageInfo by unSafeLazy {
@@ -41,38 +44,50 @@ fun PackageInfoScreen(
         context.getMetaData("com.yikwing.debug.time")
     }
 
-    Column(
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 30.dp)
-    ) {
-        TopHeader(packageInfo = packageInfo)
+//    Column(
+//        modifier = Modifier.padding(horizontal = 16.dp, vertical = 30.dp)
+//    ) {
+//        TopHeader(packageInfo = packageInfo)
+//
+//        PackageInfoDes(
+//            "versionCode:",
+//            (packageInfo?.versionCode ?: 0).toString()
+//        )
+//        PackageInfoDes(
+//            "versionName:",
+//            (packageInfo?.versionName ?: "").toString()
+//        )
+//        PackageInfoDes(
+//            "MD5:",
+//            (packageInfo?.signMD5 ?: "").toString(),
+//            onClick = {
+//                copyToClipboard(context, packageInfo?.signMD5, "MD5值已复制")
+//            }
+//        )
+//        PackageInfoDes(
+//            "SHA1:",
+//            (packageInfo?.signSHA1 ?: "").toString(),
+//            onClick = {
+//                copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
+//            }
+//        )
+//    }
 
-        PackageInfoDes(
-            "versionCode:",
-            (packageInfo?.versionCode ?: 0).toString()
-        )
-        PackageInfoDes(
-            "versionName:",
-            (packageInfo?.versionName ?: "").toString()
-        )
-        PackageInfoDes(
-            "MD5:",
-            (packageInfo?.signMD5 ?: "").toString(),
+    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Button(
+            modifier = Modifier.fillMaxWidth(),
             onClick = {
-                copyToClipboard(context, packageInfo?.signMD5, "MD5值已复制")
+                navigationToPage("hello")
             }
-        )
-        PackageInfoDes(
-            "SHA1:",
-            (packageInfo?.signSHA1 ?: "").toString(),
-            onClick = {
-                copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
-            }
-        )
+        ) {
+            Text(text = "参数传递")
+        }
 
-        Button(onClick = {
-            navigationToPage("hello")
-        }) {
-            Text(text = "new page")
+        Button(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = navigationToDiy
+        ) {
+            Text(text = "diy input")
         }
     }
 }
