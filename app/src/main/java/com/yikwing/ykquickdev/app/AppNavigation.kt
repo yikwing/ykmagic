@@ -26,9 +26,17 @@ object OtherPageScreen : AppDestination {
     )
 }
 
+object DiyInputScreen : AppDestination {
+    override val route: String = "diy"
+}
+
 class AppNavigationActions(private val navController: NavHostController) {
     fun navigationToA(msg: String = "default") {
         navController.navigateToSingleAccount(msg)
+    }
+
+    fun navigationToDiyInput() {
+        navController.navigateSingleTopTo(DiyInputScreen.route)
     }
 }
 

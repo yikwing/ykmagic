@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.yikwing.ykquickdev.ui.screen.DiyInputWrapperScreen
 import com.yikwing.ykquickdev.ui.screen.OtherPageScreen
 import com.yikwing.ykquickdev.ui.screen.PackageInfoScreen
 import kotlinx.coroutines.CoroutineScope
@@ -33,7 +34,10 @@ fun AppNavGraph(
         modifier = modifier
     ) {
         composable(PackageInfoScreen.route) {
-            PackageInfoScreen(navigationToPage = navActions::navigationToA)
+            PackageInfoScreen(
+                navigationToPage = navActions::navigationToA,
+                navigationToDiy = navActions::navigationToDiyInput
+            )
         }
         composable(
             route = OtherPageScreen.routeWithArgs,
@@ -41,6 +45,10 @@ fun AppNavGraph(
         ) { navBackStackEntry ->
             val accountType = navBackStackEntry.arguments?.getString(OtherPageScreen.paramTypeArg)
             OtherPageScreen(accountType)
+        }
+
+        composable(DiyInputScreen.route) {
+            DiyInputWrapperScreen()
         }
     }
 }
