@@ -1,10 +1,9 @@
 package com.yikwing.ykquickdev.task
 
-import android.app.Application
 import android.content.Context
-import com.yk.ykproxy.startup.Initializer
+import com.yikwing.proxy.startup.Initializer
 import com.yikwing.ykquickdev.BuildConfig
-import com.yk.ykconfig.YkQuickManager
+import com.yikwing.config.YkQuickManager
 
 class ConfigInjectInitTask : Initializer<Unit> {
     override fun create(context: Context) {

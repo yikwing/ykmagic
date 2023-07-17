@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yikwing.logger.Logger
 import com.yikwing.ykextension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.MainFragmentBinding
-import com.yk.yknetwork.ApiException
-import com.yk.yknetwork.collectState
-import com.yk.yknetwork.observeState
-import com.yk.ykpermission.PermissionX
-import com.yk.ykproxy.BaseFragment
+import com.yikwing.network.ApiException
+import com.yikwing.network.collectState
+import com.yikwing.network.observeState
+import com.yikwing.permission.PermissionX
+import com.yikwing.proxy.BaseFragment
 import kotlinx.coroutines.launch
 
 class MainFragment :

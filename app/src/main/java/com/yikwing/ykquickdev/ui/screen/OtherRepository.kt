@@ -2,7 +2,7 @@ package com.yikwing.ykquickdev.ui.screen
 
 import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.api.provider.ApiProvider
-import com.yk.yknetwork.RequestState
+import com.yikwing.network.RequestState
 import javax.inject.Inject
 
 class OtherRepository @Inject constructor() {

@@ -2,7 +2,7 @@ package com.yikwing.ykquickdev.api.provider
 
 import com.yikwing.ykquickdev.api.apiserver.HttpBinApiServer
 import com.yikwing.ykquickdev.api.apiserver.WanAndroidApiService
-import com.yk.yknetwork.RetrofitFactory
+import com.yikwing.network.RetrofitFactory
 
 object ApiProvider {
 

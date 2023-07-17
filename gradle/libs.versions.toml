@@ -7,7 +7,7 @@ kotlin = "1.8.22"
 ksp = "1.8.22-1.0.11"
 
 # -------------- hilt 代支持ksp 再合并 ----------------
-hilt = "2.46.1"
+hilt = "2.47"
 
 activity = "1.7.2"
 fragment-ktx = "1.6.0"
@@ -106,8 +106,8 @@ chuckerteam-no-op = { group = "com.github.chuckerteam.chucker", name = "library-
 hamcrest = { group = "org.hamcrest", name = "hamcrest", version.ref = "hamcrest" }
 hamcrest-library = { group = "org.hamcrest", name = "hamcrest-library", version.ref = "hamcrest" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 
@@ -128,4 +128,5 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 [bundles]
 network = ["okhttp3", "okhttp3-logging-interceptor", "retrofit2", "retrofit2-moshi", "okio"]
-testBundle = ["hamcrest", "hamcrest-library", "junit"]
+testBundle = ["hamcrest", "hamcrest-library", "junit", "mockk"]
+androidTestBundle = ["androidx-test-ext-junit", "espresso-core"]

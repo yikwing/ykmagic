@@ -46,6 +46,7 @@ dependencies {
     implementation(libs.appcompat)
 
     testImplementation(libs.bundles.testBundle)
+    androidTestImplementation(libs.bundles.androidTestBundle)
 }
 
 afterEvaluate {

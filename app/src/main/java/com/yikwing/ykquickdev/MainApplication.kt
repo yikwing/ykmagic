@@ -1,11 +1,11 @@
 package com.yikwing.ykquickdev
 
 import android.app.Application
+import com.yikwing.proxy.startup.AppInitializer
 import com.yikwing.ykquickdev.task.ConfigInjectInitTask
 import com.yikwing.ykquickdev.task.DataStoreInitTask
 import com.yikwing.ykquickdev.task.LoggerInitTask
 import com.yikwing.ykquickdev.task.NetworkInitTask
-import com.yk.ykproxy.startup.AppInitializer
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

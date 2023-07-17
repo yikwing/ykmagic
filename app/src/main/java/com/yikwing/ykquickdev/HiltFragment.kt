@@ -9,7 +9,7 @@ import com.yikwing.ykextension.FragmentArgumentDelegate
 import com.yikwing.ykextension.app.getPackageInfo
 import com.yikwing.ykextension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
-import com.yk.ykproxy.BaseFragment
+import com.yikwing.proxy.BaseFragment
 
 class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::inflate) {
 

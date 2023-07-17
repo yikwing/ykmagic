@@ -2,11 +2,11 @@ package com.yikwing.ykquickdev.task
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.yikwing.config.YkConfigManager
+import com.yikwing.network.RetrofitFactory
+import com.yikwing.proxy.startup.Initializer
 import com.yikwing.ykquickdev.NetworkConfig
 import com.yikwing.ykquickdev.ResultInterceptor
-import com.yk.ykconfig.YkConfigManager
-import com.yk.yknetwork.RetrofitFactory
-import com.yk.ykproxy.startup.Initializer
 
 class NetworkInitTask : Initializer<Unit> {
     override fun create(context: Context) {
@@ -14,8 +14,8 @@ class NetworkInitTask : Initializer<Unit> {
             YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl,
             arrayOf(
                 ChuckerInterceptor(context),
-                ResultInterceptor(),
-            ),
+                ResultInterceptor()
+            )
         )
     }
 

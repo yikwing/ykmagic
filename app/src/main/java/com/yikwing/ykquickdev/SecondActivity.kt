@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import com.yikwing.ykquickdev.ui.fragment.HiltScreenFragment
-import com.yk.ykproxy.BaseActivity
+import com.yikwing.proxy.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

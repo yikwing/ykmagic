@@ -35,9 +35,9 @@ import com.yikwing.ykquickdev.MyViewModel
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.components.LoadingWidget
 import com.yikwing.ykquickdev.components.NetWorkError
-import com.yk.yknetwork.RequestState
-import com.yk.yknetwork.doError
-import com.yk.yknetwork.doSuccess
+import com.yikwing.network.RequestState
+import com.yikwing.network.doError
+import com.yikwing.network.doSuccess
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

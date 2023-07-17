@@ -2,7 +2,7 @@ package com.yikwing.ykquickdev.api.apiserver
 
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.HttpBinHeaders
-import com.yk.yknetwork.BaseHttpResult
+import com.yikwing.network.BaseHttpResult
 import retrofit2.http.GET
 import retrofit2.http.Url
 

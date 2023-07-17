@@ -1,8 +1,7 @@
 package com.yikwing.ykquickdev.task
 
-import android.app.Application
 import android.content.Context
-import com.yk.ykproxy.startup.Initializer
+import com.yikwing.proxy.startup.Initializer
 import com.yikwing.logger.AndroidLogAdapter
 import com.yikwing.logger.Logger
 import com.yikwing.logger.PrettyFormatStrategy

@@ -217,10 +217,7 @@ dependencies {
 
     // 测试依赖库
     testImplementation(libs.bundles.testBundle)
-
-    testImplementation(libs.mockk)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    androidTestImplementation(libs.bundles.androidTestBundle)
 
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)

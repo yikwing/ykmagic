@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yikwing.ykquickdev.components.Center
-import com.yk.yknetwork.RequestState
-import com.yk.yknetwork.doError
-import com.yk.yknetwork.doSuccess
+import com.yikwing.network.RequestState
+import com.yikwing.network.doError
+import com.yikwing.network.doSuccess
 
 @Composable
 fun OtherPageScreen(

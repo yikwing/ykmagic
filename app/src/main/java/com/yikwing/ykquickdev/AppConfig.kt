@@ -2,8 +2,8 @@ package com.yikwing.ykquickdev
 
 import androidx.annotation.Keep
 import com.squareup.moshi.JsonClass
-import com.yk.ykconfig.annotations.YkConfigNode
-import com.yk.ykconfig.annotations.YkConfigValue
+import com.yikwing.config.annotations.YkConfigNode
+import com.yikwing.config.annotations.YkConfigValue
 
 @YkConfigNode
 @JsonClass(generateAdapter = true)
