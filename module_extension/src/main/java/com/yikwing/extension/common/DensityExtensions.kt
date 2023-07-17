@@ -1,4 +1,4 @@
-package com.yikwing.ykextension.common
+package com.yikwing.extension.common
 
 import android.content.Context
 import android.content.res.Resources
@@ -17,7 +17,7 @@ val Float.dp: Float
     get() = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         this,
-        displayMetrics,
+        displayMetrics
     )
 
 val Int.dp: Int
@@ -25,7 +25,7 @@ val Int.dp: Int
     get() = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
         this.toFloat(),
-        displayMetrics,
+        displayMetrics
     ).toInt()
 
 val Float.sp: Float
@@ -33,7 +33,7 @@ val Float.sp: Float
     get() = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_SP,
         this,
-        displayMetrics,
+        displayMetrics
     )
 
 val Int.sp: Int
@@ -41,7 +41,7 @@ val Int.sp: Int
     get() = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_SP,
         this.toFloat(),
-        displayMetrics,
+        displayMetrics
     ).toInt()
 
 val Number.px: Number

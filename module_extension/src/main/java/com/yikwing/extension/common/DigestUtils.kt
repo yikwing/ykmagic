@@ -1,4 +1,4 @@
-package com.yikwing.ykextension.common
+package com.yikwing.extension.common
 
 import java.security.MessageDigest
 

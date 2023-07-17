@@ -1,4 +1,4 @@
-package com.yikwing.ykextension
+package com.yikwing.extension
 
 import android.app.Activity
 import android.content.Context
@@ -15,6 +15,9 @@ inline fun <reified T : Activity> Activity.startActivity(context: Context) {
     startActivity(Intent(context, T::class.java))
 }
 
-inline fun <reified T : Activity> Activity.startActivity(context: Context, block: Intent.() -> Unit) {
+inline fun <reified T : Activity> Activity.startActivity(
+    context: Context,
+    block: Intent.() -> Unit
+) {
     startActivity(Intent(context, T::class.java).apply(block))
 }

@@ -1,4 +1,4 @@
-package com.yikwing.ykextension
+package com.yikwing.extension
 
 import android.app.Activity
 import android.content.Intent
@@ -16,7 +16,6 @@ fun <T> safeLazy(initializer: () -> T): Lazy<T> =
 
 // 非线程安全
 fun <T> unSafeLazy(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)
-
 
 sealed class IntentValue<T> {
     abstract fun getValue(intent: Intent, name: String): T
@@ -38,9 +37,7 @@ sealed class IntentValue<T> {
             return intent.getBooleanExtra(name, defaultValue)
         }
     }
-
 }
-
 
 /**
  *

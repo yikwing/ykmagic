@@ -1,4 +1,4 @@
-package com.yikwing.ykextension
+package com.yikwing.extension
 
 /**
  * @Author yikwing

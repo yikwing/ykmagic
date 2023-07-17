@@ -5,9 +5,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
 import coil.load
-import com.yikwing.ykextension.FragmentArgumentDelegate
-import com.yikwing.ykextension.app.getPackageInfo
-import com.yikwing.ykextension.unSafeLazy
+import com.yikwing.extension.FragmentArgumentDelegate
+import com.yikwing.extension.app.getPackageInfo
+import com.yikwing.extension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
 import com.yikwing.proxy.BaseFragment
 

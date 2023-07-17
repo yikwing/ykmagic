@@ -13,7 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yikwing.logger.Logger
-import com.yikwing.ykextension.unSafeLazy
+import com.yikwing.extension.unSafeLazy
 import com.yikwing.ykquickdev.databinding.MainFragmentBinding
 import com.yikwing.network.ApiException
 import com.yikwing.network.collectState

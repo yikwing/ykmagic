@@ -1,4 +1,4 @@
-package com.yikwing.ykextension
+package com.yikwing.extension
 
 import kotlin.properties.Delegates
 import kotlin.properties.ReadWriteProperty
@@ -17,7 +17,9 @@ private class NotNullSingleVar<T> : ReadWriteProperty<Any?, T> {
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): T {
         return value
-            ?: throw IllegalStateException("Property ${property.name} should be initialized before get.")
+            ?: throw IllegalStateException(
+                "Property ${property.name} should be initialized before get."
+            )
     }
 
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {

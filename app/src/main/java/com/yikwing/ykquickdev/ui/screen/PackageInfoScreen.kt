@@ -24,10 +24,10 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import coil.compose.AsyncImage
-import com.yikwing.ykextension.app.PackageInfo
-import com.yikwing.ykextension.app.getMetaData
-import com.yikwing.ykextension.app.getPackageInfo
-import com.yikwing.ykextension.unSafeLazy
+import com.yikwing.extension.app.PackageInfo
+import com.yikwing.extension.app.getMetaData
+import com.yikwing.extension.app.getPackageInfo
+import com.yikwing.extension.unSafeLazy
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
