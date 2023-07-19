@@ -1,8 +1,8 @@
 package com.yikwing.ykquickdev.api.apiserver
 
+import com.yikwing.network.BaseHttpResult
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.HttpBinHeaders
-import com.yikwing.network.BaseHttpResult
 import retrofit2.http.GET
 import retrofit2.http.Url
 
@@ -12,7 +12,7 @@ interface HttpBinApiServer {
 
     @GET
     suspend fun getOtherHeaders(
-        @Url url: String = "https://httpbin.org/headers",
+        @Url url: String = "https://httpbin.org/headers"
     ): HttpBinHeaders
 }
 
