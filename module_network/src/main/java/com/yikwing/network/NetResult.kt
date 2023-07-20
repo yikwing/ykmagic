@@ -14,13 +14,13 @@ sealed interface RequestState<out T> {
     data class Error(val throwable: Throwable) : RequestState<Nothing>
 }
 
-inline fun <reified T> RequestState<T>.doSuccess(success: (T) -> Unit) {
+inline fun <T> RequestState<T>.doSuccess(success: (T) -> Unit) {
     if (this is RequestState.Success) {
         success(value)
     }
 }
 
-inline fun <reified T> RequestState<T>.doError(failure: (Throwable?) -> Unit) {
+inline fun <T> RequestState<T>.doError(failure: (Throwable?) -> Unit) {
     if (this is RequestState.Error) {
         failure(throwable)
     }
