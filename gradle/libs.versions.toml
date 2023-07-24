@@ -4,7 +4,7 @@ minSdk = "24"
 
 agp = "8.0.2"
 kotlin = "1.9.0"
-ksp = "1.9.0-1.0.11"
+ksp = "1.9.0-1.0.12"
 
 # -------------- hilt 代支持ksp 再合并 ----------------
 hilt = "2.47"
@@ -74,6 +74,7 @@ moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-code
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-core-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core-jvm", version.ref = "kotlinx-coroutines" }
 
 #   compose依赖库
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
