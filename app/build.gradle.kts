@@ -45,6 +45,16 @@ fun getDateStr(): String {
     return localDate.format(formatter)
 }
 
+// 获取version code
+fun gitVersionCode(): Int {
+    val cmd = "git rev-list HEAD --count"
+    val process = ProcessBuilder(cmd.split(" ")).start()
+    process.inputStream.bufferedReader().use { reader ->
+        val output = reader.readLine()
+        return (output?.trim()?.toInt() ?: 0) + 4645
+    }
+}
+
 // json格式化
 fun getJsonStr(): String {
     val json = with(GsonBuilder()) {
@@ -62,8 +72,8 @@ android {
         applicationId = "com.yikwing.ykquickdev"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.compileSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = gitVersionCode()
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
