@@ -55,6 +55,16 @@ fun gitVersionCode(): Int {
     }
 }
 
+// 获取最近五条git日志
+fun getGitLog(): String {
+    val cmd = "git log --oneline -5"
+    val process = ProcessBuilder(cmd.split(" ")).start()
+    process.inputStream.bufferedReader().use { reader ->
+        val outputs = reader.readLines()
+        return outputs.joinToString(separator = "") { it + "\n" }
+    }
+}
+
 // json格式化
 fun getJsonStr(): String {
     val json = with(GsonBuilder()) {
