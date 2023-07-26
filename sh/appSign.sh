@@ -21,4 +21,4 @@ java -jar apksigner.jar sign \
   "$originPath"
 
 # 调用外部check脚本检测签名状态
-exec signCheck.sh "${originPath:0:originPathLength}"_sign.apk
+exec ./signCheck.sh "${originPath:0:originPathLength}"_sign.apk
