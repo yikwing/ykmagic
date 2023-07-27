@@ -152,7 +152,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.0"
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
 
     packaging {
@@ -180,6 +180,7 @@ dependencies {
 
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
+    implementation(libs.webkit)
 
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
