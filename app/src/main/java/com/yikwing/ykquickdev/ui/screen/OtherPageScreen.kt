@@ -12,10 +12,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.yikwing.ykquickdev.components.Center
 import com.yikwing.network.RequestState
 import com.yikwing.network.doError
 import com.yikwing.network.doSuccess
+import com.yikwing.ykquickdev.components.Center
 
 @Composable
 fun OtherPageScreen(

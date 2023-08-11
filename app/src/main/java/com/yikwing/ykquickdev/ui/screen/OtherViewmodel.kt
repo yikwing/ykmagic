@@ -2,8 +2,8 @@ package com.yikwing.ykquickdev.ui.screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.network.RequestState
+import com.yikwing.ykquickdev.api.entity.Headers
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow

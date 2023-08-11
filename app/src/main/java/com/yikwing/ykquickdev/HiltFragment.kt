@@ -8,17 +8,15 @@ import coil.load
 import com.yikwing.extension.FragmentArgumentDelegate
 import com.yikwing.extension.app.getPackageInfo
 import com.yikwing.extension.unSafeLazy
-import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
 import com.yikwing.proxy.BaseFragment
+import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
 
 class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::inflate) {
 
     private var param1: Int by FragmentArgumentDelegate(0)
     private var param2: String by FragmentArgumentDelegate("")
 
-
     companion object {
-
         @JvmStatic
         fun newInstance(a: Int = 23, b: String = "zs") =
             HiltFragment().apply {

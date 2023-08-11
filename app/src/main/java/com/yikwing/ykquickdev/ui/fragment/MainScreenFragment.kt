@@ -31,13 +31,13 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.yikwing.network.RequestState
+import com.yikwing.network.doError
+import com.yikwing.network.doSuccess
 import com.yikwing.ykquickdev.MyViewModel
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.components.LoadingWidget
 import com.yikwing.ykquickdev.components.NetWorkError
-import com.yikwing.network.RequestState
-import com.yikwing.network.doError
-import com.yikwing.network.doSuccess
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
