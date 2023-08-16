@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.konan.properties.loadProperties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kapt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 
@@ -248,10 +247,5 @@ dependencies {
     // -------------- hilt 代支持ksp 再合并 ----------------
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
-    kapt(libs.hilt.compiler)
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
+    ksp(libs.hilt.compiler)
 }
