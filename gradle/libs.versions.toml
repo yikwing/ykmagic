@@ -2,12 +2,12 @@
 compileSdk = "34"
 minSdk = "24"
 
-agp = "8.1.0"
-kotlin = "1.9.0"
-ksp = "1.9.0-1.0.13"
+agp = "8.1.1"
+kotlin = "1.9.10"
+ksp = "1.9.10-1.0.13"
 
 # -------------- hilt 代支持ksp 再合并 ----------------
-hilt = "2.47"
+hilt = "2.48"
 
 activity = "1.7.2"
 fragment-ktx = "1.6.1"
@@ -31,7 +31,7 @@ kotlinx-coroutines = "1.7.3"
 compose-bom = "2023.08.00"
 
 constraintlayout-compose = "1.0.1"
-navigation-compose = "2.7.0"
+navigation-compose = "2.7.1"
 
 glance = "1.1.0"
 leakcanary = "2.12"
@@ -123,7 +123,6 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 # -------------- hilt 代支持ksp 再合并 ----------------
