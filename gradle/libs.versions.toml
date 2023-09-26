@@ -28,10 +28,10 @@ moshi = "1.15.0"
 coil = "2.4.0"
 kotlinx-coroutines = "1.7.3"
 
-compose-bom = "2023.09.00"
+compose-bom = "2023.09.01"
 
 constraintlayout-compose = "1.0.1"
-navigation-compose = "2.7.2"
+navigation-compose = "2.7.3"
 
 glance = "1.1.0"
 leakcanary = "2.12"
@@ -40,7 +40,7 @@ chuckerteam = "4.0.0"
 hamcrest = "2.2"
 junit = "4.13.2"
 
-mockk = "1.13.7"
+mockk = "1.13.8"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 
