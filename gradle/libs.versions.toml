@@ -2,12 +2,12 @@
 compileSdk = "34"
 minSdk = "24"
 
-agp = "8.2.0"
+agp = "8.2.1"
 kotlin = "1.9.21"
 ksp = "1.9.21-1.0.16"
 
 # -------------- hilt 代支持ksp 再合并 ----------------
-hilt = "2.49"
+hilt = "2.50"
 
 activity = "1.8.2"
 fragment-ktx = "1.6.2"
@@ -34,13 +34,13 @@ constraintlayout-compose = "1.0.1"
 navigation-compose = "2.7.6"
 
 glance = "1.1.0"
-leakcanary = "2.12"
+leakcanary = "2.13"
 chuckerteam = "4.0.0"
 
 hamcrest = "2.2"
 junit = "4.13.2"
 
-mockk = "1.13.8"
+mockk = "1.13.9"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 
