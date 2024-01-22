@@ -1,8 +1,8 @@
 import com.google.gson.GsonBuilder
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import org.jetbrains.kotlin.konan.properties.Properties
 import org.jetbrains.kotlin.konan.properties.loadProperties
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 plugins {
     alias(libs.plugins.android.application)
@@ -66,10 +66,11 @@ fun getGitLog(): String {
 
 // json格式化
 fun getJsonStr(): String {
-    val json = with(GsonBuilder()) {
-        setPrettyPrinting()
-        create()
-    }
+    val json =
+        with(GsonBuilder()) {
+            setPrettyPrinting()
+            create()
+        }
     return json.toJson(injectJson)
 }
 
@@ -113,7 +114,7 @@ android {
             buildConfigField(
                 "String",
                 "YK_CONFIG",
-                getJsonStr()
+                getJsonStr(),
             )
         }
 
@@ -126,11 +127,11 @@ android {
             buildConfigField(
                 "String",
                 "YK_CONFIG",
-                getJsonStr()
+                getJsonStr(),
             )
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -151,7 +152,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.7"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
 
     packaging {
@@ -207,7 +208,7 @@ dependencies {
         ":module_extension",
         ":module_permission",
         ":module_logger",
-        ":module_datastore"
+        ":module_datastore",
     ).forEach { dep ->
         implementation(project(dep))
     }
