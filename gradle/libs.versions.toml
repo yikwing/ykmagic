@@ -23,15 +23,15 @@ room = "2.6.1"
 
 okhttp = "4.12.0"
 retrofit = "2.9.0"
-okio = "3.7.0"
-moshi = "1.15.0"
+okio = "3.8.0"
+moshi = "1.15.1"
 coil = "2.5.0"
 kotlinx-coroutines = "1.8.0-RC2"
 
-compose-bom = "2024.01.00"
+compose-bom = "2024.02.00"
 
 constraintlayout-compose = "1.0.1"
-navigation-compose = "2.7.6"
+navigation-compose = "2.7.7"
 
 glance = "1.1.0"
 leakcanary = "3.0-alpha-1"
@@ -85,7 +85,8 @@ ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-material = { group = "androidx.compose.material", name = "material" }
 material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
-compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.0-rc01" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+#compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.0" }
 
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
