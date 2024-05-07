@@ -1,14 +1,13 @@
 package com.yikwing.network
 
-import java.util.concurrent.TimeUnit
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 
 class RetrofitFactory private constructor() {
-
     private lateinit var retrofit: Retrofit
 
     companion object {
@@ -26,7 +25,7 @@ class RetrofitFactory private constructor() {
     fun setup(
         baseUrl: String,
         applicationInterceptor: Array<Interceptor> = emptyArray(),
-        networkInterceptor: Array<Interceptor> = emptyArray()
+        networkInterceptor: Array<Interceptor> = emptyArray(),
     ) {
         retrofit =
             Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(MoshiConverterFactory.create())
@@ -35,7 +34,7 @@ class RetrofitFactory private constructor() {
 
     private fun initClient(
         applicationInterceptor: Array<Interceptor>,
-        networkInterceptor: Array<Interceptor>
+        networkInterceptor: Array<Interceptor>,
     ): OkHttpClient {
         return OkHttpClient.Builder().apply {
             applicationInterceptor.forEach {
@@ -45,8 +44,7 @@ class RetrofitFactory private constructor() {
             networkInterceptor.forEach {
                 addNetworkInterceptor(it)
             }
-        }.connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS).build()
+        }.connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
     }
 
     fun <T> createService(service: Class<T>): T {

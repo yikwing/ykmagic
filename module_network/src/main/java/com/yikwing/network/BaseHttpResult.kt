@@ -6,5 +6,5 @@ import com.squareup.moshi.JsonClass
 data class BaseHttpResult<T>(
     var data: T?,
     var errorMsg: String,
-    var errorCode: Int
+    var errorCode: Int,
 )

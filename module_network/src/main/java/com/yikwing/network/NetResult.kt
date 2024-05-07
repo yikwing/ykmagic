@@ -9,8 +9,10 @@ typealias StatefulLiveData<T> = LiveData<RequestState<T>>
 typealias StatefulFlow<T> = StateFlow<RequestState<T>>
 
 sealed interface RequestState<out T> {
-    object Loading : RequestState<Nothing>
+    data object Loading : RequestState<Nothing>
+
     data class Success<out T>(val value: T) : RequestState<T>
+
     data class Error(val throwable: Throwable) : RequestState<Nothing>
 }
 
@@ -35,7 +37,7 @@ class ResultBuilder<T> {
 @MainThread
 inline fun <T> StatefulLiveData<T>.observeState(
     owner: LifecycleOwner,
-    init: ResultBuilder<T>.() -> Unit
+    init: ResultBuilder<T>.() -> Unit,
 ) {
     val result = ResultBuilder<T>().apply(init)
 
@@ -49,9 +51,7 @@ inline fun <T> StatefulLiveData<T>.observeState(
 }
 
 @MainThread
-suspend inline fun <T> StatefulFlow<T>.collectState(
-    init: ResultBuilder<T>.() -> Unit
-) {
+suspend inline fun <T> StatefulFlow<T>.collectState(init: ResultBuilder<T>.() -> Unit) {
     val result = ResultBuilder<T>().apply(init)
 
     collect { state ->
