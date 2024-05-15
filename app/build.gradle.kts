@@ -7,6 +7,9 @@ import java.time.format.DateTimeFormatter
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
+    alias(libs.plugins.compose.compiler)
+
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 
@@ -151,9 +154,9 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.13"
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.14"
+//    }
 
     packaging {
         resources {
