@@ -11,29 +11,40 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 // 线程安全
-fun <T> safeLazy(initializer: () -> T): Lazy<T> =
-    lazy(LazyThreadSafetyMode.SYNCHRONIZED, initializer)
+fun <T> safeLazy(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.SYNCHRONIZED, initializer)
 
 // 非线程安全
 fun <T> unSafeLazy(initializer: () -> T): Lazy<T> = lazy(LazyThreadSafetyMode.NONE, initializer)
 
 sealed class IntentValue<T> {
-    abstract fun getValue(intent: Intent, name: String): T
+    abstract fun getValue(
+        intent: Intent,
+        name: String,
+    ): T
 
     data class IntValue(private val defaultValue: Int) : IntentValue<Int>() {
-        override fun getValue(intent: Intent, name: String): Int {
+        override fun getValue(
+            intent: Intent,
+            name: String,
+        ): Int {
             return intent.getIntExtra(name, defaultValue)
         }
     }
 
     data class StringValue(private val defaultValue: String) : IntentValue<String>() {
-        override fun getValue(intent: Intent, name: String): String {
+        override fun getValue(
+            intent: Intent,
+            name: String,
+        ): String {
             return intent.getStringExtra(name) ?: defaultValue
         }
     }
 
     data class BoolValue(private val defaultValue: Boolean) : IntentValue<Boolean>() {
-        override fun getValue(intent: Intent, name: String): Boolean {
+        override fun getValue(
+            intent: Intent,
+            name: String,
+        ): Boolean {
             return intent.getBooleanExtra(name, defaultValue)
         }
     }
@@ -45,7 +56,10 @@ sealed class IntentValue<T> {
  *
  * */
 class IntentWrapper<T>(private val intentValue: IntentValue<T>) : ReadOnlyProperty<Activity, T> {
-    override fun getValue(thisRef: Activity, property: KProperty<*>): T {
+    override fun getValue(
+        thisRef: Activity,
+        property: KProperty<*>,
+    ): T {
         return intentValue.getValue(thisRef.intent, property.name)
     }
 }
@@ -82,7 +96,10 @@ fun booleanIntent(default: Boolean = false) = IntentWrapper(IntentValue.BoolValu
  * */
 
 class FragmentArgumentDelegate<T>(private val default: T) : ReadWriteProperty<Fragment, T> {
-    override fun getValue(thisRef: Fragment, property: KProperty<*>): T {
+    override fun getValue(
+        thisRef: Fragment,
+        property: KProperty<*>,
+    ): T {
         val arguments = thisRef.arguments ?: Bundle()
 
         return when (default) {
@@ -99,13 +116,20 @@ class FragmentArgumentDelegate<T>(private val default: T) : ReadWriteProperty<Fr
         } as T
     }
 
-    override fun setValue(thisRef: Fragment, property: KProperty<*>, value: T) {
+    override fun setValue(
+        thisRef: Fragment,
+        property: KProperty<*>,
+        value: T,
+    ) {
         val arguments = thisRef.arguments ?: Bundle()
         arguments.put(property.name, value)
     }
 }
 
-fun <T> Bundle.put(key: String, value: T) {
+fun <T> Bundle.put(
+    key: String,
+    value: T,
+) {
     when (value) {
         is Boolean -> putBoolean(key, value)
         is String -> putString(key, value)
