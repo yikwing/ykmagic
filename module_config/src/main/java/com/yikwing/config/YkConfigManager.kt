@@ -9,33 +9,32 @@ import com.yikwing.config.annotations.YkConfigValue
  * config动态配置管理类
  * */
 object YkConfigManager {
-
     private lateinit var config: Map<String, Any>
 
     private val cacheConfigMap = mutableMapOf<Class<*>, Any>()
 
     private val moshi: Moshi = Moshi.Builder().build()
 
-    private val mapAdapter = moshi.adapter<Map<String, Any>>(
-        Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java),
-    )
+    private val mapAdapter =
+        moshi.adapter<Map<String, Any>>(
+            Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java),
+        )
 
     /**
      * 初始化
      * */
     fun setUp(ykConfigStr: String) {
-        config = mapAdapter.fromJson(ykConfigStr)!!
+        config = mapAdapter.fromJson(ykConfigStr) ?: emptyMap()
     }
 
     /**
      * 获取实例对象
      * */
-    fun <T> getConfig(cls: Class<T>): T {
-        return cacheConfigMap.getOrPut(cls) {
-            val ykConfigNode = cls.getAnnotation(YkConfigNode::class.java)
-            requireNotNull(ykConfigNode) {
-                "Not Add YkConfigNode Tag"
-            }
+    fun <T> getConfig(cls: Class<T>): T =
+        cacheConfigMap.getOrPut(cls) {
+            val ykConfigNode =
+                cls.getAnnotation(YkConfigNode::class.java)
+                    ?: throw IllegalArgumentException("Class ${cls.name} is missing @YkConfigNode annotation")
 
             val finalNode = mutableMapOf<String, Any?>()
 
@@ -47,13 +46,14 @@ object YkConfigManager {
                     val splits = nodePath.split(".")
                     splits.forEachIndexed { index, s ->
                         if (index == splits.size - 1) {
-                            val result = when (field.type) {
-                                String::class.java -> tmpNode.getOrDefault(s, "")
-                                Int::class.java -> tmpNode.getOrDefault(s, -1)
-                                Double::class.java -> tmpNode.getOrDefault(s, -1.0)
-                                Boolean::class.java -> tmpNode.getOrDefault(s, false)
-                                else -> throw Error("Not impl Type")
-                            }
+                            val result =
+                                when (field.type) {
+                                    String::class.java -> tmpNode.getOrDefault(s, "")
+                                    Int::class.java -> tmpNode.getOrDefault(s, -1)
+                                    Double::class.java -> tmpNode.getOrDefault(s, -1.0)
+                                    Boolean::class.java -> tmpNode.getOrDefault(s, false)
+                                    else -> throw Error("Not impl Type")
+                                }
                             finalNode.put(field.name, result)
                         } else {
                             tmpNode = tmpNode.get(s) as Map<String, Any>
@@ -66,5 +66,4 @@ object YkConfigManager {
                 mapAdapter.toJson(finalNode as Map<String, Any>),
             )!!
         } as T
-    }
 }
