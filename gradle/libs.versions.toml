@@ -39,7 +39,7 @@ chuckerteam = "4.0.0"
 hamcrest = "2.2"
 junit = "4.13.2"
 
-mockk = "1.13.11"
+mockk = "1.13.12"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
 
