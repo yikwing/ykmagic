@@ -15,7 +15,7 @@ plugins {
 allprojects {
     configurations.all {
         resolutionStrategy {
-            force(libs.kotlinx.coroutines.core.jvm)
+            force(libs.kotlinx.coroutines.core)
         }
     }
 }

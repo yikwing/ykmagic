@@ -14,14 +14,14 @@ import android.view.View
  * */
 fun View.backGroundRadiusColor(
     color: Int,
-    radius: Float
+    radius: Float,
 ) {
     background = (
         GradientDrawable().apply {
             setColor(color)
             cornerRadius = radius
         }
-        )
+    )
 }
 
 /**
@@ -32,23 +32,24 @@ fun View.backGroundRadiusColor(
     topLeftRadius: Float,
     topRightRadius: Float,
     bottomRightRadius: Float,
-    bottomLeftRadius: Float
+    bottomLeftRadius: Float,
 ) {
     background = (
         GradientDrawable().apply {
             setColor(color)
-            cornerRadii = floatArrayOf(
-                topLeftRadius,
-                topLeftRadius,
-                topRightRadius,
-                topRightRadius,
-                bottomRightRadius,
-                bottomRightRadius,
-                bottomLeftRadius,
-                bottomLeftRadius
-            )
+            cornerRadii =
+                floatArrayOf(
+                    topLeftRadius,
+                    topLeftRadius,
+                    topRightRadius,
+                    topRightRadius,
+                    bottomRightRadius,
+                    bottomRightRadius,
+                    bottomLeftRadius,
+                    bottomLeftRadius,
+                )
         }
-        )
+    )
 }
 
 /**
@@ -57,12 +58,12 @@ fun View.backGroundRadiusColor(
 fun View.backGroundStroke(
     strokeWidth: Int,
     strokeColor: Int,
-    radius: Float
+    radius: Float,
 ) {
     background = (
         GradientDrawable().apply {
             setStroke(strokeWidth, strokeColor)
             cornerRadius = radius
         }
-        )
+    )
 }
