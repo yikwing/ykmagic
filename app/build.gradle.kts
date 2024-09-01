@@ -10,6 +10,8 @@ plugins {
 
     alias(libs.plugins.compose.compiler)
 
+    alias(libs.plugins.wire)
+
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 
@@ -79,12 +81,21 @@ fun getJsonStr(): String {
 
 android {
     namespace = "com.yikwing.ykquickdev"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
         applicationId = "com.yikwing.ykquickdev"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.compileSdk.get().toInt()
+        minSdk =
+            libs.versions.minSdk
+                .get()
+                .toInt()
+        targetSdk =
+            libs.versions.compileSdk
+                .get()
+                .toInt()
         versionCode = gitVersionCode()
         versionName = "1.0.0"
 
@@ -171,6 +182,10 @@ android {
     lint {
         checkDependencies = true
     }
+}
+
+wire {
+    kotlin {}
 }
 
 dependencies {

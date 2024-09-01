@@ -8,19 +8,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DataStoreViewModel @Inject constructor(
-    private val repository: DataStoreRepository,
-) : ViewModel() {
+class DataStoreViewModel
+    @Inject
+    constructor(
+        private val repository: DataStoreRepository,
+    ) : ViewModel() {
+        fun initX() {
+            viewModelScope.launch {
+                repository.count.set(123)
+            }
 
-    fun initX() {
-        viewModelScope.launch {
-            repository.count.set(123)
+            viewModelScope.launch {
+                Log.d("====", "${repository.count.get()}")
+            }
         }
-
-        viewModelScope.launch {
-            Log.d("====", "${repository.count.get()}")
-        }
-    }
 
 //    companion object {
 //        val Factory: ViewModelProvider.Factory = viewModelFactory {
@@ -29,4 +30,4 @@ class DataStoreViewModel @Inject constructor(
 //            }
 //        }
 //    }
-}
+    }
