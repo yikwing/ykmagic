@@ -1,7 +1,7 @@
 package com.yikwing.ykquickdev
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.`is`
 import org.junit.Test
 
 /**

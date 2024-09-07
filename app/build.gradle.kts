@@ -208,6 +208,7 @@ dependencies {
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+    implementation(libs.wire.moshi.adapter)
 
     implementation(libs.kotlinx.coroutines.android)
 

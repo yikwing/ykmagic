@@ -4,7 +4,7 @@ minSdk = "24"
 
 agp = "8.6.0"
 kotlin = "2.0.20"
-ksp = "2.0.20-1.0.24"
+ksp = "2.0.20-1.0.25"
 
 wire = "5.0.0"
 
@@ -73,6 +73,8 @@ okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
 
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
+wire-moshi-adapter = { group = "com.squareup.wire", name = "wire-moshi-adapter", version.ref = "wire" }
+
 
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 

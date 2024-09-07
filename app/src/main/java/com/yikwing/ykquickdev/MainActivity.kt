@@ -7,6 +7,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.squareup.moshi.Moshi
+import com.squareup.wire.WireJsonAdapterFactory
 import com.yikwing.ykquickdev.ui.fragment.MainScreenFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
@@ -17,6 +19,9 @@ import kotlin.reflect.KProperty
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    // WireJsonAdapterFactory
+    private val moshi: Moshi = Moshi.Builder().add(WireJsonAdapterFactory()).build()
+
     private var backPressTime by Delegates.observable(0L) { _: KProperty<*>, oldValue: Long, newValue: Long ->
         if (newValue - oldValue < 2000) {
             finish()
@@ -58,7 +63,9 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val preferences = userPreferencesStore.data.map { it }.first()
 
-            Log.d("==== lifecycleScope", preferences.toString())
+            val c = moshi.adapter(UserPreferences::class.java).toJson(preferences)
+
+            Log.d("==== lifecycleScope", c)
         }
     }
 
