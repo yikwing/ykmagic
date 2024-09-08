@@ -28,26 +28,32 @@ class RetrofitFactory private constructor() {
         networkInterceptor: Array<Interceptor> = emptyArray(),
     ) {
         retrofit =
-            Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(MoshiConverterFactory.create())
-                .client(initClient(applicationInterceptor, networkInterceptor)).build()
+            Retrofit
+                .Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(MoshiConverterFactory.create())
+                .client(initClient(applicationInterceptor, networkInterceptor))
+                .build()
     }
 
     private fun initClient(
         applicationInterceptor: Array<Interceptor>,
         networkInterceptor: Array<Interceptor>,
-    ): OkHttpClient {
-        return OkHttpClient.Builder().apply {
-            applicationInterceptor.forEach {
-                addInterceptor(it)
-            }
-        }.addNetworkInterceptor(logger).apply {
-            networkInterceptor.forEach {
-                addNetworkInterceptor(it)
-            }
-        }.connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS).build()
-    }
+    ): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .apply {
+                applicationInterceptor.forEach {
+                    addInterceptor(it)
+                }
+            }.addNetworkInterceptor(logger)
+            .apply {
+                networkInterceptor.forEach {
+                    addNetworkInterceptor(it)
+                }
+            }.connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .build()
 
-    fun <T> createService(service: Class<T>): T {
-        return retrofit.create(service)
-    }
+    fun <T> createService(service: Class<T>): T = retrofit.create(service)
 }
