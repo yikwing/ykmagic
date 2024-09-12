@@ -15,6 +15,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 
+    kotlin("plugin.serialization") version "2.0.20"
+
     id("com.github.ben-manes.versions") version "0.51.0"
 }
 
@@ -268,4 +270,6 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2")
 }

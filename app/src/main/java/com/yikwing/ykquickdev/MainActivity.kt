@@ -8,19 +8,19 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.squareup.moshi.Moshi
-import com.squareup.wire.WireJsonAdapterFactory
 import com.yikwing.ykquickdev.ui.fragment.MainScreenFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    // WireJsonAdapterFactory
-    private val moshi: Moshi = Moshi.Builder().add(WireJsonAdapterFactory()).build()
+    @Inject
+    lateinit var moshi: Moshi
 
     private var backPressTime by Delegates.observable(0L) { _: KProperty<*>, oldValue: Long, newValue: Long ->
         if (newValue - oldValue < 2000) {
@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
         vm.initX()
 
         updateUserPreferences()
-        logUserPreferences()
 
         setupOnBackPressedHandler()
 
@@ -53,9 +52,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUserPreferences() {
         lifecycleScope.launch {
-            userPreferencesStore.updateData { user ->
-                user.copy(name = "zs", age = 18)
-            }
+            userPreferencesStore
+                .updateData { user ->
+                    user.copy(name = "zs", age = 18)
+                }.also {
+                    logUserPreferences()
+                }
         }
     }
 

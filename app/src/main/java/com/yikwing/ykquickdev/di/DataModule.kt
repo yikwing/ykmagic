@@ -14,27 +14,22 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataModule {
-
+class DataModule {
     @Provides
     @Singleton
     fun provideDataBase(
-        @ApplicationContext context: Context
-    ): UserDatabase {
-        return Room.databaseBuilder(
-            context.applicationContext,
-            UserDatabase::class.java,
-            "Users.db"
-        ).build()
-    }
+        @ApplicationContext context: Context,
+    ): UserDatabase =
+        Room
+            .databaseBuilder(
+                context.applicationContext,
+                UserDatabase::class.java,
+                "Users.db",
+            ).build()
 
     @Provides
-    fun provideUserDao(
-        userDatabase: UserDatabase
-    ): UserDao = userDatabase.getUserDao()
+    fun provideUserDao(userDatabase: UserDatabase): UserDao = userDatabase.getUserDao()
 
     @Provides
-    fun provideChapterDao(
-        userDatabase: UserDatabase
-    ): ChapterDao = userDatabase.getChapterDao()
+    fun provideChapterDao(userDatabase: UserDatabase): ChapterDao = userDatabase.getChapterDao()
 }
