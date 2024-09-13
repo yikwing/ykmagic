@@ -24,10 +24,10 @@ room = "2.6.1"
 
 okhttp = "5.0.0-alpha.14"
 retrofit = "2.11.0"
-okio = "3.9.0"
+okio = "3.9.1"
 moshi = "1.15.1"
 coil = "2.7.0"
-kotlinx-coroutines = "1.9.0-RC.2"
+kotlinx-coroutines = "1.9.0"
 
 compose-bom = "2024.09.01"
 
