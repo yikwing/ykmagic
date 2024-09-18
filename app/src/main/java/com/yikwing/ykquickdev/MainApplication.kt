@@ -11,6 +11,7 @@ import com.yikwing.ykquickdev.task.DataStoreInitTask
 import com.yikwing.ykquickdev.task.LoggerInitTask
 import com.yikwing.ykquickdev.task.NetworkInitTask
 import dagger.hilt.android.HiltAndroidApp
+import kotlin.system.measureTimeMillis
 
 @HiltAndroidApp
 class MainApplication :
@@ -25,13 +26,18 @@ class MainApplication :
     }
 
     private fun initSetup() {
-        AppInitializer
-            .getInstance(this)
-            .addTask(ConfigInjectInitTask())
-            .addTask(LoggerInitTask())
-            .addTask(NetworkInitTask())
-            .addTask(DataStoreInitTask())
-            .build(debug = true)
+        val spendTime =
+            measureTimeMillis {
+                // 初始化SDK或者执行一些操作
+                AppInitializer
+                    .getInstance(this)
+                    .addTask(ConfigInjectInitTask())
+                    .addTask(LoggerInitTask())
+                    .addTask(NetworkInitTask())
+                    .addTask(DataStoreInitTask())
+                    .build(debug = true)
+            }
+        Log.i("initSetup", "spendTime: $spendTime")
     }
 
     override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this).crossfade(true).build()
