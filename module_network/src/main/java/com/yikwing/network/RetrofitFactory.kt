@@ -43,17 +43,19 @@ class RetrofitFactory private constructor() {
         OkHttpClient
             .Builder()
             .apply {
-                applicationInterceptor.forEach {
-                    addInterceptor(it)
-                }
-            }.addNetworkInterceptor(logger)
-            .apply {
-                networkInterceptor.forEach {
-                    addNetworkInterceptor(it)
-                }
-            }.connectTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .build()
+                // 添加应用层拦截器
+                applicationInterceptor.forEach { addInterceptor(it) }
+
+                // 添加网络层拦截器
+                networkInterceptor.forEach { addNetworkInterceptor(it) }
+
+                // 添加日志拦截器
+                addInterceptor(logger)
+
+                // 设置超时
+                connectTimeout(10, TimeUnit.SECONDS)
+                readTimeout(10, TimeUnit.SECONDS)
+            }.build()
 
     fun <T> createService(service: Class<T>): T = retrofit.create(service)
 }

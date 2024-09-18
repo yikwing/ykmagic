@@ -11,14 +11,15 @@ import com.yikwing.ykquickdev.ResultInterceptor
 class NetworkInitTask : Initializer<Unit> {
     override fun create(context: Context) {
         RetrofitFactory.instance.setup(
-            YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl,
-            arrayOf(
-                ChuckerInterceptor(context),
-                ResultInterceptor()
-            )
+            baseUrl = YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl,
+            applicationInterceptor =
+                arrayOf(
+                    ChuckerInterceptor(context),
+                    ResultInterceptor(),
+                ),
+            networkInterceptor = emptyArray(),
         )
     }
 
-    override fun dependencies(): Set<Class<out Initializer<*>>> =
-        setOf(LoggerInitTask::class.java, ConfigInjectInitTask::class.java)
+    override fun dependencies(): Set<Class<out Initializer<*>>> = setOf(LoggerInitTask::class.java, ConfigInjectInitTask::class.java)
 }

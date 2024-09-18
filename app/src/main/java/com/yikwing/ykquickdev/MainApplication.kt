@@ -1,8 +1,10 @@
 package com.yikwing.ykquickdev
 
 import android.app.Application
+import android.util.Log
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import com.yikwing.network.checkProxy
 import com.yikwing.proxy.startup.AppInitializer
 import com.yikwing.ykquickdev.task.ConfigInjectInitTask
 import com.yikwing.ykquickdev.task.DataStoreInitTask
@@ -16,6 +18,8 @@ class MainApplication :
     ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
+
+        Log.i("checkProxy", checkProxy().toString())
 
         initSetup()
     }
