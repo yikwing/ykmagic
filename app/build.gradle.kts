@@ -267,8 +267,10 @@ dependencies {
 
     // -------------- hilt 代支持ksp 再合并 ----------------
     implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2")
+
+    implementation("androidx.collection:collection:1.5.0-alpha02")
 }

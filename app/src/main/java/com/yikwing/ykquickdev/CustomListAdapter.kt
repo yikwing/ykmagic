@@ -13,39 +13,48 @@ import com.yikwing.ykquickdev.databinding.ItemTextAdapterBinding
  * @Date 18/4/2022-14:15
  * @Description:
  */
-class CustomListAdapter(private val listener: CustomListAdapterCallBack) :
-    ListAdapter<ChapterBean, CustomListAdapter.CustomListHolder>(DIFF_CALLBACK) {
+class CustomListAdapter(
+    private val listener: CustomListAdapterCallBack,
+) : ListAdapter<ChapterBean, CustomListAdapter.CustomListHolder>(DIFF_CALLBACK) {
     companion object {
-        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ChapterBean>() {
-            override fun areItemsTheSame(oldItem: ChapterBean, newItem: ChapterBean): Boolean {
-                return oldItem.courseId == newItem.courseId
-            }
+        private val DIFF_CALLBACK =
+            object : DiffUtil.ItemCallback<ChapterBean>() {
+                override fun areItemsTheSame(
+                    oldItem: ChapterBean,
+                    newItem: ChapterBean,
+                ): Boolean = oldItem.courseId == newItem.courseId
 
-            override fun areContentsTheSame(oldItem: ChapterBean, newItem: ChapterBean): Boolean {
-                return oldItem == newItem
+                override fun areContentsTheSame(
+                    oldItem: ChapterBean,
+                    newItem: ChapterBean,
+                ): Boolean = oldItem == newItem
             }
-        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomListHolder {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): CustomListHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemTextAdapterBinding.inflate(inflater, parent, false)
         return CustomListHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CustomListHolder, position: Int) {
-        val repo = getItem(position)
+    override fun onBindViewHolder(
+        holder: CustomListHolder,
+        position: Int,
+    ) {
+        val repo = getItem(position) ?: return
 
-        if (repo != null) {
-            holder.binding.itemWxText.text = repo.name
-            holder.binding.mainRoot.setOnClickListener {
-                listener.removeItem(position)
-            }
+        holder.binding.itemWxText.text = repo.name
+        holder.binding.mainRoot.setOnClickListener {
+            listener.removeItem(position)
         }
     }
 
-    class CustomListHolder(val binding: ItemTextAdapterBinding) :
-        RecyclerView.ViewHolder(binding.root)
+    class CustomListHolder(
+        val binding: ItemTextAdapterBinding,
+    ) : RecyclerView.ViewHolder(binding.root)
 }
 
 interface CustomListAdapterCallBack {
