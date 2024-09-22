@@ -43,3 +43,6 @@
 
 #// You can specify any path and filename.
 -printconfiguration ./build/r8/full-r8-config.txt
+
+-keep class com.squareup.wire.** { *; }
+-keep class com.yikwing.ykquickdev.UserPreferences { *; }

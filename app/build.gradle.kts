@@ -207,7 +207,7 @@ dependencies {
     // 三方依赖库
     implementation(libs.bundles.network)
 
-    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
     implementation(libs.wire.moshi.adapter)
 
