@@ -3,6 +3,7 @@ package com.yikwing.ykquickdev
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -11,10 +12,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import coil.load
+import coil.size.Scale
+import coil.transform.CircleCropTransformation
 import com.yikwing.extension.FragmentArgumentDelegate
 import com.yikwing.extension.app.getPackageInfo
 import com.yikwing.extension.compressImageFromUri
 import com.yikwing.extension.unSafeLazy
+import com.yikwing.extension.view.backGroundRadiusColor
 import com.yikwing.proxy.BaseFragment
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
 import java.io.File
@@ -54,12 +58,55 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
                 if (uri != null) {
                     Log.d("PhotoPicker", "Selected URI: $uri")
 
+                    val cacheFile =
+                        File(requireContext().cacheDir, "cache_uri_${Random.nextLong()}").path
+
                     compressImageFromUri(
                         requireContext(),
                         uri,
-                        File(requireContext().cacheDir, "cache_uri_${Random.nextLong()}").path,
+                        cacheFile,
                         100,
-                    )
+                    ).yes {
+                        binding.appIcon.apply {
+                            backGroundRadiusColor(
+                                Color.parseColor("#54CEE3"),
+                                50f,
+                            )
+                            load(
+                                File(cacheFile),
+                            ) {
+//                                transformations(
+//                                    RoundedCornersTransformation(
+//                                        topLeft = 20f,
+//                                        topRight = 20f,
+//                                        bottomLeft = 50f,
+//                                        bottomRight = 50f,
+//                                    ),
+//                                )
+
+                                transformations(
+                                    CircleCropTransformation(),
+                                )
+
+                                scale(Scale.FILL)
+
+                                listener(
+                                    onStart = { request ->
+                                        Log.d("coil-", "onStart")
+                                    },
+                                    onError = { request, throwable ->
+                                        Log.d("coil-", "onError")
+                                    },
+                                    onCancel = { request ->
+                                        Log.d("coil-", "onCancel")
+                                    },
+                                    onSuccess = { request, metadata ->
+                                        Log.d("coil-", "onSuccess")
+                                    },
+                                )
+                            }
+                        }
+                    }
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                 }
@@ -67,7 +114,7 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
     }
 
     override fun lazyInit() {
-        binding.appIcon.load(packageInfo?.appIcon)
+//        binding.appIcon.load(packageInfo?.appIcon)
 
         binding.tvAppName.text = packageInfo?.appName
         binding.tvAppPackage.text = packageInfo?.appPackageName
@@ -103,5 +150,11 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
         val clip = ClipData.newPlainText("simple text", copyStr)
         clipboard.setPrimaryClip(clip)
         Toast.makeText(context, tips, Toast.LENGTH_SHORT).show()
+    }
+}
+
+inline fun Boolean.yes(block: () -> Unit) {
+    if (this) {
+        block()
     }
 }

@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import coil.ImageLoader
 import coil.ImageLoaderFactory
+import coil.util.Logger
 import com.yikwing.extension.compressBitmap
 import com.yikwing.extension.compressImageFromUri
 import com.yikwing.extension.copyAssetToCache
@@ -70,5 +71,22 @@ class MainApplication :
         Log.i("initSetup", "spendTime: $spendTime")
     }
 
-    override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this).crossfade(true).build()
+    override fun newImageLoader(): ImageLoader =
+        ImageLoader
+            .Builder(this)
+            .crossfade(true)
+            .logger(
+                object : Logger {
+                    override var level: Int = Log.DEBUG
+
+                    override fun log(
+                        tag: String,
+                        priority: Int,
+                        message: String?,
+                        throwable: Throwable?,
+                    ) {
+                        Log.i(tag, message.toString())
+                    }
+                },
+            ).build()
 }
