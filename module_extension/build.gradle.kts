@@ -47,6 +47,8 @@ android {
 dependencies {
     implementation(libs.appcompat)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.exifinterface)
+
     implementation(libs.moshi.kotlin)
 
     testImplementation(libs.bundles.testBundle)

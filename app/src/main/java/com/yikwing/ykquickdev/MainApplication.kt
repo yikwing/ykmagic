@@ -6,9 +6,8 @@ import android.util.Log
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.util.Logger
-import com.yikwing.extension.compressBitmap
-import com.yikwing.extension.compressImageFromUri
 import com.yikwing.extension.copyAssetToCache
+import com.yikwing.extension.image.compressImageFromUri
 import com.yikwing.network.checkProxy
 import com.yikwing.proxy.startup.AppInitializer
 import com.yikwing.ykquickdev.task.ConfigInjectInitTask
@@ -44,7 +43,6 @@ class MainApplication :
         if (copiedFile != null) {
             Log.i("CopyAsset", "文件已成功复制到 cache 目录: ${copiedFile.absolutePath}")
 
-            compressBitmap(copiedFile.path, 100, File(this.cacheDir, "cache_path_$fileName").path)
             compressImageFromUri(
                 this,
                 Uri.fromFile(copiedFile),

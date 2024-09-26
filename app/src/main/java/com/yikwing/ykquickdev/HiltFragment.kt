@@ -16,7 +16,7 @@ import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import com.yikwing.extension.FragmentArgumentDelegate
 import com.yikwing.extension.app.getPackageInfo
-import com.yikwing.extension.compressImageFromUri
+import com.yikwing.extension.image.compressImageFromUri
 import com.yikwing.extension.unSafeLazy
 import com.yikwing.extension.view.backGroundRadiusColor
 import com.yikwing.proxy.BaseFragment
