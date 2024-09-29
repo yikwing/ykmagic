@@ -30,40 +30,41 @@ object YkConfigManager {
     /**
      * 获取实例对象
      * */
-    fun <T> getConfig(cls: Class<T>): T =
-        cacheConfigMap.getOrPut(cls) {
-            val ykConfigNode =
-                cls.getAnnotation(YkConfigNode::class.java)
-                    ?: throw IllegalArgumentException("Class ${cls.name} is missing @YkConfigNode annotation")
+    fun <T> getConfig(cls: Class<T>): T & Any =
+        cacheConfigMap
+            .getOrPut(cls) {
+                val ykConfigNode = cls.getAnnotation(YkConfigNode::class.java)
+                requireNotNull(ykConfigNode) { "Class ${cls.name} is missing @YkConfigNode annotation" }
 
-            val finalNode = mutableMapOf<String, Any?>()
+                val finalNode = mutableMapOf<String, Any?>()
 
-            cls.declaredFields.forEach { field ->
-                var tmpNode = config
-                val ykConfigValue = field.getAnnotation(YkConfigValue::class.java)
-                ykConfigValue?.let {
-                    val nodePath = it.path
-                    val splits = nodePath.split(".")
-                    splits.forEachIndexed { index, s ->
-                        if (index == splits.size - 1) {
-                            val result =
-                                when (field.type) {
-                                    String::class.java -> tmpNode.getOrDefault(s, "")
-                                    Int::class.java -> tmpNode.getOrDefault(s, -1)
-                                    Double::class.java -> tmpNode.getOrDefault(s, -1.0)
-                                    Boolean::class.java -> tmpNode.getOrDefault(s, false)
-                                    else -> throw Error("Not impl Type")
-                                }
-                            finalNode.put(field.name, result)
-                        } else {
-                            tmpNode = tmpNode.get(s) as Map<String, Any>
+                cls.declaredFields.forEach { field ->
+                    var tmpNode = config
+                    val ykConfigValue = field.getAnnotation(YkConfigValue::class.java)
+                    ykConfigValue?.let {
+                        val nodePath = it.path
+                        val splits = nodePath.split(".")
+                        splits.forEachIndexed { index, s ->
+                            if (index == splits.size - 1) {
+                                val result =
+                                    when (field.type) {
+                                        String::class.java -> tmpNode.getOrDefault(s, "")
+                                        Int::class.java -> tmpNode.getOrDefault(s, -1)
+                                        Double::class.java -> tmpNode.getOrDefault(s, -1.0)
+                                        Boolean::class.java -> tmpNode.getOrDefault(s, false)
+                                        else -> throw Error("Not impl Type")
+                                    }
+                                finalNode.put(field.name, result)
+                            } else {
+                                tmpNode = tmpNode.get(s) as Map<String, Any>
+                            }
                         }
                     }
                 }
-            }
 
-            moshi.adapter(cls).fromJson(
-                mapAdapter.toJson(finalNode as Map<String, Any>),
-            )!!
-        } as T
+                moshi.adapter(cls).fromJsonValue(finalNode)
+                    ?: throw IllegalArgumentException("Failed to parse config for class '${cls.name}'")
+            }.let { t ->
+                cls.cast(t)
+            }!!
 }

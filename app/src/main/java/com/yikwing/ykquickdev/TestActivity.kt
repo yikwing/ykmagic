@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import com.yikwing.extension.stringIntent
 
 class TestActivity : ComponentActivity() {
-
     private val fromTag by stringIntent("tag")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,11 +26,11 @@ class TestActivity : ComponentActivity() {
             MaterialTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Center,
                     ) {
                         Text(text = "123")
                     }

@@ -22,31 +22,31 @@ sealed class IntentValue<T> {
         name: String,
     ): T
 
-    data class IntValue(private val defaultValue: Int) : IntentValue<Int>() {
+    data class IntValue(
+        private val defaultValue: Int,
+    ) : IntentValue<Int>() {
         override fun getValue(
             intent: Intent,
             name: String,
-        ): Int {
-            return intent.getIntExtra(name, defaultValue)
-        }
+        ): Int = intent.getIntExtra(name, defaultValue)
     }
 
-    data class StringValue(private val defaultValue: String) : IntentValue<String>() {
+    data class StringValue(
+        private val defaultValue: String,
+    ) : IntentValue<String>() {
         override fun getValue(
             intent: Intent,
             name: String,
-        ): String {
-            return intent.getStringExtra(name) ?: defaultValue
-        }
+        ): String = intent.getStringExtra(name) ?: defaultValue
     }
 
-    data class BoolValue(private val defaultValue: Boolean) : IntentValue<Boolean>() {
+    data class BoolValue(
+        private val defaultValue: Boolean,
+    ) : IntentValue<Boolean>() {
         override fun getValue(
             intent: Intent,
             name: String,
-        ): Boolean {
-            return intent.getBooleanExtra(name, defaultValue)
-        }
+        ): Boolean = intent.getBooleanExtra(name, defaultValue)
     }
 }
 
@@ -55,13 +55,13 @@ sealed class IntentValue<T> {
  * 获取activity intent参数
  *
  * */
-class IntentWrapper<T>(private val intentValue: IntentValue<T>) : ReadOnlyProperty<Activity, T> {
+class IntentWrapper<T>(
+    private val intentValue: IntentValue<T>,
+) : ReadOnlyProperty<Activity, T> {
     override fun getValue(
         thisRef: Activity,
         property: KProperty<*>,
-    ): T {
-        return intentValue.getValue(thisRef.intent, property.name)
-    }
+    ): T = intentValue.getValue(thisRef.intent, property.name)
 }
 
 /**
@@ -95,7 +95,9 @@ fun booleanIntent(default: Boolean = false) = IntentWrapper(IntentValue.BoolValu
  *
  * */
 
-class FragmentArgumentDelegate<T>(private val default: T) : ReadWriteProperty<Fragment, T> {
+class FragmentArgumentDelegate<T>(
+    private val default: T,
+) : ReadWriteProperty<Fragment, T> {
     override fun getValue(
         thisRef: Fragment,
         property: KProperty<*>,

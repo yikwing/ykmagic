@@ -6,15 +6,16 @@ import kotlinx.coroutines.flow.flow
 /**
  * 防抖
  * */
-fun <T> Flow<T>.throttleFirst(thresholdMillis: Long): Flow<T> = flow {
-    var lastTime = 0L
+fun <T> Flow<T>.throttleFirst(thresholdMillis: Long): Flow<T> =
+    flow {
+        var lastTime = 0L
 
-    collect { upstream ->
-        val currentTime = System.currentTimeMillis()
+        collect { upstream ->
+            val currentTime = System.currentTimeMillis()
 
-        if (currentTime - lastTime > thresholdMillis) {
-            lastTime = currentTime
-            emit(upstream)
+            if (currentTime - lastTime > thresholdMillis) {
+                lastTime = currentTime
+                emit(upstream)
+            }
         }
     }
-}

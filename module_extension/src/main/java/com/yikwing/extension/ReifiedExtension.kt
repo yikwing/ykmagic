@@ -17,7 +17,7 @@ inline fun <reified T : Activity> Activity.startActivity(context: Context) {
 
 inline fun <reified T : Activity> Activity.startActivity(
     context: Context,
-    block: Intent.() -> Unit
+    block: Intent.() -> Unit,
 ) {
     startActivity(Intent(context, T::class.java).apply(block))
 }
