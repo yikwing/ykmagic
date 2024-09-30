@@ -1,10 +1,12 @@
 package com.yikwing.network
 
+import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
 
 class RetrofitFactory private constructor() {
@@ -27,12 +29,24 @@ class RetrofitFactory private constructor() {
         applicationInterceptor: Array<Interceptor> = emptyArray(),
         networkInterceptor: Array<Interceptor> = emptyArray(),
     ) {
+        val json =
+            Json {
+                ignoreUnknownKeys = true // 忽略未知字段
+//                isLenient = true // 支持宽松的解析，例如多余的逗号
+                prettyPrint = true // 美化输出（可选）
+            }
+
+        // 定义媒体类型
+        val contentType = "application/json; charset=UTF-8".toMediaType()
+
         retrofit =
             Retrofit
                 .Builder()
                 .baseUrl(baseUrl)
-                .addConverterFactory(MoshiConverterFactory.create())
-                .client(initClient(applicationInterceptor, networkInterceptor))
+//                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(
+                    json.asConverterFactory(contentType),
+                ).client(initClient(applicationInterceptor, networkInterceptor))
                 .build()
     }
 

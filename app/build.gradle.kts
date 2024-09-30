@@ -270,7 +270,8 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    // https://juejin.cn/post/7079229035254906888
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.7.3")
 
     implementation("androidx.collection:collection:1.5.0-alpha02")
 }

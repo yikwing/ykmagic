@@ -12,7 +12,7 @@ interface HttpBinApiServer {
 
     @GET
     suspend fun getOtherHeaders(
-        @Url url: String = "https://httpbin.org/headers"
+        @Url url: String = "https://httpbin.org/headers",
     ): HttpBinHeaders
 }
 

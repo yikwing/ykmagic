@@ -4,8 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
 @Entity(tableName = "t_chapter")
+@Serializable
 @JsonClass(generateAdapter = true)
 data class ChapterBean(
     @ColumnInfo(name = "course_id")
