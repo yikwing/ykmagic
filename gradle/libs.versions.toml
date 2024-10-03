@@ -71,7 +71,6 @@ okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okht
 okhttp3-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit2-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
-retrofit2-kotlinx-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
 okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
 
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
@@ -141,6 +140,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 [bundles]
-network = ["okhttp3", "okhttp3-logging-interceptor", "retrofit2", "retrofit2-kotlinx-serialization", "retrofit2-moshi", "okio"]
+network = ["okhttp3", "okhttp3-logging-interceptor", "retrofit2", "retrofit2-moshi", "okio"]
 testBundle = ["hamcrest", "hamcrest-library", "junit", "mockk"]
 androidTestBundle = ["androidx-test-ext-junit", "espresso-core"]
