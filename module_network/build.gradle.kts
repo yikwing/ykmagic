@@ -57,6 +57,8 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
 
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.7.3")
+
     testImplementation(libs.bundles.testBundle)
     androidTestImplementation(libs.bundles.androidTestBundle)
 }

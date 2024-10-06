@@ -273,5 +273,5 @@ dependencies {
     // https://juejin.cn/post/7079229035254906888
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.7.3")
 
-    implementation("androidx.collection:collection:1.5.0-alpha02")
+    implementation("androidx.collection:collection-ktx:1.4.4")
 }
