@@ -50,6 +50,7 @@ dependencies {
     implementation(libs.androidx.exifinterface)
 
     implementation(libs.moshi.kotlin)
+    implementation(libs.lifecycle.runtime.compose)
 
     testImplementation(libs.bundles.testBundle)
 }
