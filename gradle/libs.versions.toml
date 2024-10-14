@@ -3,7 +3,7 @@ compileSdk = "34"
 minSdk = "26"
 
 agp = "8.7.0"
-kotlin = "2.0.20"
+kotlin = "2.0.21"
 ksp = "2.0.21-1.0.25"
 
 wire = "5.1.0"
