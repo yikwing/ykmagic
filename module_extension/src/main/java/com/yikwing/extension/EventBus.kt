@@ -4,13 +4,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 object EventBus {
-    private val _events = MutableSharedFlow<Pair<String, Any>>(extraBufferCapacity = 1)
+    private val _events =
+        MutableSharedFlow<Any>(
+            replay = 1,
+            extraBufferCapacity = 0,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST,
+        )
+
     val events = _events.asSharedFlow()
 
     suspend fun emit(
