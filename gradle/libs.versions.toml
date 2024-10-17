@@ -10,7 +10,7 @@ wire = "5.1.0"
 
 hilt = "2.52"
 
-activity = "1.9.2"
+activity = "1.9.3"
 fragment-ktx = "1.8.4"
 core-ktx = "1.13.1"
 appcompat = "1.7.0"
@@ -23,17 +23,17 @@ material = "1.12.0"
 lifecycle = "2.8.6"
 room = "2.6.1"
 
-okhttp = "5.0.0-alpha.14"
+okhttp = "4.12.0"
 retrofit = "2.11.0"
 okio = "3.9.1"
 moshi = "1.15.1"
 coil = "2.7.0"
 kotlinx-coroutines = "1.9.0"
 
-compose-bom = "2024.09.03"
+compose-bom = "2024.10.00"
 
 constraintlayout-compose = "1.0.1"
-navigation-compose = "2.8.2"
+navigation-compose = "2.8.3"
 
 glance = "1.1.0"
 leakcanary = "3.0-alpha-8"
