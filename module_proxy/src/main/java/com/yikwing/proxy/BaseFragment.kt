@@ -7,21 +7,32 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 
 abstract class BaseFragment<VB : ViewBinding>(
-    val bindingBlock: (LayoutInflater, ViewGroup?, Boolean) -> VB
-) :
-    LazyFragment() {
-
+    val bindingBlock: (LayoutInflater, ViewGroup?, Boolean) -> VB,
+) : LazyFragment() {
     private var _binding: VB? = null
     protected val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = bindingBlock(inflater, container, false)
         return binding.root
     }
+
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(savedInstanceState)
+        initListener()
+    }
+
+    open fun initListener() {}
+
+    open fun initView(savedInstanceState: Bundle?) {}
 
     override fun onDestroyView() {
         super.onDestroyView()
