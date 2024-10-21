@@ -16,3 +16,11 @@ inline fun <reified K, reified V> Moshi.mapAdapter(): JsonAdapter<Map<K, V>> {
         Types.newParameterizedType(Map::class.java, K::class.java, V::class.java)
     return adapter(parameterizedType)
 }
+
+// 美化json输出
+fun prettierJson(json: String): String {
+    val moshi = Moshi.Builder().build()
+    val mapAdapter = moshi.mapAdapter<String, Any>().indent("  ")
+    val map = mapAdapter.fromJson(json)
+    return mapAdapter.toJson(map)
+}
