@@ -5,29 +5,29 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
+import com.yikwing.proxy.BaseActivity
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import com.yikwing.ykquickdev.ui.fragment.HiltScreenFragment
-import com.yikwing.proxy.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::inflate) {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val onBackPressedCallback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                setResult(
-                    Activity.RESULT_OK,
-                    Intent().apply {
-                        putExtra("result", "result from A")
-                    }
-                )
+        val onBackPressedCallback =
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    setResult(
+                        Activity.RESULT_OK,
+                        Intent().apply {
+                            putExtra("result", "result from A")
+                        },
+                    )
 
-                finish()
+                    finish()
+                }
             }
-        }
 
         onBackPressedDispatcher.addCallback(onBackPressedCallback)
 
@@ -39,8 +39,8 @@ class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::in
         }
     }
 
-    override fun initView() {
-        super.initView()
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
 
         val data = intent.data
         val action = intent.action
