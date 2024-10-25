@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yikwing.logger"
+    namespace = "com.yikwing.module_view"
     compileSdk =
         libs.versions.compileSdk
             .get()
@@ -25,29 +25,29 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            // 启用资源压缩
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
     kotlinOptions {
         jvmTarget = "17"
     }
 }
 
 dependencies {
-    implementation(libs.appcompat)
 
-    testImplementation(libs.bundles.testBundle)
-    androidTestImplementation(libs.bundles.androidTestBundle)
+    implementation(libs.core.ktx)
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 }
 
 afterEvaluate {
@@ -55,7 +55,7 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 groupId = "com.yikwing"
-                artifactId = "logger"
+                artifactId = "component"
                 version = "1.0.1"
 
                 from(components["release"])
