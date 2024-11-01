@@ -15,9 +15,7 @@ import coil.load
 import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import com.yikwing.extension.FragmentArgumentDelegate
-import com.yikwing.extension.app.getPackageInfo
 import com.yikwing.extension.image.compressImageFromUri
-import com.yikwing.extension.unSafeLazy
 import com.yikwing.extension.view.backGroundRadiusColor
 import com.yikwing.proxy.BaseFragment
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
@@ -39,10 +37,6 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
             param1 = a
             param2 = b
         }
-    }
-
-    private val packageInfo by unSafeLazy {
-        requireContext().getPackageInfo("com.yktc.nutritiondiet")
     }
 
     override fun onViewCreated(
@@ -111,34 +105,6 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
-    }
-
-    override fun lazyInit() {
-//        binding.appIcon.load(packageInfo?.appIcon)
-
-        binding.tvAppName.text = packageInfo?.appName
-        binding.tvAppPackage.text = packageInfo?.appPackageName
-
-        binding.tvHiltAppVersionCode.text = packageInfo?.versionCode?.toString()
-        binding.tvHiltAppVersionName.text = packageInfo?.versionName
-
-        binding.tvAppVersionCode.setOnClickListener {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        }
-
-        binding.tvHiltMd5.apply {
-            text = packageInfo?.signMD5
-            setOnClickListener {
-                copyToClipboard(context, packageInfo?.signMD5, "MD5值已复制")
-            }
-        }
-
-        binding.tvHiltSha1.apply {
-            text = packageInfo?.signSHA1
-            setOnClickListener {
-                copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
-            }
-        }
     }
 
     private fun copyToClipboard(

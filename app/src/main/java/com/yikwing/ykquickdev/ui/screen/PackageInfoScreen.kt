@@ -3,6 +3,7 @@ package com.yikwing.ykquickdev.ui.screen
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.pm.PackageInfo
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -24,21 +25,16 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import coil.compose.AsyncImage
-import com.yikwing.extension.app.PackageInfo
 import com.yikwing.extension.app.getMetaData
-import com.yikwing.extension.app.getPackageInfo
 import com.yikwing.extension.unSafeLazy
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun PackageInfoScreen(
     navigationToPage: (String) -> Unit = {},
-    navigationToDiy: () -> Unit = {}
+    navigationToDiy: () -> Unit = {},
 ) {
     val context: Context = LocalContext.current
-    val packageInfo by unSafeLazy {
-        context.getPackageInfo("com.yktc.nutritiondiet")
-    }
 
     val buildTime by unSafeLazy {
         context.getMetaData("com.yikwing.debug.time")
@@ -78,21 +74,25 @@ fun PackageInfoScreen(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 navigationToPage("hello")
-            }
+            },
         ) {
             Text(text = "参数传递")
         }
 
         Button(
             modifier = Modifier.fillMaxWidth(),
-            onClick = navigationToDiy
+            onClick = navigationToDiy,
         ) {
             Text(text = "diy input")
         }
     }
 }
 
-private fun copyToClipboard(context: Context, copyStr: String?, tips: String) {
+private fun copyToClipboard(
+    context: Context,
+    copyStr: String?,
+    tips: String,
+) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip = ClipData.newPlainText("simple text", copyStr)
     clipboard.setPrimaryClip(clip)
@@ -101,41 +101,44 @@ private fun copyToClipboard(context: Context, copyStr: String?, tips: String) {
 
 @Composable
 fun TopHeader(packageInfo: PackageInfo?) {
-    val decoupledConstraints = ConstraintSet {
-        val cover = createRefFor("cover")
-        val appName = createRefFor("appName")
-        val appPackageName = createRefFor("appPackageName")
+    val decoupledConstraints =
+        ConstraintSet {
+            val cover = createRefFor("cover")
+            val appName = createRefFor("appName")
+            val appPackageName = createRefFor("appPackageName")
 
-        constrain(cover) {
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
+            constrain(cover) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+            }
+            constrain(appName) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(cover.bottom, margin = 8.dp)
+            }
+            constrain(appPackageName) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(appName.bottom, margin = 8.dp)
+            }
         }
-        constrain(appName) {
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            top.linkTo(cover.bottom, margin = 8.dp)
-        }
-        constrain(appPackageName) {
-            start.linkTo(parent.start)
-            end.linkTo(parent.end)
-            top.linkTo(appName.bottom, margin = 8.dp)
-        }
-    }
 
     ConstraintLayout(decoupledConstraints, modifier = Modifier.fillMaxWidth()) {
         AsyncImage(
-            model = packageInfo?.appIcon,
+            model = packageInfo?.applicationInfo?.icon ?: 0,
             contentDescription = null,
-            modifier = Modifier
-                .size(120.dp)
-                .layoutId("cover")
+            modifier =
+                Modifier
+                    .size(120.dp)
+                    .layoutId("cover"),
         )
-        Text(packageInfo?.appName ?: "", modifier = Modifier.layoutId("appName"))
+        Text(packageInfo?.applicationInfo?.name ?: "", modifier = Modifier.layoutId("appName"))
         Text(
-            packageInfo?.appPackageName ?: "",
-            modifier = Modifier
-                .layoutId("appPackageName")
-                .padding(bottom = 30.dp)
+            packageInfo?.applicationInfo?.packageName ?: "",
+            modifier =
+                Modifier
+                    .layoutId("appPackageName")
+                    .padding(bottom = 30.dp),
         )
     }
 }
@@ -144,16 +147,17 @@ fun TopHeader(packageInfo: PackageInfo?) {
 fun PackageInfoDes(
     title: String,
     info: String,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     Column {
         Text(title, color = Color(0xFF999999))
         Text(
             info,
             color = Color(0xFF666666),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onClick() }
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clickable { onClick() },
         )
         Spacer(modifier = Modifier.height(30.dp))
     }

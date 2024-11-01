@@ -18,5 +18,5 @@ abstract class LazyFragment : Fragment() {
         isLoaded = false
     }
 
-    abstract fun lazyInit()
+    protected open fun lazyInit() {}
 }

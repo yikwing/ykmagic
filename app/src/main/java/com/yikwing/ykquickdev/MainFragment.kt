@@ -12,20 +12,21 @@ import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.yikwing.logger.Logger
 import com.yikwing.extension.unSafeLazy
-import com.yikwing.ykquickdev.databinding.MainFragmentBinding
+import com.yikwing.logger.Logger
 import com.yikwing.network.ApiException
 import com.yikwing.network.collectState
 import com.yikwing.network.observeState
 import com.yikwing.permission.PermissionX
 import com.yikwing.proxy.BaseFragment
+import com.yikwing.ykquickdev.databinding.MainFragmentBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainFragment :
     BaseFragment<MainFragmentBinding>(MainFragmentBinding::inflate),
     CustomListAdapterCallBack {
-
     companion object {
         fun newInstance() = MainFragment()
     }
@@ -33,19 +34,24 @@ class MainFragment :
     private val viewModel: MyViewModel by viewModels()
 
     var forActivityResultLauncher =
-        registerForActivityResult(object : ActivityResultContract<String, String>() {
-            override fun createIntent(context: Context, input: String): Intent {
-                return Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?$input"))
-            }
+        registerForActivityResult(
+            object : ActivityResultContract<String, String>() {
+                override fun createIntent(
+                    context: Context,
+                    input: String,
+                ): Intent = Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?$input"))
 
-            override fun parseResult(resultCode: Int, intent: Intent?): String {
-                return if (resultCode == Activity.RESULT_OK) {
-                    intent?.getStringExtra("result") ?: "empty"
-                } else {
-                    ""
-                }
-            }
-        }) {
+                override fun parseResult(
+                    resultCode: Int,
+                    intent: Intent?,
+                ): String =
+                    if (resultCode == Activity.RESULT_OK) {
+                        intent?.getStringExtra("result") ?: "empty"
+                    } else {
+                        ""
+                    }
+            },
+        ) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
 
@@ -62,7 +68,10 @@ class MainFragment :
 //        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         Logger.d("===%s===", "onActivityCreated")
@@ -140,8 +149,8 @@ class MainFragment :
             requireActivity(),
             arrayOf(
                 android.Manifest.permission.CALL_PHONE,
-                android.Manifest.permission.CAMERA
-            )
+                android.Manifest.permission.CAMERA,
+            ),
         ) { allGranted, deniedList ->
             if (allGranted) {
                 Toast.makeText(context, "已全部同意", Toast.LENGTH_SHORT).show()

@@ -28,20 +28,12 @@ val keystorePropertiesPath: String = rootProject.file("keystore.properties").pat
 val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 
 // 资源重定向
-fun listSubFile(): List<String> {
-    // 新资源目录
-    val resFolder = "src/main/res/layouts"
-    val resFile = file(resFolder)
-    // 新资源目录下的文件夹
-    val files = resFile.listFiles()
-    val folders = mutableListOf<String>()
-
-    // 遍历路径
-    files?.forEach { item -> folders.add(item.absolutePath) }
-    // 资源整合
-    folders.add(resFile.parentFile.absolutePath)
-    return folders
-}
+fun listSubFile(): List<String> =
+    listOf(
+        "src/main/res/common",
+        "src/main/res/activity",
+        "src/main/res/fragment",
+    )
 
 // 获取当前打包时间
 fun getDateStr(): String {
@@ -166,10 +158,6 @@ android {
         compose = true
     }
 
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = "1.5.14"
-//    }
-
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -273,5 +261,5 @@ dependencies {
     // https://juejin.cn/post/7079229035254906888
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.7.3")
 
-    implementation("androidx.collection:collection-ktx:1.4.4")
+    implementation("androidx.collection:collection-ktx:1.4.5")
 }
