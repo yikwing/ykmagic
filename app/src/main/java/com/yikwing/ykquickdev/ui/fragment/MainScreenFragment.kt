@@ -11,15 +11,17 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContract
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -42,51 +44,54 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainScreenFragment : Fragment() {
-
     private var forActivityResultLauncher =
-        registerForActivityResult(object : ActivityResultContract<String, String>() {
-            override fun createIntent(context: Context, input: String): Intent {
-                return Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?$input"))
-            }
+        registerForActivityResult(
+            object : ActivityResultContract<String, String>() {
+                override fun createIntent(
+                    context: Context,
+                    input: String,
+                ): Intent = Intent(Intent.ACTION_VIEW, Uri.parse("yikwing://yk:9001/props?$input"))
 
-            override fun parseResult(resultCode: Int, intent: Intent?): String {
-                return if (resultCode == Activity.RESULT_OK) {
-                    intent?.getStringExtra("result") ?: "empty"
-                } else {
-                    ""
-                }
-            }
-        }) {
+                override fun parseResult(
+                    resultCode: Int,
+                    intent: Intent?,
+                ): String =
+                    if (resultCode == Activity.RESULT_OK) {
+                        intent?.getStringExtra("result") ?: "empty"
+                    } else {
+                        ""
+                    }
+            },
+        ) {
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return ComposeView(requireContext()).apply {
+        savedInstanceState: Bundle?,
+    ): View =
+        ComposeView(requireContext()).apply {
             // Dispose of the Composition when the view's LifecycleOwner
             // is destroyed
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
-                    Surface(
+                    Scaffold(
                         modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        ItemDepot(forActivityResultLauncher)
+                    ) { innerPadding ->
+                        ItemDepot(innerPadding, forActivityResultLauncher)
                     }
                 }
             }
         }
-    }
 }
 
 @Composable
 fun ItemDepot(
+    innerPadding: PaddingValues,
     forActivityResultLauncher: ActivityResultLauncher<String>,
-    mainViewModel: MyViewModel = viewModel()
+    mainViewModel: MyViewModel = viewModel(),
 ) {
     val data by mainViewModel.wanAndroidList.collectAsState()
 
@@ -98,24 +103,32 @@ fun ItemDepot(
         is RequestState.Success<List<ChapterBean>?> -> {
             data.doSuccess {
                 it?.let {
-                    LazyColumn {
-                        items(it, key = {
-                            it.id
-                        }) {
-                            Box(
-                                modifier = Modifier
-                                    .height(50.dp)
-                                    .fillParentMaxWidth()
-                                    .clickable {
-                                        forActivityResultLauncher.launch("matchId=222&time=10001")
-                                    }
-                                    .padding(start = 20.dp),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                Text(
-                                    text = it.name,
-                                    style = MaterialTheme.typography.labelLarge
-                                )
+                    Box(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(top = innerPadding.calculateTopPadding()),
+                    ) {
+                        LazyColumn {
+                            items(it, key = {
+                                it.id
+                            }) {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .height(50.dp)
+                                            .fillParentMaxWidth()
+                                            .clickable {
+                                                forActivityResultLauncher.launch("matchId=222&time=10001")
+                                            }.padding(start = 20.dp),
+                                    contentAlignment = Alignment.CenterStart,
+                                ) {
+                                    Text(
+                                        text = it.name,
+                                        style = MaterialTheme.typography.labelLarge,
+                                    )
+                                }
                             }
                         }
                     }

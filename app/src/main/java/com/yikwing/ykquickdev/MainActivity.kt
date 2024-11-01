@@ -5,14 +5,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.squareup.moshi.Moshi
 import com.yikwing.proxy.BaseActivity
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
+import com.yikwing.ykquickdev.ui.fragment.MainScreenFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -39,17 +36,17 @@ class MainActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::infl
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
-            // 设置状态栏字体颜色
-            val insetsController = WindowCompat.getInsetsController(window, binding.root)
-            // 设置状态栏图标颜色
-            insetsController.isAppearanceLightStatusBars = true
-
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updatePadding(top = insets.top)
-            WindowInsetsCompat.CONSUMED
-        }
+//        WindowCompat.setDecorFitsSystemWindows(window, false)
+//        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+//            // 设置状态栏字体颜色
+//            val insetsController = WindowCompat.getInsetsController(window, binding.root)
+//            // 设置状态栏图标颜色
+//            insetsController.isAppearanceLightStatusBars = true
+//
+//            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+//            v.updatePadding(top = insets.top)
+//            WindowInsetsCompat.CONSUMED
+//        }
 
         vm.initX()
 
@@ -59,7 +56,7 @@ class MainActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::infl
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction().apply {
-                replace(R.id.container, MainFragment())
+                replace(R.id.container, MainScreenFragment())
                 commit()
             }
         }
