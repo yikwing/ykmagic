@@ -5,9 +5,14 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.squareup.moshi.Moshi
+import com.yikwing.proxy.BaseActivity
+import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -17,7 +22,7 @@ import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::inflate) {
     @Inject
     lateinit var moshi: Moshi
 
@@ -31,9 +36,20 @@ class MainActivity : AppCompatActivity() {
 
     private val vm: DataStoreViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.main_activity)
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->
+            // 设置状态栏字体颜色
+            val insetsController = WindowCompat.getInsetsController(window, binding.root)
+            // 设置状态栏图标颜色
+            insetsController.isAppearanceLightStatusBars = true
+
+            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.updatePadding(top = insets.top)
+            WindowInsetsCompat.CONSUMED
+        }
 
         vm.initX()
 

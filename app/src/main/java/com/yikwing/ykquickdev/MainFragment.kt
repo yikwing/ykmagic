@@ -9,10 +9,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -77,17 +73,17 @@ class MainFragment :
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, windowInsets ->
-            // 设置状态栏字体颜色
-            val insetsController = WindowCompat.getInsetsController(requireActivity().window, view)
-            // 设置状态栏图标颜色
-            insetsController.isAppearanceLightStatusBars = true
-
-            // 设置root view padding
-            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.updatePadding(top = insets.top) // 设置顶部 padding 为状态栏高度
-            WindowInsetsCompat.CONSUMED
-        }
+//        ViewCompat.setOnApplyWindowInsetsListener(view) { v, windowInsets ->
+//            // 设置状态栏字体颜色
+//            val insetsController = WindowCompat.getInsetsController(requireActivity().window, view)
+//            // 设置状态栏图标颜色
+//            insetsController.isAppearanceLightStatusBars = true
+//
+//            // 设置root view padding
+//            val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+//            v.updatePadding(top = insets.top) // 设置顶部 padding 为状态栏高度
+//            WindowInsetsCompat.CONSUMED
+//        }
 
         Logger.d("===%s===", "onActivityCreated")
 
