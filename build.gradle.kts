@@ -17,6 +17,7 @@ plugins {
 allprojects {
     configurations.all {
         resolutionStrategy {
+            force(libs.activity)
             force(libs.kotlinx.coroutines.core)
         }
     }

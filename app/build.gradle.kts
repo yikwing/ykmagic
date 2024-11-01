@@ -179,6 +179,8 @@ wire {
 
 dependencies {
     // 官方依赖库
+    implementation(libs.activity)
+    implementation(libs.activity.ktx)
     implementation(libs.activity.compose)
     implementation(libs.fragment.ktx)
     implementation(libs.core.ktx)
