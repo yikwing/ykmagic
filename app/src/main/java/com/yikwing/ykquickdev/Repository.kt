@@ -1,26 +1,26 @@
 package com.yikwing.ykquickdev
 
+import com.yikwing.network.ApiException
+import com.yikwing.network.RequestState
+import com.yikwing.network.transformApi
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.api.provider.ApiProvider
-import com.yikwing.network.RequestState
-import com.yikwing.network.transformApi
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class Repository @Inject constructor() {
+class Repository
+    @Inject
+    constructor() {
+        suspend fun initHttpBinData(): RequestState<Headers> =
+            try {
+                RequestState.Success(ApiProvider.createHttpBinService().getOtherHeaders().headers)
+            } catch (exception: Exception) {
+                RequestState.Error(ApiException.createDefault(exception.message, exception))
+            }
 
-    suspend fun initHttpBinData(): RequestState<Headers> {
-        return try {
-            RequestState.Success(ApiProvider.createHttpBinService().getOtherHeaders().headers)
-        } catch (exception: Exception) {
-            RequestState.Error(exception)
-        }
+        fun initWanAndroidData(): Flow<RequestState<List<ChapterBean>?>> =
+            transformApi {
+                ApiProvider.createWanAndroidService().getChapters()
+            }
     }
-
-    fun initWanAndroidData(): Flow<RequestState<List<ChapterBean>?>> {
-        return transformApi {
-            ApiProvider.createWanAndroidService().getChapters()
-        }
-    }
-}

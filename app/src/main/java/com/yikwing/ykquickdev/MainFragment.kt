@@ -126,7 +126,7 @@ class MainFragment :
                     adapter.submitList(data)
                 }
 
-                onError = { e ->
+                onFailure = { e ->
 
                     when (e) {
                         is ApiException -> Log.e("headers", "${e.code} === ${e.message}")
@@ -145,7 +145,7 @@ class MainFragment :
                 Log.d("===========", data.userAgent)
             }
 
-            onError = { e ->
+            onFailure = { e ->
 
                 when (e) {
                     is ApiException -> Log.e("headers", "${e.code} === ${e.message}")

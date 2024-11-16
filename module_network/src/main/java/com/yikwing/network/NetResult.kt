@@ -11,27 +11,37 @@ typealias StatefulFlow<T> = StateFlow<RequestState<T>>
 sealed interface RequestState<out T> {
     data object Loading : RequestState<Nothing>
 
-    data class Success<out T>(val value: T) : RequestState<T>
+    data class Success<out T>(
+        val value: T,
+    ) : RequestState<T>
 
-    data class Error(val throwable: Throwable) : RequestState<Nothing>
+    data class Error(
+        val throwable: ApiException,
+    ) : RequestState<Nothing>
 }
 
-inline fun <T> RequestState<T>.doSuccess(success: (T) -> Unit) {
+inline fun <T> RequestState<T>.onSuccess(success: (T) -> Unit): RequestState<T> {
     if (this is RequestState.Success) {
         success(value)
     }
+    return this
 }
 
-inline fun <T> RequestState<T>.doError(failure: (Throwable?) -> Unit) {
+inline fun <T> RequestState<T>.onFailure(failure: (ApiException) -> Unit): RequestState<T> {
     if (this is RequestState.Error) {
         failure(throwable)
     }
+    return this
 }
 
 class ResultBuilder<T> {
     var onLoading: () -> Unit = {}
     var onSuccess: (data: T) -> Unit = { }
-    var onError: (e: Throwable) -> Unit = { }
+    var onFailure: (e: Throwable) -> Unit = { }
+
+    companion object {
+        inline fun <T> build(init: ResultBuilder<T>.() -> Unit) = ResultBuilder<T>().apply(init)
+    }
 }
 
 @MainThread
@@ -39,26 +49,26 @@ inline fun <T> StatefulLiveData<T>.observeState(
     owner: LifecycleOwner,
     init: ResultBuilder<T>.() -> Unit,
 ) {
-    val result = ResultBuilder<T>().apply(init)
+    val result = ResultBuilder.build(init)
 
     observe(owner) { state ->
         when (state) {
             is RequestState.Loading -> result.onLoading.invoke()
             is RequestState.Success -> result.onSuccess(state.value)
-            is RequestState.Error -> result.onError(state.throwable)
+            is RequestState.Error -> result.onFailure(state.throwable)
         }
     }
 }
 
 @MainThread
 suspend inline fun <T> StatefulFlow<T>.collectState(init: ResultBuilder<T>.() -> Unit) {
-    val result = ResultBuilder<T>().apply(init)
+    val result = ResultBuilder.build(init)
 
     collect { state ->
         when (state) {
             is RequestState.Loading -> result.onLoading.invoke()
             is RequestState.Success -> result.onSuccess(state.value)
-            is RequestState.Error -> result.onError(state.throwable)
+            is RequestState.Error -> result.onFailure(state.throwable)
         }
     }
 }

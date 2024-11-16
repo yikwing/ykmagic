@@ -34,8 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yikwing.network.RequestState
-import com.yikwing.network.doError
-import com.yikwing.network.doSuccess
+import com.yikwing.network.onFailure
+import com.yikwing.network.onSuccess
 import com.yikwing.ykquickdev.MyViewModel
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.components.LoadingWidget
@@ -101,7 +101,7 @@ fun ItemDepot(
         }
 
         is RequestState.Success<List<ChapterBean>?> -> {
-            data.doSuccess {
+            data.onSuccess {
                 it?.let {
                     Box(
                         modifier =
@@ -137,7 +137,7 @@ fun ItemDepot(
         }
 
         is RequestState.Error -> {
-            data.doError { throwable ->
+            data.onFailure { throwable ->
                 NetWorkError(throwable, modifier = Modifier.fillMaxSize())
             }
         }

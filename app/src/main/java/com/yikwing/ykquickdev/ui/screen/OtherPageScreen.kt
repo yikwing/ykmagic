@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.yikwing.network.RequestState
-import com.yikwing.network.doError
-import com.yikwing.network.doSuccess
+import com.yikwing.network.onFailure
+import com.yikwing.network.onSuccess
 import com.yikwing.ykquickdev.components.Center
 
 @Composable
@@ -68,14 +68,14 @@ fun OtherPageScreen(
                     }
 
                     is RequestState.Success -> {
-                        httpBin.repo.doSuccess {
+                        httpBin.repo.onSuccess {
                             Text(text = it.userAgent)
                         }
                     }
 
                     is RequestState.Error -> {
-                        httpBin.repo.doError {
-                            Text(text = "${it?.message}", color = Color.Red)
+                        httpBin.repo.onFailure {
+                            Text(text = "${it.message}", color = Color.Red)
                         }
                     }
                 }
