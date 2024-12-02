@@ -8,10 +8,10 @@ import com.yikwing.ykquickdev.api.entity.ChapterBean
     entities = [User::class, ChapterBean::class],
     version = 1,
     exportSchema = true,
-    autoMigrations = []
+    autoMigrations = [],
 )
 abstract class UserDatabase : RoomDatabase() {
-
     abstract fun getUserDao(): UserDao
+
     abstract fun getChapterDao(): ChapterDao
 }
