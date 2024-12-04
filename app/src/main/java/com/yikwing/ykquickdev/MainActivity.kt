@@ -7,6 +7,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.squareup.moshi.Moshi
+import com.yikwing.extension.NetConnectManager
 import com.yikwing.proxy.BaseActivity
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import com.yikwing.ykquickdev.ui.fragment.MainScreenFragment
@@ -35,6 +36,17 @@ class MainActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::infl
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
+
+        Log.e(
+            "qingshan",
+            "网络是否连接= ${NetConnectManager.isConnected()} & 网络类型= ${NetConnectManager.getConnectType()}",
+        )
+        NetConnectManager.addNetTypeChangeListener {
+            Log.e("qingshan", "网络类型[监听]= $it")
+        }
+        NetConnectManager.addNetStatusChangeListener {
+            Log.e("qingshan", "网络是否已连接[监听]= $it")
+        }
 
 //        WindowCompat.setDecorFitsSystemWindows(window, false)
 //        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, windowInsets ->

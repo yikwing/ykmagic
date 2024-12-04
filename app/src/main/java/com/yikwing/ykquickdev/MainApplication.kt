@@ -6,6 +6,7 @@ import android.util.Log
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.util.Logger
+import com.yikwing.extension.NetConnectManager
 import com.yikwing.extension.copyAssetToCache
 import com.yikwing.extension.image.compressImageFromUri
 import com.yikwing.network.checkProxy
@@ -30,6 +31,8 @@ class MainApplication :
         featureTest()
 
         initSetup()
+
+        NetConnectManager.init(this)
     }
 
     private fun featureTest() {
