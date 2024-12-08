@@ -26,9 +26,14 @@ room = "2.6.1"
 okhttp = "4.12.0"
 retrofit = "2.11.0"
 okio = "3.9.1"
+
+ktor = "3.0.2"
+
 moshi = "1.15.2"
 coil = "2.7.0"
 kotlinx-coroutines = "1.9.0"
+arrow = "2.0.0"
+kotlinx-serialization-json = "1.7.3"
 
 compose-bom = "2024.11.00"
 
@@ -80,10 +85,22 @@ moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-code
 wire-moshi-adapter = { group = "com.squareup.wire", name = "wire-moshi-adapter", version.ref = "wire" }
 
 
-coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
+ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
+ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
+
 
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+
+arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
+arrow-fx-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow" }
+
+
+kotlinx-serialization-json-okio = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-okio", version.ref = "kotlinx-serialization-json" }
 
 #   compose依赖库
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -142,6 +159,8 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
 [bundles]
-network = ["okhttp3", "okhttp3-logging-interceptor", "retrofit2", "retrofit2-moshi", "okio"]
+network-okhttp = ["okhttp3", "okhttp3-logging-interceptor", "retrofit2", "retrofit2-moshi", "okio"]
+network-ktor = ["ktor-client-core", "ktor-client-okhttp", "ktor-client-logging", "ktor-client-content-negotiation", "ktor-serialization-kotlinx-json"]
+
 testBundle = ["hamcrest", "hamcrest-library", "junit", "mockk"]
 androidTestBundle = ["androidx-test-ext-junit", "espresso-core"]

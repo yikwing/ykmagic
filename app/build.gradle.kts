@@ -195,7 +195,7 @@ dependencies {
     ksp(libs.room.compiler)
 
     // 三方依赖库
-    implementation(libs.bundles.network)
+    implementation(libs.bundles.network.okhttp)
 
     implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
@@ -261,7 +261,8 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     // https://juejin.cn/post/7079229035254906888
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.7.3")
+    implementation(libs.kotlinx.serialization.json.okio)
 
-    implementation("androidx.collection:collection-ktx:1.4.5")
+    implementation(libs.arrow.core)
+    implementation(libs.arrow.fx.coroutines)
 }

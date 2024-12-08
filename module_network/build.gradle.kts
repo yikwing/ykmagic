@@ -50,14 +50,14 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
 
-    implementation(libs.bundles.network)
+    implementation(libs.bundles.network.okhttp)
 
     implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
 
     implementation(libs.kotlinx.coroutines.android)
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json-okio:1.7.3")
+    implementation(libs.kotlinx.serialization.json.okio)
 
     testImplementation(libs.bundles.testBundle)
     androidTestImplementation(libs.bundles.androidTestBundle)
