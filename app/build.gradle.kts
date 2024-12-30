@@ -184,6 +184,7 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.fragment.ktx)
     implementation(libs.core.ktx)
+    implementation(libs.collection.ktx)
     implementation(libs.appcompat)
     implementation(libs.datastore.preferences)
 
