@@ -44,6 +44,11 @@ android {
     }
 
     namespace = "com.yikwing.network"
+
+    // 添加以下代码块
+    publishing {
+        singleVariant("release") {}
+    }
 }
 
 dependencies {

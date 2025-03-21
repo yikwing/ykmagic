@@ -41,6 +41,11 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
+
+    // 添加以下代码块
+    publishing {
+        singleVariant("release") {}
+    }
 }
 
 dependencies {

@@ -6,10 +6,16 @@ plugins {
 }
 
 android {
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk =
+        libs.versions.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
+        minSdk =
+            libs.versions.minSdk
+                .get()
+                .toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -36,6 +42,11 @@ android {
     }
 
     namespace = "com.yikwing.datastore"
+
+    // 添加以下代码块
+    publishing {
+        singleVariant("release") {}
+    }
 }
 
 dependencies {
