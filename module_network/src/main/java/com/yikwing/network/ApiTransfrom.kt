@@ -15,18 +15,18 @@ import kotlinx.coroutines.flow.flowOn
 inline fun <T> transformApi(crossinline block: suspend () -> BaseHttpResult<T>) =
     flow {
         emit(RequestState.Loading)
-
         runCatching {
             block()
         }.fold(
             onSuccess = { result ->
                 if (result.errorCode != 0) {
-                    throw ApiException(result.errorCode, result.errorMsg)
+                    emit(RequestState.Error(ApiException(result.errorCode, result.errorMsg)))
+                } else {
+                    emit(RequestState.Success(result.data))
                 }
-                emit(RequestState.Success(result.data))
             },
             onFailure = { e ->
-                throw ApiException.createDefault(e.message, e)
+                emit(RequestState.Error(ApiException.createDefault(e.message, e)))
             },
         )
     }.flowOn(Dispatchers.IO).catch { exception ->
