@@ -221,6 +221,7 @@ dependencies {
         ":module_permission",
         ":module_logger",
         ":module_datastore",
+        ":module_component",
     ).forEach { dep ->
         implementation(project(dep))
     }
