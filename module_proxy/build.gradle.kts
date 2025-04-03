@@ -55,6 +55,7 @@ android {
 
 dependencies {
     implementation(libs.appcompat)
+    implementation(libs.lifecycle.runtime.ktx)
 
     testImplementation(libs.bundles.testBundle)
     androidTestImplementation(libs.bundles.androidTestBundle)

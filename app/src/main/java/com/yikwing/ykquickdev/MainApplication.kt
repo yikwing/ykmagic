@@ -1,7 +1,9 @@
 package com.yikwing.ykquickdev
 
+import android.app.Activity
 import android.app.Application
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -16,6 +18,7 @@ import com.yikwing.extension.copyAssetToCache
 import com.yikwing.extension.image.compressImageFromUri
 import com.yikwing.network.checkProxy
 import com.yikwing.proxy.startup.AppInitializer
+import com.yikwing.proxy.util.ActivityHierarchyManager
 import com.yikwing.ykquickdev.task.ConfigInjectInitTask
 import com.yikwing.ykquickdev.task.DataStoreInitTask
 import com.yikwing.ykquickdev.task.LoggerInitTask
@@ -34,6 +37,8 @@ class MainApplication :
         super.onCreate()
 
         Log.i("checkProxy", checkProxy().toString())
+
+        registerActivityLifecycleCallbacks(AppActivityLifecycleCallbacks())
 
         featureTest()
 
@@ -124,4 +129,37 @@ class MainApplication :
                     }
                 },
             ).build()
+}
+
+class AppActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
+    override fun onActivityCreated(
+        activity: Activity,
+        savedInstanceState: Bundle?,
+    ) {
+        ActivityHierarchyManager.register(activity)
+        ActivityHierarchyManager.printActivityHierarchy(BuildConfig.DEBUG)
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+    }
+
+    override fun onActivitySaveInstanceState(
+        activity: Activity,
+        outState: Bundle,
+    ) {
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        ActivityHierarchyManager.unregister(activity)
+        ActivityHierarchyManager.printActivityHierarchy(BuildConfig.DEBUG)
+    }
 }

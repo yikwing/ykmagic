@@ -187,7 +187,7 @@ dependencies {
     implementation(libs.collection.ktx)
     implementation(libs.appcompat)
     implementation(libs.datastore.preferences)
-    implementation("androidx.work:work-runtime-ktx:2.10.0")
+    implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.constraintlayout)
     implementation(libs.recyclerview)
