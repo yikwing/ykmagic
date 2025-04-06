@@ -226,6 +226,17 @@ dependencies {
         implementation(project(dep))
     }
 
+//    // koin
+//    implementation(platform(libs.koin.bom))
+//    implementation(libs.koin.core)
+//    implementation(libs.koin.android)
+//    implementation(libs.koin.core.coroutines)
+//    implementation(libs.koin.androidx.startup)
+//    // Koin Annotations
+//    implementation(libs.koin.annotations)
+//    // Koin Annotations KSP Compiler
+//    ksp(libs.koin.ksp.compiler)
+
     // compose依赖库
     implementation(platform(libs.compose.bom))
     implementation(libs.ui)
