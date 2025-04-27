@@ -16,6 +16,7 @@ import coil.util.Logger
 import com.yikwing.extension.NetConnectManager
 import com.yikwing.extension.copyAssetToCache
 import com.yikwing.extension.image.compressImageFromUri
+import com.yikwing.extension.plus.noOpDelegate
 import com.yikwing.network.checkProxy
 import com.yikwing.proxy.startup.AppInitializer
 import com.yikwing.proxy.util.ActivityHierarchyManager
@@ -131,31 +132,13 @@ class MainApplication :
             ).build()
 }
 
-class AppActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
+class AppActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks by noOpDelegate() {
     override fun onActivityCreated(
         activity: Activity,
         savedInstanceState: Bundle?,
     ) {
         ActivityHierarchyManager.register(activity)
         ActivityHierarchyManager.printActivityHierarchy(BuildConfig.DEBUG)
-    }
-
-    override fun onActivityStarted(activity: Activity) {
-    }
-
-    override fun onActivityResumed(activity: Activity) {
-    }
-
-    override fun onActivityPaused(activity: Activity) {
-    }
-
-    override fun onActivityStopped(activity: Activity) {
-    }
-
-    override fun onActivitySaveInstanceState(
-        activity: Activity,
-        outState: Bundle,
-    ) {
     }
 
     override fun onActivityDestroyed(activity: Activity) {
