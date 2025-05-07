@@ -19,7 +19,7 @@ class ExampleUnitTest {
 
     @Test
     fun intDefTest() {
-        println(getSexChineseStr(SEX.MAN))
+        println(getSexChineseStr(0x0001))
         println(getSexChineseStr(SEX.WOMAN))
         println(getSexChineseStr(0x0004))
     }

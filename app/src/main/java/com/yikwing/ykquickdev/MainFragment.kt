@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yikwing.extension.unSafeLazy
+import com.yikwing.extension.util.alphaColor
 import com.yikwing.logger.Logger
 import com.yikwing.network.ApiException
 import com.yikwing.network.collectState
@@ -84,6 +85,8 @@ class MainFragment :
 //            v.updatePadding(top = insets.top) // 设置顶部 padding 为状态栏高度
 //            WindowInsetsCompat.CONSUMED
 //        }
+
+        binding.root.setBackgroundColor("#FF0000".alphaColor(5))
 
         Logger.d("===%s===", "onActivityCreated")
 
