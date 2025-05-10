@@ -97,10 +97,6 @@ android {
             useSupportLibrary = true
         }
 
-        ksp {
-            arg("room.schemaLocation", "$projectDir/schemas")
-        }
-
         manifestPlaceholders.apply {
             put("debug_time", getDateStr())
         }
@@ -171,6 +167,10 @@ android {
     lint {
         checkDependencies = true
     }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 wire {
