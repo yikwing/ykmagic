@@ -10,9 +10,11 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import coil.ImageLoader
-import coil.ImageLoaderFactory
-import coil.util.Logger
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.SingletonImageLoader
+import coil3.request.crossfade
+import coil3.util.Logger
 import com.yikwing.extension.NetConnectManager
 import com.yikwing.extension.copyAssetToCache
 import com.yikwing.extension.image.compressImageFromUri
@@ -33,7 +35,7 @@ import kotlin.system.measureTimeMillis
 @HiltAndroidApp
 class MainApplication :
     Application(),
-    ImageLoaderFactory {
+    SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
 
@@ -112,17 +114,17 @@ class MainApplication :
         Log.i("initSetup", "spendTime: $spendTime")
     }
 
-    override fun newImageLoader(): ImageLoader =
+    override fun newImageLoader(context: PlatformContext): ImageLoader =
         ImageLoader
             .Builder(this)
             .crossfade(true)
             .logger(
                 object : Logger {
-                    override var level: Int = Log.DEBUG
+                    override var minLevel: Logger.Level = Logger.Level.Debug
 
                     override fun log(
                         tag: String,
-                        priority: Int,
+                        level: Logger.Level,
                         message: String?,
                         throwable: Throwable?,
                     ) {

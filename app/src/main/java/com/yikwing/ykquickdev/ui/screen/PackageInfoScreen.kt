@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import coil.compose.AsyncImage
+import coil3.compose.AsyncImage
 import com.yikwing.extension.app.getMetaData
 import com.yikwing.extension.unSafeLazy
 

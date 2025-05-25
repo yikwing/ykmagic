@@ -11,9 +11,10 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import coil.load
-import coil.size.Scale
-import coil.transform.CircleCropTransformation
+import coil3.load
+import coil3.request.transformations
+import coil3.size.Scale
+import coil3.transform.CircleCropTransformation
 import com.yikwing.extension.FragmentArgumentDelegate
 import com.yikwing.extension.image.compressImageFromUri
 import com.yikwing.extension.view.backGroundRadiusColor
