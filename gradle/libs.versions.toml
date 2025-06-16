@@ -40,7 +40,7 @@ kotlinx-io-core = "0.7.0"
 kotlinx-datetime = "0.6.2"
 
 compose-bom = "2025.06.00"
-koin-bom = "4.0.4"
+koin-bom = "4.1.0"
 koin-annotations = "2.0.0"
 
 constraintlayout-compose = "1.1.1"
