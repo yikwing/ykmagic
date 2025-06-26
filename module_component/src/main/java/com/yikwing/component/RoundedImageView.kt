@@ -49,7 +49,10 @@ class RoundedImageView
             oldh: Int,
         ) {
             super.onSizeChanged(w, h, oldw, oldh)
-            rect.set(0f, 0f, w.toFloat(), h.toFloat())
+            rect.left = 0f
+            rect.top = 0f
+            rect.right = w.toFloat()
+            rect.bottom = h.toFloat()
         }
 
         override fun onDraw(canvas: Canvas) {
