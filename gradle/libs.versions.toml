@@ -8,7 +8,7 @@ ksp = "2.2.0-2.0.2"
 
 wire = "5.3.5"
 
-hilt = "2.56.2"
+hilt = "2.57"
 
 activity = "1.10.1"
 fragment = "1.8.8"
@@ -20,7 +20,7 @@ constraintlayout = "2.2.1"
 recyclerview = "1.4.0"
 webkit = "1.14.0"
 material = "1.12.0"
-lifecycle = "2.9.1"
+lifecycle = "2.9.2"
 room = "2.7.2"
 collection = "1.5.0"
 work-runtime-ktx = "2.10.2"
@@ -39,12 +39,12 @@ kotlinx-serialization-json = "1.9.0"
 kotlinx-io-core = "0.8.0"
 kotlinx-datetime = "0.7.1"
 
-compose-bom = "2025.06.01"
+compose-bom = "2025.07.00"
 koin-bom = "4.1.0"
 koin-annotations = "2.1.0"
 
 constraintlayout-compose = "1.1.1"
-navigation-compose = "2.9.1"
+navigation-compose = "2.9.2"
 
 glance = "1.1.0"
 leakcanary = "3.0-alpha-8"
@@ -53,7 +53,7 @@ chuckerteam = "4.2.0"
 hamcrest = "3.0"
 junit = "4.13.2"
 
-mockk = "1.14.4"
+mockk = "1.14.5"
 androidx-test-ext-junit = "1.2.1"
 espresso-core = "3.6.1"
 
