@@ -24,38 +24,31 @@ class RetrofitFactory private constructor() {
 
     fun setup(
         baseUrl: String,
-        applicationInterceptor: Array<Interceptor> = emptyArray(),
-        networkInterceptor: Array<Interceptor> = emptyArray(),
+        applicationInterceptor: List<Interceptor> = emptyList(),
+        networkInterceptor: List<Interceptor> = emptyList(),
     ) {
         retrofit =
-            Retrofit
-                .Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(MoshiConverterFactory.create())
-                .client(initClient(applicationInterceptor, networkInterceptor))
-                .build()
+            Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(MoshiConverterFactory.create())
+                .client(initClient(applicationInterceptor, networkInterceptor)).build()
     }
 
     private fun initClient(
-        applicationInterceptor: Array<Interceptor>,
-        networkInterceptor: Array<Interceptor>,
-    ): OkHttpClient =
-        OkHttpClient
-            .Builder()
-            .apply {
-                // 添加应用层拦截器
-                applicationInterceptor.forEach { addInterceptor(it) }
+        applicationInterceptor: List<Interceptor>,
+        networkInterceptor: List<Interceptor>,
+    ): OkHttpClient = OkHttpClient.Builder().apply {
+        // 添加应用层拦截器
+        applicationInterceptor.forEach { addInterceptor(it) }
 
-                // 添加网络层拦截器
-                networkInterceptor.forEach { addNetworkInterceptor(it) }
+        // 添加网络层拦截器
+        networkInterceptor.forEach { addNetworkInterceptor(it) }
 
-                // 添加日志拦截器
-                addInterceptor(logger)
+        // 添加日志拦截器
+        addInterceptor(logger)
 
-                // 设置超时
-                connectTimeout(10, TimeUnit.SECONDS)
-                readTimeout(10, TimeUnit.SECONDS)
-            }.build()
+        // 设置超时
+        connectTimeout(10, TimeUnit.SECONDS)
+        readTimeout(10, TimeUnit.SECONDS)
+    }.build()
 
     fun <T> createService(service: Class<T>): T = retrofit.create(service)
 }

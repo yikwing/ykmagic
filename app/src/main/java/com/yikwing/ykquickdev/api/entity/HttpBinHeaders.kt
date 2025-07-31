@@ -10,7 +10,7 @@ data class HttpBinHeaders(
 
 @JsonClass(generateAdapter = true)
 data class Headers(
-    @field:Json(name = "Host") val host: String,
-    @field:Json(name = "User-Agent") val userAgent: String,
-    @field:Json(name = "X-Amzn-Trace-Id") val traceId: String,
+    @property:Json(name = "Host") val host: String,
+    @property:Json(name = "User-Agent") val userAgent: String,
+    @property:Json(name = "X-Amzn-Trace-Id") val traceId: String,
 )

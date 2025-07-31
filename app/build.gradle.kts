@@ -28,12 +28,11 @@ val keystorePropertiesPath: String = rootProject.file("keystore.properties").pat
 val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 
 // 资源重定向
-fun listSubFile(): List<String> =
-    listOf(
-        "src/main/res/common",
-        "src/main/res/activity",
-        "src/main/res/fragment",
-    )
+fun listSubFile(): List<String> = listOf(
+    "src/main/res/common",
+    "src/main/res/activity",
+    "src/main/res/fragment",
+)
 
 // 获取当前打包时间
 fun getDateStr(): String {
@@ -64,31 +63,21 @@ fun getGitLog(): String {
 
 // json格式化
 fun getJsonStr(): String {
-    val json =
-        with(GsonBuilder()) {
-            setPrettyPrinting()
-            create()
-        }
+    val json = with(GsonBuilder()) {
+        setPrettyPrinting()
+        create()
+    }
     return json.toJson(injectJson)
 }
 
 android {
     namespace = "com.yikwing.ykquickdev"
-    compileSdk =
-        libs.versions.compileSdk
-            .get()
-            .toInt()
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "com.yikwing.ykquickdev"
-        minSdk =
-            libs.versions.minSdk
-                .get()
-                .toInt()
-        targetSdk =
-            libs.versions.compileSdk
-                .get()
-                .toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.compileSdk.get().toInt()
         versionCode = gitVersionCode()
         versionName = "1.0.0"
 
@@ -174,7 +163,12 @@ ksp {
 }
 
 wire {
-    kotlin {}
+    sourcePath {
+        srcDir("src/main/protos")
+    }
+    kotlin {
+        android = false
+    }
 }
 
 dependencies {
