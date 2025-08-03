@@ -9,11 +9,13 @@ import androidx.lifecycle.lifecycleScope
 import com.squareup.moshi.Moshi
 import com.yikwing.extension.NetConnectManager
 import com.yikwing.proxy.BaseActivity
+import com.yikwing.ykquickdev.api.serializers.BooleanAsIntSerializer
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import javax.inject.Inject
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
@@ -84,10 +86,18 @@ class MainActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::infl
         }
     }
 
+    @Serializable
+    data class User(
+        val name: String,
+        val age: Int,
+        @Serializable(with = BooleanAsIntSerializer::class) val isMan: Boolean,
+    )
+
+    private suspend fun getUserPreferences(): UserPreferences = userPreferencesStore.data.map { it }.first()
+
     private fun logUserPreferences() {
         lifecycleScope.launch {
-            val preferences = userPreferencesStore.data.map { it }.first()
-
+            val preferences = getUserPreferences()
             val c = moshi.adapter(UserPreferences::class.java).toJson(preferences)
 
             Log.d("==== lifecycleScope", c)

@@ -4,6 +4,7 @@ option java_package = "com.yikwing.ykquickdev";
 option java_multiple_files = true;
 
 message UserPreferences {
-  string name = 1;
-  int32 age = 2;
+    string name = 1;
+    int32 age = 2;
+    bool is_male = 3;
 }
