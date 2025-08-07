@@ -2,7 +2,6 @@ package com.yikwing.ykquickdev.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.squareup.wire.WireJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +16,6 @@ object AppModule {
     fun moshi(): Moshi =
         Moshi
             .Builder()
-            .add(WireJsonAdapterFactory())
             .addLast(KotlinJsonAdapterFactory())
             .build()
 }

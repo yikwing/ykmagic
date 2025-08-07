@@ -98,9 +98,7 @@ class MainActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::infl
     private fun logUserPreferences() {
         lifecycleScope.launch {
             val preferences = getUserPreferences()
-            val c = moshi.adapter(UserPreferences::class.java).toJson(preferences)
-
-            Log.d("==== lifecycleScope", c)
+            Log.d("==== lifecycleScope", preferences.toString())
         }
     }
 
