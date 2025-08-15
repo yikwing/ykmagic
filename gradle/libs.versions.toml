@@ -3,16 +3,16 @@ compileSdk = "36"
 minSdk = "26"
 
 agp = "8.12.0"
-kotlin = "2.2.0"
-ksp = "2.2.0-2.0.2"
+kotlin = "2.2.10"
+ksp = "2.2.10-2.0.2"
 
-wire = "5.3.8"
+wire = "5.3.10"
 
 hilt = "2.57"
 
 activity = "1.10.1"
-fragment = "1.8.8"
-core-ktx = "1.16.0"
+fragment = "1.8.9"
+core-ktx = "1.17.0"
 appcompat = "1.7.1"
 exifinterface = "1.4.1"
 datastore = "1.1.7"
@@ -39,7 +39,7 @@ kotlinx-serialization-json = "1.9.0"
 kotlinx-io-core = "0.8.0"
 kotlinx-datetime = "0.7.1"
 
-compose-bom = "2025.07.00"
+compose-bom = "2025.08.00"
 koin-bom = "4.1.0"
 koin-annotations = "2.1.0"
 
