@@ -22,6 +22,7 @@ import com.yikwing.permission.PermissionX
 import com.yikwing.proxy.BaseFragment
 import com.yikwing.ykquickdev.databinding.MainFragmentBinding
 import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.lifecycle.withCreationCallback
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -32,7 +33,13 @@ class MainFragment :
         fun newInstance() = MainFragment()
     }
 
-    private val viewModel: MyViewModel by viewModels()
+    private val viewModel: MyViewModel by viewModels(
+        extrasProducer = {
+            defaultViewModelCreationExtras.withCreationCallback<MyViewModel.Factory> { factory ->
+                factory.create("yikwing")
+            }
+        },
+    )
 
     var forActivityResultLauncher =
         registerForActivityResult(

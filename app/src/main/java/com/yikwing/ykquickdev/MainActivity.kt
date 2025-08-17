@@ -11,6 +11,7 @@ import com.yikwing.extension.NetConnectManager
 import com.yikwing.proxy.BaseActivity
 import com.yikwing.ykquickdev.api.serializers.BooleanAsIntSerializer
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
+import com.yikwing.ykquickdev.ui.fragment.MainScreenFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.yikwing.network.RequestState
 import com.yikwing.network.onFailure
@@ -91,7 +92,10 @@ class MainScreenFragment : Fragment() {
 fun ItemDepot(
     innerPadding: PaddingValues,
     forActivityResultLauncher: ActivityResultLauncher<String>,
-    mainViewModel: MyViewModel = viewModel(),
+    mainViewModel: MyViewModel =
+        hiltViewModel<MyViewModel, MyViewModel.Factory>(
+            creationCallback = { factory -> factory.create("compose") },
+        ),
 ) {
     val data by mainViewModel.wanAndroidList.collectAsState()
 

@@ -1,5 +1,6 @@
 package com.yikwing.ykquickdev
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,17 +8,20 @@ import androidx.lifecycle.viewModelScope
 import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
+@HiltViewModel(assistedFactory = MyViewModel.Factory::class)
 class MyViewModel
-    @Inject
+    @AssistedInject
     constructor(
         private val repository: Repository,
+        @Assisted val name: String,
     ) : ViewModel() {
         private val _headers = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
 
@@ -36,6 +40,8 @@ class MyViewModel
         val wanAndroidList = _wanAndroidList.asStateFlow()
 
         private fun initWanAndroidData() {
+            Log.d("==== initWanAndroidData", "assistedInject $name")
+
             viewModelScope.launch {
                 repository
                     .initWanAndroidData()
@@ -60,5 +66,11 @@ class MyViewModel
         init {
             initHttpBinData()
             initWanAndroidData()
+        }
+
+        @AssistedFactory
+        fun interface Factory {
+            // create 方法的参数必须和 @Assisted 标记的参数完全匹配
+            fun create(name: String): MyViewModel
         }
     }
