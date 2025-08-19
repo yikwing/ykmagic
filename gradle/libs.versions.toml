@@ -2,11 +2,11 @@
 compileSdk = "36"
 minSdk = "26"
 
-agp = "8.12.0"
+agp = "8.12.1"
 kotlin = "2.2.10"
 ksp = "2.2.10-2.0.2"
 
-wire = "5.3.10"
+wire = "5.3.11"
 
 hilt = "2.57"
 
