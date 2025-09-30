@@ -37,7 +37,7 @@ inline fun <T> RequestState<T>.onFailure(failure: (ApiException) -> Unit): Reque
 class ResultBuilder<T> {
     var onLoading: () -> Unit = {}
     var onSuccess: (data: T) -> Unit = { }
-    var onFailure: (e: Throwable) -> Unit = { }
+    var onFailure: (e: ApiException) -> Unit = { }
 
     companion object {
         inline fun <T> build(init: ResultBuilder<T>.() -> Unit) = ResultBuilder<T>().apply(init)

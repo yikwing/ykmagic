@@ -1,12 +1,11 @@
 package com.yikwing.ykquickdev
 
-import com.yikwing.network.HeaderInterceptor
+import com.yikwing.network.BaseHeaderInterceptor
 
-class ResultInterceptor : HeaderInterceptor() {
-    override fun headerList(): Map<String, String> {
-        return mapOf(
+class HeaderInterceptor : BaseHeaderInterceptor() {
+    override fun headerList(): Map<String, String> =
+        mapOf(
             Pair("version", BuildConfig.VERSION_NAME),
-            Pair("User-Agent", "${BuildConfig.APPLICATION_ID}_${BuildConfig.VERSION_NAME}")
+            Pair("User-Agent", "${BuildConfig.APPLICATION_ID}_${BuildConfig.VERSION_NAME}"),
         )
-    }
 }

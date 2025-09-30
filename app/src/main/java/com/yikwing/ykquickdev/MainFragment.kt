@@ -137,11 +137,7 @@ class MainFragment :
                 }
 
                 onFailure = { e ->
-
-                    when (e) {
-                        is ApiException -> Log.e("headers", "${e.code} === ${e.message}")
-                        else -> Log.e("headers", e.message ?: "Not Error")
-                    }
+                    Log.e("ReqException", "${e.code} === ${e.message}")
                 }
             }
         }

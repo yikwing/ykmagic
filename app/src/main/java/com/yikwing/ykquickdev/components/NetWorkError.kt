@@ -20,7 +20,10 @@ import androidx.compose.ui.unit.dp
 import com.yikwing.network.ApiException
 
 @Composable
-fun NetWorkError(throwable: Throwable?, modifier: Modifier = Modifier) {
+fun NetWorkError(
+    throwable: Throwable?,
+    modifier: Modifier = Modifier,
+) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center,
