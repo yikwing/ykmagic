@@ -40,6 +40,10 @@ class RetrofitFactory private constructor() {
         OkHttpClient
             .Builder()
             .apply {
+                // 添加日志拦截器
+                // 如果放在重试拦截器后面，每次重试都会打印日志
+                addInterceptor(OkLogInterceptor())
+
                 // 添加应用层拦截器
                 applicationInterceptor.forEach { addInterceptor(it) }
 
@@ -49,13 +53,10 @@ class RetrofitFactory private constructor() {
                 // 添加网络层拦截器
                 networkInterceptor.forEach { addNetworkInterceptor(it) }
 
-                // 添加日志拦截器
-                addInterceptor(OkLogInterceptor())
-
-                // 设置超时
-                connectTimeout(40, TimeUnit.SECONDS)
-                readTimeout(10, TimeUnit.SECONDS)
-                writeTimeout(10, TimeUnit.SECONDS)
+                callTimeout(30, TimeUnit.SECONDS)
+                connectTimeout(15, TimeUnit.SECONDS)
+                readTimeout(15, TimeUnit.SECONDS)
+                writeTimeout(15, TimeUnit.SECONDS)
 
                 cache(Cache(context.cacheDir, maxSize = 10 * 1024 * 1024))
             }.build()
