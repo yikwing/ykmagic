@@ -43,6 +43,10 @@ android {
         jvmToolchain(21)
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     namespace = "com.yikwing.network"
 
     // 添加以下代码块
