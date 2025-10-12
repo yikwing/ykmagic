@@ -4,7 +4,7 @@ minSdk = "26"
 
 agp = "8.13.0"
 kotlin = "2.2.20"
-ksp = "2.2.20-2.0.2"
+ksp = "2.2.20-2.0.4"
 
 wire = "5.4.0"
 
@@ -25,9 +25,9 @@ room = "2.8.2"
 collection = "1.5.0"
 work-runtime-ktx = "2.10.5"
 
-okhttp = "5.2.0"
+okhttp = "5.2.1"
 retrofit = "3.0.0"
-okio = "3.16.0"
+okio = "3.16.1"
 
 ktor = "3.3.1"
 
