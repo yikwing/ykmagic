@@ -27,7 +27,7 @@ work-runtime-ktx = "2.10.5"
 
 okhttp = "5.2.1"
 retrofit = "3.0.0"
-okio = "3.16.1"
+okio = "3.16.2"
 
 ktor = "3.3.1"
 
