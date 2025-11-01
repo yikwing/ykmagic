@@ -2,4 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application>
+        <provider
+            android:name=".ExtensionInitProvider"
+            android:authorities="${applicationId}.extension-init"
+            android:exported="false"
+            android:initOrder="100" />
+    </application>
 </manifest>

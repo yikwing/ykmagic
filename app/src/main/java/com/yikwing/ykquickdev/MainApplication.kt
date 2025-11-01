@@ -16,6 +16,7 @@ import coil3.SingletonImageLoader
 import coil3.request.crossfade
 import coil3.util.Logger
 import com.yikwing.extension.NetConnectManager
+import com.yikwing.extension.asColor
 import com.yikwing.extension.copyAssetToCache
 import com.yikwing.extension.image.compressImageFromUri
 import com.yikwing.extension.plus.noOpDelegate
@@ -38,6 +39,8 @@ class MainApplication :
     SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
+
+        R.color.black.asColor()
 
         Log.i("checkProxy", checkProxy().toString())
 
