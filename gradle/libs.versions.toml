@@ -4,7 +4,7 @@ minSdk = "26"
 
 agp = "8.13.0"
 kotlin = "2.2.21"
-ksp = "2.3.0"
+ksp = "2.3.2"
 
 wire = "5.4.0"
 
@@ -29,7 +29,7 @@ okhttp = "5.3.0"
 retrofit = "3.0.0"
 okio = "3.16.2"
 
-ktor = "3.3.1"
+ktor = "3.3.2"
 
 moshi = "1.15.2"
 coil = "3.3.0"
@@ -39,12 +39,12 @@ kotlinx-serialization-json = "1.9.0"
 kotlinx-io-core = "0.8.0"
 kotlinx-datetime = "0.7.1"
 
-compose-bom = "2025.10.01"
+compose-bom = "2025.11.00"
 koin-bom = "4.1.1"
-koin-annotations = "2.3.0"
+koin-annotations = "2.3.1"
 
 constraintlayout-compose = "1.1.1"
-navigation-compose = "2.9.5"
+navigation-compose = "2.9.6"
 
 glance = "1.1.0"
 leakcanary = "3.0-alpha-8"
