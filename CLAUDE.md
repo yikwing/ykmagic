@@ -183,8 +183,24 @@ class ConfigInjectInitTask : Initializer<Unit> {
 **ActivityHierarchyManager**: 维护 Activity 栈的全局管理器
 - 在 Application 中注册 ActivityLifecycleCallbacks
 - 自动跟踪 Activity 的创建和销毁
-- 提供 `printActivityHierarchy()` 打印当前 Activity 栈（debug 模式）
-- 位置: module_proxy/src/main/java/com/yikwing/proxy/util/ActivityHierarchyManager.kt
+- **线程安全**：使用 `CopyOnWriteArrayList` 保证并发安全
+- **内存安全**：使用 `WeakReference` 避免内存泄漏
+- **自动清理**：自动过滤已销毁的 Activity 引用
+- 位置: module_proxy/src/main/java/com/yikwing/proxy/util/ActivityHierarchyManager.kt:6
+
+**核心功能**：
+- `register(activity)` - 注册 Activity（自动去重）
+- `unregister(activity)` - 注销 Activity
+- `getTopActivity()` - 获取栈顶 Activity
+- `getActivityCount()` - 获取有效 Activity 数量
+- `getActivityStack()` - 获取完整 Activity 栈
+- `finishTopActivities(count)` - 从栈顶关闭指定数量的 Activity
+- `finishUntil(activityClass, inclusive)` - 关闭到指定 Activity
+- `finishAllExcept(activityClass)` - 关闭除指定外的所有 Activity
+- `finishAllActivities()` - 关闭所有 Activity
+- `contains(activity/activityClass)` - 检查是否包含指定 Activity
+- `getIndexFromTop(activityClass)` - 获取距离栈顶的距离
+- `printActivityHierarchy(isDebug)` - 打印 Activity 栈信息
 
 **使用示例** (在 MainApplication.kt 中):
 ```kotlin
@@ -198,7 +214,29 @@ class AppActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks by 
         ActivityHierarchyManager.unregister(activity)
     }
 }
+
+// 其他使用场景
+// 关闭栈顶 2 个 Activity
+ActivityHierarchyManager.finishTopActivities(2)
+
+// 关闭到 MainActivity（不包含）
+ActivityHierarchyManager.finishUntil(MainActivity::class.java, inclusive = false)
+
+// 关闭除了 MainActivity 外的所有 Activity
+ActivityHierarchyManager.finishAllExcept(MainActivity::class.java)
+
+// 检查是否包含某个 Activity
+if (ActivityHierarchyManager.contains(DetailActivity::class.java)) {
+    // ...
+}
+
+// 获取栈顶 Activity
+val topActivity = ActivityHierarchyManager.getTopActivity()
 ```
+
+**已废弃的方法**：
+- `finishActivities(popNum)` - 请使用 `finishTopActivities(count)`
+- `calculatePopNum(activityClass)` - 请使用 `getIndexFromTop(activityClass)`
 
 ### WorkManager 任务调度
 
