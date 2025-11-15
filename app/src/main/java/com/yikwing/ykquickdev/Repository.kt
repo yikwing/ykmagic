@@ -2,7 +2,7 @@ package com.yikwing.ykquickdev
 
 import com.yikwing.network.ApiException
 import com.yikwing.network.RequestState
-import com.yikwing.network.transformApi
+import com.yikwing.network.requestFlow
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.api.provider.ApiProvider
@@ -20,7 +20,7 @@ class Repository
             }
 
         fun initWanAndroidData(): Flow<RequestState<List<ChapterBean>?>> =
-            transformApi {
+            requestFlow {
                 ApiProvider.createWanAndroidService().getChapters()
             }
     }

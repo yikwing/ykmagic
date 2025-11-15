@@ -29,8 +29,6 @@ data class LogEntry(
     var responseBody: String? = null,
     var exception: Throwable? = null, // 用于记录请求过程中的异常
 ) {
-    // 在伴生对象中创建一个单例的 Gson 实例，用于格式化输
-
     // 助手函数，判断响应体是否是JSON (基于 Content-Type)
     fun isJsonResponse(): Boolean {
         val contentType = responseHeaders?.get("Content-Type")
@@ -98,7 +96,8 @@ object RequestTracker {
                 val buffer = Buffer()
                 body.writeTo(buffer)
                 val charset =
-                    body.contentType()?.charset(Charset.forName("UTF-8")) ?: Charset.forName("UTF-8")
+                    body.contentType()?.charset(Charset.forName("UTF-8"))
+                        ?: Charset.forName("UTF-8")
                 buffer.readString(charset)
             }
 
@@ -132,7 +131,8 @@ object RequestTracker {
                 source.request(Long.MAX_VALUE)
                 val buffer = source.buffer.clone() // 克隆buffer，确保原body仍可被消费
                 val charset =
-                    body.contentType()?.charset(Charset.forName("UTF-8")) ?: Charset.forName("UTF-8")
+                    body.contentType()?.charset(Charset.forName("UTF-8"))
+                        ?: Charset.forName("UTF-8")
                 buffer.readString(charset)
             }
 

@@ -87,6 +87,9 @@ adb install app/build/outputs/apk/release/app-release.apk
    - 支持 Debug 模式网络抓包视图（Chucker）
    - 集成 Moshi 进行 JSON 序列化
    - 支持 IgnoreHttpResult 灵活解析响应
+   - 提供两种 API 请求方式：
+     * `requestFlow` - 流式请求，返回 `Flow<RequestState<T>>`，包含 Loading/Success/Error 状态
+     * `request` - 单次请求，返回 Kotlin 标准库 `Result<T?>`，适用于一次性操作（上传日志、文件等）
 
 3. **module_extension** - 扩展方法模块
    - 提供各类 Kotlin 扩展函数和工具类
@@ -368,6 +371,100 @@ dependencies {
 2. 创建模块目录和 build.gradle.kts
 3. 配置模块的包名、依赖等
 4. 如需发布，添加 maven-publish 配置
+
+### 网络请求使用指南
+
+项目提供两种网络请求方式，分别适用于不同场景：
+
+#### 1. `requestFlow` - 流式请求（推荐用于 UI 交互场景）
+
+**特点**：
+- 返回 `Flow<RequestState<T>>`
+- 包含完整的 Loading/Success/Error 状态
+- 适合需要显示加载状态的 UI 场景
+
+**使用示例**：
+```kotlin
+// 在 ViewModel 中
+class UserViewModel : ViewModel() {
+    private val _userState = MutableStateFlow<RequestState<User?>>(RequestState.Loading)
+    val userState: StateFlow<RequestState<User?>> = _userState
+
+    fun fetchUserList() = viewModelScope.launch {
+        requestFlow { apiService.getUserList() }
+            .collect { state ->
+                _userState.value = state
+            }
+    }
+}
+
+// 在 Compose UI 中
+@Composable
+fun UserScreen(viewModel: UserViewModel) {
+    val state by viewModel.userState.collectAsState()
+
+    when (state) {
+        is RequestState.Loading -> CircularProgressIndicator()
+        is RequestState.Success -> UserList((state as RequestState.Success).value)
+        is RequestState.Error -> ErrorView((state as RequestState.Error).throwable)
+    }
+}
+```
+
+#### 2. `request` - 单次请求（推荐用于后台操作）
+
+**特点**：
+- 返回 Kotlin 标准库 `Result<T?>`
+- 无 Loading 状态，只有成功/失败
+- 适合上传日志、文件上传、提交表单等一次性操作
+
+**使用示例**：
+```kotlin
+// 示例 1: 使用 onSuccess/onFailure（适合副作用操作）
+suspend fun uploadLog(logData: String) {
+    request { apiService.uploadLog(logData) }
+        .onSuccess { data ->
+            Log.d("Upload", "上传成功: $data")
+            analytics.track("upload_success")
+        }
+        .onFailure { error ->
+            Log.e("Upload", "上传失败: ${error.message}")
+            analytics.track("upload_failure")
+        }
+}
+
+// 示例 2: 使用 fold（适合值转换）
+suspend fun submitForm(form: FormData): String {
+    return request { apiService.submitForm(form) }.fold(
+        onSuccess = { "提交成功" },
+        onFailure = { "提交失败: ${it.message}" }
+    )
+}
+
+// 示例 3: 使用 getOrNull（获取数据或默认值）
+suspend fun getUserName(): String {
+    val user = request { apiService.getUser() }.getOrNull()
+    return user?.name ?: "游客"
+}
+
+// 示例 4: 在 Repository 中使用
+class LogRepository {
+    suspend fun syncLogs(logs: List<LogEntry>): Boolean {
+        return request { apiService.uploadLogs(logs) }.isSuccess
+    }
+}
+```
+
+#### 选择建议
+
+| 场景 | 推荐使用 | 原因 |
+|------|---------|------|
+| 列表加载 | `requestFlow` | 需要显示 Loading 状态 |
+| 详情查询 | `requestFlow` | 需要显示 Loading 状态 |
+| 上传日志 | `request` | 后台操作，无需 Loading |
+| 文件上传 | `request` | 一次性操作 |
+| 表单提交 | `request` | 一次性操作 |
+| 数据同步 | `request` | 后台操作 |
 
 ### 调试网络请求
 Debug 模式下会自动添加网络日志拦截器，可以在 Logcat 中查看请求详情。Debug 版本集成 Chucker 可视化抓包工具。
