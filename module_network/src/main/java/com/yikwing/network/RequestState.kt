@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
 /**
  * 包含 [RequestState] 状态的 LiveData 类型别名
  */
-typealias StatefulLiveData<T> = LiveData<RequestState<T>>
+typealias RStateLiveData<T> = LiveData<RequestState<T>>
 
 /**
  * 包含 [RequestState] 状态的 StateFlow 类型别名
  */
-typealias StatefulFlow<T> = StateFlow<RequestState<T>>
+typealias RStateFlow<T> = StateFlow<RequestState<T>>
 
 /**
  * 请求状态封装
@@ -199,7 +199,7 @@ class ResultBuilder<T> {
  * ```
  */
 @MainThread
-inline fun <T> StatefulLiveData<T>.observeState(
+inline fun <T> RStateLiveData<T>.observeState(
     owner: LifecycleOwner,
     init: ResultBuilder<T>.() -> Unit,
 ) {
@@ -233,7 +233,7 @@ inline fun <T> StatefulLiveData<T>.observeState(
  * ```
  */
 @MainThread
-suspend inline fun <T> StatefulFlow<T>.collectState(init: ResultBuilder<T>.() -> Unit) {
+suspend inline fun <T> RStateFlow<T>.collectState(init: ResultBuilder<T>.() -> Unit) {
     val result = ResultBuilder.build(init)
 
     collect { state ->

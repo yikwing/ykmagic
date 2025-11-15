@@ -1,10 +1,10 @@
 package com.yikwing.ykquickdev
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yikwing.network.RStateLiveData
 import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
@@ -25,7 +25,7 @@ class MyViewModel
     ) : ViewModel() {
         private val _headers = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
 
-        val headers: LiveData<RequestState<Headers>>
+        val headers: RStateLiveData<Headers>
             get() = _headers
 
         private fun initHttpBinData() {
