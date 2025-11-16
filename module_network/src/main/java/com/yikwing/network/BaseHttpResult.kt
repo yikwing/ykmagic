@@ -6,14 +6,14 @@ import kotlinx.serialization.json.JsonElement
 
 @JsonClass(generateAdapter = true)
 data class BaseHttpResult<T>(
-    var data: T?,
-    var errorMsg: String,
-    var errorCode: Int,
+    val data: T?,
+    val errorMsg: String,
+    val errorCode: Int,
 )
 
 @Serializable
 data class IgnoreHttpResult(
-    var data: JsonElement,
-    var errorMsg: String,
-    var errorCode: Int,
+    val data: JsonElement,
+    val errorMsg: String,
+    val errorCode: Int,
 )

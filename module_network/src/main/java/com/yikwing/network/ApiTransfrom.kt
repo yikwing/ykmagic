@@ -8,6 +8,23 @@ import kotlinx.coroutines.flow.flowOn
 import kotlin.coroutines.cancellation.CancellationException
 
 /**
+ * 将 HTTP 响应结果转换为业务数据或抛出异常
+ *
+ * 使用 [ApiConfig.errorCodeChecker] 判断错误码是否表示失败
+ *
+ * @param result HTTP 响应结果
+ * @return 成功时返回数据，失败时抛出 ApiException
+ * @throws ApiException 当错误码检查器返回 true 时抛出
+ */
+@PublishedApi
+internal fun <T> transformHttpResult(result: BaseHttpResult<T>): T? =
+    if (ApiConfig.errorCodeChecker(result.errorCode)) {
+        throw ApiException(result.errorCode, result.errorMsg)
+    } else {
+        result.data
+    }
+
+/**
  * 流式 API 请求转换
  *
  * 将 API 调用转换为带状态的 Flow，自动处理 Loading、Success、Error 状态
@@ -31,11 +48,9 @@ inline fun <T> requestFlow(crossinline block: suspend () -> BaseHttpResult<T>) =
     flow {
         emit(RequestState.Loading)
         val result = block()
-        if (result.errorCode != 0) {
-            emit(RequestState.Error(ApiException(result.errorCode, result.errorMsg)))
-        } else {
-            emit(RequestState.Success(result.data))
-        }
+        // 使用公共函数转换结果，失败时会抛出 ApiException
+        val data = transformHttpResult(result)
+        emit(RequestState.Success(data))
     }.flowOn(Dispatchers.IO).catch { exception ->
         // 检查是否是取消异常，如果是，则重新抛出
         if (exception is CancellationException) {
@@ -43,7 +58,10 @@ inline fun <T> requestFlow(crossinline block: suspend () -> BaseHttpResult<T>) =
         }
         // 所有异常都在这里被捕捉
         Log.e("requestFlow", "Error: ${exception.message}", exception)
-        emit(RequestState.Error(ApiException.createDefault(exception.message, exception)))
+        // ApiException 直接使用，其他异常转换为默认 ApiException
+        val apiException =
+            exception as? ApiException ?: ApiException.createDefault(exception.message, exception)
+        emit(RequestState.Error(apiException))
     }
 
 /**
@@ -75,15 +93,15 @@ inline fun <T> requestFlow(crossinline block: suspend () -> BaseHttpResult<T>) =
 suspend inline fun <T> request(crossinline block: suspend () -> BaseHttpResult<T>): Result<T?> =
     try {
         val result = block()
-        if (result.errorCode != 0) {
-            Result.failure(ApiException(result.errorCode, result.errorMsg))
-        } else {
-            Result.success(result.data)
-        }
+        // 使用公共函数转换结果，成功返回数据，失败抛出 ApiException
+        Result.success(transformHttpResult(result))
     } catch (exception: CancellationException) {
         // 取消异常需要重新抛出，不捕获
         throw exception
     } catch (exception: Exception) {
         Log.e("request", "Error: ${exception.message}", exception)
-        Result.failure(ApiException.createDefault(exception.message, exception))
+        // ApiException 直接使用，其他异常转换为默认 ApiException
+        val apiException =
+            exception as? ApiException ?: ApiException.createDefault(exception.message, exception)
+        Result.failure(apiException)
     }

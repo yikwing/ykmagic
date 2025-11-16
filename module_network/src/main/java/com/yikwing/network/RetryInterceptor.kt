@@ -1,5 +1,6 @@
 package com.yikwing.network
 
+import android.util.Log
 import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
@@ -37,21 +38,30 @@ class RetryInterceptor(
                 break
             }
 
-            try {
-                // 计算延迟, 包含指数回退和抖动
-                var nextDelay = initialDelay * (2.0.pow(attempt)).toLong()
-                // 增加 +/- 20% 的抖动
-                val jitter = (nextDelay * 0.4 * Math.random() - nextDelay * 0.2).toLong()
-                nextDelay += jitter
-                // 确保延迟不超过最大值
-                if (nextDelay > maxDelay) {
-                    nextDelay = maxDelay
-                }
-                // 确保延迟不为负
-                if (nextDelay < 0) {
-                    nextDelay = 0
-                }
+            // 计算延迟, 包含指数回退和抖动
+            var nextDelay = initialDelay * (2.0.pow(attempt)).toLong()
+            // 增加 +/- 20% 的抖动
+            val jitter = (nextDelay * 0.4 * Math.random() - nextDelay * 0.2).toLong()
+            nextDelay += jitter
+            // 确保延迟不超过最大值
+            if (nextDelay > maxDelay) {
+                nextDelay = maxDelay
+            }
+            // 确保延迟不为负
+            if (nextDelay < 0) {
+                nextDelay = 0
+            }
 
+            // 记录重试日志
+            if (attempt > 0) {
+                val reason = lastException?.message ?: "服务器错误 ${response?.code}"
+                Log.w(
+                    "RetryInterceptor",
+                    "重试请求 [${request.url}] - 尝试 $attempt/$maxRetries, 原因: $reason, 下次延迟: ${nextDelay}ms"
+                )
+            }
+
+            try {
                 Thread.sleep(nextDelay)
             } catch (ie: InterruptedException) {
                 Thread.currentThread().interrupt()

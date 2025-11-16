@@ -7,10 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 YkQuickDev 是一个 Android 快速开发框架库，提供了多个可独立使用的功能模块，用于加速 Android 应用开发。
 
 **技术栈**:
-- Kotlin + Coroutines
+- Kotlin 2.2.21 + Coroutines 1.10.2
 - Gradle 版本目录 (libs.versions.toml) 统一管理依赖
-- JDK 21 / Kotlin 2.2.20
-- Hilt 依赖注入 + KSP 注解处理
+- JDK 21
+- 依赖注入：Hilt（主要）+ Koin（可选，通过技能支持）
+- KSP 2.3.2 注解处理
 - Jetpack Compose UI
 - 支持通过 JitPack (com.github.yikwing.ykmagic:模块名:版本号) 或本地模块依赖
 
@@ -286,8 +287,8 @@ val topActivity = ActivityHierarchyManager.getTopActivity()
 1. **JDK 版本**: 项目使用 JDK 21，确保环境配置正确
 2. **编译 SDK**: compileSdk = 36 (Android 15)
 3. **最低 SDK**: minSdk = 26 (Android 8.0)
-4. **Kotlin 版本**: 2.2.20
-5. **KSP 版本**: 2.2.20-2.0.4
+4. **Kotlin 版本**: 2.2.21
+5. **KSP 版本**: 2.3.2
 
 ### 构建配置
 1. **版本号管理**: versionCode 通过 Git commit 数量自动生成（基础值 4645）
