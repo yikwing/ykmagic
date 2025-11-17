@@ -6,7 +6,6 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
-import com.yikwing.module_view.R
 
 /**
  * 圆角 ImageView

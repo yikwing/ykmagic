@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.yikwing.module_view"
+    namespace = "com.yikwing.component"
     compileSdk =
         libs.versions.compileSdk
             .get()

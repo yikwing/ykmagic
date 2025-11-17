@@ -19,4 +19,12 @@
         <attr name="endColor" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="StatusBarWrapperView">
+        <attr name="extraTopPadding" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="BottomNavBarWrapperView">
+        <attr name="extraBottomPadding" format="dimension" />
+    </declare-styleable>
+
 </resources>
