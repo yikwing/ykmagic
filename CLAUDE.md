@@ -89,8 +89,8 @@ adb install app/build/outputs/apk/release/app-release.apk
    - 集成 Moshi 进行 JSON 序列化
    - 支持 IgnoreHttpResult 灵活解析响应
    - 提供两种 API 请求方式：
-     * `requestFlow` - 流式请求，返回 `Flow<RequestState<T>>`，包含 Loading/Success/Error 状态
-     * `request` - 单次请求，返回 Kotlin 标准库 `Result<T?>`，适用于一次性操作（上传日志、文件等）
+     * `requestStateFlow` - 流式请求，返回 `Flow<RequestState<T>>`，包含 Loading/Success/Error 状态
+     * `requestResult` - 单次请求，返回 Kotlin 标准库 `Result<T?>`，适用于一次性操作（上传日志、文件等）
 
 3. **module_extension** - 扩展方法模块
    - 提供各类 Kotlin 扩展函数和工具类
@@ -377,7 +377,7 @@ dependencies {
 
 项目提供两种网络请求方式，分别适用于不同场景：
 
-#### 1. `requestFlow` - 流式请求（推荐用于 UI 交互场景）
+#### 1. `requestStateFlow` - 流式请求（推荐用于 UI 交互场景）
 
 **特点**：
 - 返回 `Flow<RequestState<T>>`
@@ -392,7 +392,7 @@ class UserViewModel : ViewModel() {
     val userState: StateFlow<RequestState<User?>> = _userState
 
     fun fetchUserList() = viewModelScope.launch {
-        requestFlow { apiService.getUserList() }
+        requestStateFlow { apiService.getUserList() }
             .collect { state ->
                 _userState.value = state
             }
@@ -412,7 +412,7 @@ fun UserScreen(viewModel: UserViewModel) {
 }
 ```
 
-#### 2. `request` - 单次请求（推荐用于后台操作）
+#### 2. `requestResult` - 单次请求（推荐用于后台操作）
 
 **特点**：
 - 返回 Kotlin 标准库 `Result<T?>`
@@ -423,7 +423,7 @@ fun UserScreen(viewModel: UserViewModel) {
 ```kotlin
 // 示例 1: 使用 onSuccess/onFailure（适合副作用操作）
 suspend fun uploadLog(logData: String) {
-    request { apiService.uploadLog(logData) }
+    requestResult { apiService.uploadLog(logData) }
         .onSuccess { data ->
             Log.d("Upload", "上传成功: $data")
             analytics.track("upload_success")
@@ -436,7 +436,7 @@ suspend fun uploadLog(logData: String) {
 
 // 示例 2: 使用 fold（适合值转换）
 suspend fun submitForm(form: FormData): String {
-    return request { apiService.submitForm(form) }.fold(
+    return requestResult { apiService.submitForm(form) }.fold(
         onSuccess = { "提交成功" },
         onFailure = { "提交失败: ${it.message}" }
     )
@@ -444,14 +444,14 @@ suspend fun submitForm(form: FormData): String {
 
 // 示例 3: 使用 getOrNull（获取数据或默认值）
 suspend fun getUserName(): String {
-    val user = request { apiService.getUser() }.getOrNull()
+    val user = requestResult { apiService.getUser() }.getOrNull()
     return user?.name ?: "游客"
 }
 
 // 示例 4: 在 Repository 中使用
 class LogRepository {
     suspend fun syncLogs(logs: List<LogEntry>): Boolean {
-        return request { apiService.uploadLogs(logs) }.isSuccess
+        return requestResult { apiService.uploadLogs(logs) }.isSuccess
     }
 }
 ```
@@ -460,12 +460,12 @@ class LogRepository {
 
 | 场景 | 推荐使用 | 原因 |
 |------|---------|------|
-| 列表加载 | `requestFlow` | 需要显示 Loading 状态 |
-| 详情查询 | `requestFlow` | 需要显示 Loading 状态 |
-| 上传日志 | `request` | 后台操作，无需 Loading |
-| 文件上传 | `request` | 一次性操作 |
-| 表单提交 | `request` | 一次性操作 |
-| 数据同步 | `request` | 后台操作 |
+| 列表加载 | `requestStateFlow` | 需要显示 Loading 状态 |
+| 详情查询 | `requestStateFlow` | 需要显示 Loading 状态 |
+| 上传日志 | `requestResult` | 后台操作，无需 Loading |
+| 文件上传 | `requestResult` | 一次性操作 |
+| 表单提交 | `requestResult` | 一次性操作 |
+| 数据同步 | `requestResult` | 后台操作 |
 
 ### 调试网络请求
 Debug 模式下会自动添加网络日志拦截器，可以在 Logcat 中查看请求详情。Debug 版本集成 Chucker 可视化抓包工具。

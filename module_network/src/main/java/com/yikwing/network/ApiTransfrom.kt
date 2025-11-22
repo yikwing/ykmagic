@@ -34,7 +34,7 @@ internal fun <T> transformHttpResult(result: BaseHttpResult<T>): T? =
  *
  * 使用示例：
  * ```
- * requestFlow { apiService.getUserList() }
+ * requestStateFlow { apiService.getUserList() }
  *     .collect { state ->
  *         when (state) {
  *             is RequestState.Loading -> showLoading()
@@ -44,7 +44,7 @@ internal fun <T> transformHttpResult(result: BaseHttpResult<T>): T? =
  *     }
  * ```
  */
-inline fun <T> requestFlow(crossinline block: suspend () -> BaseHttpResult<T>) =
+inline fun <T> requestStateFlow(crossinline block: suspend () -> BaseHttpResult<T>) =
     flow {
         emit(RequestState.Loading)
         val result = block()
@@ -57,7 +57,7 @@ inline fun <T> requestFlow(crossinline block: suspend () -> BaseHttpResult<T>) =
             throw exception
         }
         // 所有异常都在这里被捕捉
-        Log.e("requestFlow", "Error: ${exception.message}", exception)
+        Log.e("requestStateFlow", "Error: ${exception.message}", exception)
         // ApiException 直接使用，其他异常转换为默认 ApiException
         val apiException =
             exception as? ApiException ?: ApiException.createDefault(exception.message, exception)
@@ -76,21 +76,21 @@ inline fun <T> requestFlow(crossinline block: suspend () -> BaseHttpResult<T>) =
  * 使用示例：
  * ```
  * // 示例 1: 使用 onSuccess/onFailure 处理结果
- * request { apiService.uploadLog(logData) }
+ * requestResult { apiService.uploadLog(logData) }
  *     .onSuccess { data -> Log.d("Upload", "成功: $data") }
  *     .onFailure { error -> Log.e("Upload", "失败: ${error.message}") }
  *
  * // 示例 2: 使用 fold 转换结果
- * val message = request { apiService.submit(form) }.fold(
+ * val message = requestResult { apiService.submit(form) }.fold(
  *     onSuccess = { "提交成功" },
  *     onFailure = { "提交失败: ${it.message}" }
  * )
  *
  * // 示例 3: 使用 getOrNull 获取数据
- * val data = request { apiService.getData() }.getOrNull()
+ * val data = requestResult { apiService.getData() }.getOrNull()
  * ```
  */
-suspend inline fun <T> request(crossinline block: suspend () -> BaseHttpResult<T>): Result<T?> =
+suspend inline fun <T> requestResult(crossinline block: suspend () -> BaseHttpResult<T>): Result<T?> =
     try {
         val result = block()
         // 使用公共函数转换结果，成功返回数据，失败抛出 ApiException
@@ -99,7 +99,7 @@ suspend inline fun <T> request(crossinline block: suspend () -> BaseHttpResult<T
         // 取消异常需要重新抛出，不捕获
         throw exception
     } catch (exception: Exception) {
-        Log.e("request", "Error: ${exception.message}", exception)
+        Log.e("requestResult", "Error: ${exception.message}", exception)
         // ApiException 直接使用，其他异常转换为默认 ApiException
         val apiException =
             exception as? ApiException ?: ApiException.createDefault(exception.message, exception)
