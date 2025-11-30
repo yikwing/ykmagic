@@ -49,6 +49,15 @@ class MyViewModel
                         _wanAndroidList.value = result
                     }
             }
+
+            viewModelScope.launch {
+                val cc = repository.initWanAndroidData2()
+                cc.fold(onSuccess = { _data ->
+                    Log.d("==== initWanAndroidData", "$name ${_data?.firstOrNull()?.name}")
+                }, onFailure = { _err ->
+                    Log.e("==== initWanAndroidData", "$name ${_err.message}")
+                })
+            }
         }
 
         fun removeItem(

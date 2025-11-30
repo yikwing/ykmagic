@@ -2,6 +2,7 @@ package com.yikwing.ykquickdev
 
 import com.yikwing.network.ApiException
 import com.yikwing.network.RequestState
+import com.yikwing.network.requestResult
 import com.yikwing.network.requestStateFlow
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
@@ -21,6 +22,11 @@ class Repository
 
         fun initWanAndroidData(): Flow<RequestState<List<ChapterBean>?>> =
             requestStateFlow {
+                ApiProvider.createWanAndroidService().getChapters()
+            }
+
+        suspend fun initWanAndroidData2(): Result<List<ChapterBean>?> =
+            requestResult {
                 ApiProvider.createWanAndroidService().getChapters()
             }
     }

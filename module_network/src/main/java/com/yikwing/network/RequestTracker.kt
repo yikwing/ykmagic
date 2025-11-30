@@ -40,10 +40,18 @@ data class LogEntry(
         val sb = StringBuilder()
         val statusEmoji =
             when (responseCode) {
-                null -> "⏱️" // Still in progress or failed before response
-                in 200..299 -> "✅" // Success
-                in 300..399 -> "➡️" // Redirect
-                in 400..499 -> "⚠️" // Client Error
+                null -> "⏱️"
+
+                // Still in progress or failed before response
+                in 200..299 -> "✅"
+
+                // Success
+                in 300..399 -> "➡️"
+
+                // Redirect
+                in 400..499 -> "⚠️"
+
+                // Client Error
                 else -> "❌" // Server Error or other
             }
 

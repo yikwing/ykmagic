@@ -4,14 +4,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-YkQuickDev 是一个 Android 快速开发框架库，提供了多个可独立使用的功能模块，用于加速 Android 应用开发。
+YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使用的功能模块,用于加速 Android 应用开发。
 
 **技术栈**:
 - Kotlin 2.2.21 + Coroutines 1.10.2
 - Gradle 版本目录 (libs.versions.toml) 统一管理依赖
 - JDK 21
-- 依赖注入：Hilt（主要）+ Koin（可选，通过技能支持）
-- KSP 2.3.2 注解处理
+- 依赖注入:Hilt(主要) + Koin(可选,通过技能支持)
+- KSP 2.3.3 注解处理
 - Jetpack Compose UI
 - 支持通过 JitPack (com.github.yikwing.ykmagic:模块名:版本号) 或本地模块依赖
 
@@ -34,7 +34,7 @@ YkQuickDev 是一个 Android 快速开发框架库，提供了多个可独立使
 # 或使用构建脚本
 ./android_build.sh clean
 
-# 完整构建流程（清理、构建、安装）
+# 完整构建流程(清理、构建、安装)
 ./android_build.sh all
 
 # 安装 Release APK
@@ -75,7 +75,7 @@ adb install app/build/outputs/apk/release/app-release.apk
 ## 核心架构
 
 ### 模块化设计
-项目采用多模块架构，每个模块独立负责特定功能，可以按需引入：
+项目采用多模块架构,每个模块独立负责特定功能,可以按需引入:
 
 1. **module_config** - 配置注入模块
    - 通过 `android_env.json` 注入配置数据
@@ -84,13 +84,13 @@ adb install app/build/outputs/apk/release/app-release.apk
 
 2. **module_network** - 网络请求模块
    - 基于 OkHttp + Retrofit 封装
-   - 提供统一的拦截器机制（HeaderInterceptor、RetryInterceptor、LogInterceptor）
-   - 支持 Debug 模式网络抓包视图（Chucker）
+   - 提供统一的拦截器机制(HeaderInterceptor、RetryInterceptor、LogInterceptor)
+   - 支持 Debug 模式网络抓包视图(Chucker)
    - 集成 Moshi 进行 JSON 序列化
    - 支持 IgnoreHttpResult 灵活解析响应
-   - 提供两种 API 请求方式：
-     * `requestStateFlow` - 流式请求，返回 `Flow<RequestState<T>>`，包含 Loading/Success/Error 状态
-     * `requestResult` - 单次请求，返回 Kotlin 标准库 `Result<T?>`，适用于一次性操作（上传日志、文件等）
+   - 提供两种 API 请求方式:
+     * `requestStateFlow` - 流式请求,返回 `Flow<RequestState<T>>`,包含 Loading/Success/Error 状态
+     * `requestResult` - 单次请求,返回 Kotlin 标准库 `Result<T?>`,适用于一次性操作(上传日志、文件等)
 
 3. **module_extension** - 扩展方法模块
    - 提供各类 Kotlin 扩展函数和工具类
@@ -116,12 +116,12 @@ adb install app/build/outputs/apk/release/app-release.apk
    - AppInitializer 支持模块化初始化
 
 8. **module_component** - UI 组件模块
-   - RoundedImageView：支持独立设置各角圆角半径
-   - ImBarWrapperView：使用 WindowInsets 处理状态栏高度
+   - RoundedImageView:支持独立设置各角圆角半径
+   - ImBarWrapperView:使用 WindowInsets 处理状态栏高度
 
 ### 初始化架构 (AppInitializer)
 
-**核心机制**: 基于拓扑排序的模块初始化框架，支持声明依赖关系。
+**核心机制**: 基于拓扑排序的模块初始化框架,支持声明依赖关系。
 
 **使用方式**:
 ```kotlin
@@ -149,7 +149,7 @@ class ConfigInjectInitTask : Initializer<Unit> {
 
 **关键特性**:
 - 自动根据依赖关系排序执行
-- 循环依赖检测（会抛出 "存在回环依赖" 错误）
+- 循环依赖检测(会抛出 "存在回环依赖" 错误)
 - 位置: module_proxy/src/main/java/com/yikwing/proxy/startup/AppInitializer.kt:28
 
 ### 配置注入机制 (module_config)
@@ -173,27 +173,27 @@ class ConfigInjectInitTask : Initializer<Unit> {
 
 ### 依赖注入架构
 - 使用 Hilt 进行依赖注入 (@HiltAndroidApp 标记 Application)
-- 通过 KSP 处理注解，生成代码
+- 通过 KSP 处理注解,生成代码
 - 支持 ViewModel + Repository + Hilt 的完整依赖链
 
 ### Compose UI 架构
 - 主应用使用 Jetpack Compose 构建 UI
 - Navigation Compose 进行页面导航
 - Hilt Navigation Compose 支持 ViewModel 注入
-- Coil 3 处理图片加载（在 MainApplication 中配置 SingletonImageLoader）
+- Coil 3 处理图片加载(在 MainApplication 中配置 SingletonImageLoader)
 
 ### Activity 生命周期管理
 
 **ActivityHierarchyManager**: 维护 Activity 栈的全局管理器
 - 在 Application 中注册 ActivityLifecycleCallbacks
 - 自动跟踪 Activity 的创建和销毁
-- **线程安全**：使用 `CopyOnWriteArrayList` 保证并发安全
-- **内存安全**：使用 `WeakReference` 避免内存泄漏
-- **自动清理**：自动过滤已销毁的 Activity 引用
+- **线程安全**:使用 `CopyOnWriteArrayList` 保证并发安全
+- **内存安全**:使用 `WeakReference` 避免内存泄漏
+- **自动清理**:自动过滤已销毁的 Activity 引用
 - 位置: module_proxy/src/main/java/com/yikwing/proxy/util/ActivityHierarchyManager.kt:6
 
-**核心功能**：
-- `register(activity)` - 注册 Activity（自动去重）
+**核心功能**:
+- `register(activity)` - 注册 Activity(自动去重)
 - `unregister(activity)` - 注销 Activity
 - `getTopActivity()` - 获取栈顶 Activity
 - `getActivityCount()` - 获取有效 Activity 数量
@@ -223,7 +223,7 @@ class AppActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks by 
 // 关闭栈顶 2 个 Activity
 ActivityHierarchyManager.finishTopActivities(2)
 
-// 关闭到 MainActivity（不包含）
+// 关闭到 MainActivity(不包含)
 ActivityHierarchyManager.finishUntil(MainActivity::class.java, inclusive = false)
 
 // 关闭除了 MainActivity 外的所有 Activity
@@ -238,28 +238,28 @@ if (ActivityHierarchyManager.contains(DetailActivity::class.java)) {
 val topActivity = ActivityHierarchyManager.getTopActivity()
 ```
 
-**已废弃的方法**：
+**已废弃的方法**:
 - `finishActivities(popNum)` - 请使用 `finishTopActivities(count)`
 - `calculatePopNum(activityClass)` - 请使用 `getIndexFromTop(activityClass)`
 
 ### WorkManager 任务调度
 
-项目使用 WorkManager 进行后台任务管理，例如缓存清理：
+项目使用 WorkManager 进行后台任务管理,例如缓存清理:
 - **CleanCacheWork**: 定时清理缓存任务
-- 配置为每天执行一次，仅在设备充电且电量充足时运行
+- 配置为每天执行一次,仅在设备充电且电量充足时运行
 - 位置: app/src/main/java/com/yikwing/ykquickdev/work/CleanCacheWork.kt
 
 ## 重要配置文件
 
-### 必需配置（需手动创建）
-1. **android_env.json** - 应用配置数据，示例结构：
+### 必需配置(需手动创建)
+1. **android_env.json** - 应用配置数据,示例结构:
    ```json
    {
      "base_url": "https://api.example.com"
    }
    ```
 
-2. **keystore.properties** - 签名配置，示例结构：
+2. **keystore.properties** - 签名配置,示例结构:
    ```properties
    storeFile=path/to/keystore.jks
    keyAlias=your_alias
@@ -268,32 +268,32 @@ val topActivity = ActivityHierarchyManager.getTopActivity()
    ```
 
 ### 核心配置文件
-- **gradle/libs.versions.toml** - 版本目录，统一管理所有依赖版本和插件
-- **settings.gradle.kts** - 项目模块配置，定义所有 include 的模块
-- **build.gradle.kts (root)** - 根项目构建配置，包含强制依赖版本设置
-- **android_build.sh** - 便捷构建脚本，支持 dev/build/clean/install/dependency 等命令
+- **gradle/libs.versions.toml** - 版本目录,统一管理所有依赖版本和插件
+- **settings.gradle.kts** - 项目模块配置,定义所有 include 的模块
+- **build.gradle.kts (root)** - 根项目构建配置,包含强制依赖版本设置
+- **android_build.sh** - 便捷构建脚本,支持 dev/build/clean/install/dependency 等命令
 
 ### app/build.gradle.kts 关键配置
 - **版本号生成**: `gitVersionCode()` 函数通过 Git commit 计数生成
 - **构建时间注入**: `manifestPlaceholders["debug_time"]` 记录打包时间
 - **JSON 配置注入**: `buildConfigField("String", "YK_CONFIG", ...)` 将 android_env.json 内容注入到 BuildConfig
 - **资源重定向**: `sourceSets.getByName("main") { res.setSrcDirs(...) }` 支持多资源目录
-- **Wire 配置**: Protobuf 支持，proto 文件位于 `src/main/protos`
+- **Wire 配置**: Protobuf 支持,proto 文件位于 `src/main/protos`
 - **Room Schema**: KSP 参数配置 Room 数据库 schema 导出位置
 
 ## 开发注意事项
 
 ### 环境要求
-1. **JDK 版本**: 项目使用 JDK 21，确保环境配置正确
+1. **JDK 版本**: 项目使用 JDK 21,确保环境配置正确
 2. **编译 SDK**: compileSdk = 36 (Android 15)
 3. **最低 SDK**: minSdk = 26 (Android 8.0)
 4. **Kotlin 版本**: 2.2.21
-5. **KSP 版本**: 2.3.2
+5. **KSP 版本**: 2.3.3
 
 ### 构建配置
-1. **版本号管理**: versionCode 通过 Git commit 数量自动生成（基础值 4645）
-2. **签名配置**: Release 和 Debug 都使用同一签名文件（配置在 keystore.properties）
-3. **资源重定向**: app 模块的资源文件按功能分类存放在不同子目录：
+1. **版本号管理**: versionCode 通过 Git commit 数量自动生成(基础值 4645)
+2. **签名配置**: Release 和 Debug 都使用同一签名文件(配置在 keystore.properties)
+3. **资源重定向**: app 模块的资源文件按功能分类存放在不同子目录:
    - `src/main/res/common` - 通用资源
    - `src/main/res/activity` - Activity 相关资源
    - `src/main/res/fragment` - Fragment 相关资源
@@ -302,12 +302,12 @@ val topActivity = ActivityHierarchyManager.getTopActivity()
 - 项目在根 build.gradle.kts 中通过 `resolutionStrategy.force()` 强制统一关键依赖版本
 - 强制版本包括: `activity` 和 `kotlinx-coroutines-core`
 - 所有版本在 `gradle/libs.versions.toml` 中集中管理
-- 支持 Bundle 依赖配置，如: `network-okhttp`, `network-ktor`, `testBundle`, `androidTestBundle`
+- 支持 Bundle 依赖配置,如: `network-okhttp`, `network-ktor`, `testBundle`, `androidTestBundle`
 
 ### Debug 工具
-- **Chucker**: 网络请求可视化抓包工具（仅 Debug 版本）
-- **LeakCanary**: 内存泄漏检测（仅 Debug 版本）
-- **Glance**: 性能监控工具（仅 Debug 版本）
+- **Chucker**: 网络请求可视化抓包工具(仅 Debug 版本)
+- **LeakCanary**: 内存泄漏检测(仅 Debug 版本)
+- **Glance**: 性能监控工具(仅 Debug 版本)
 - 使用 `BuildConfig.DEBUG` 控制调试功能的开关
 
 ### KSP 注解处理
@@ -318,13 +318,13 @@ val topActivity = ActivityHierarchyManager.getTopActivity()
 
 ## 模块发布
 
-各模块配置了 Maven 发布，可以发布到 JitPack：
+各模块配置了 Maven 发布,可以发布到 JitPack:
 - groupId: com.github.yikwing.ykmagic
-- artifactId: 对应模块名（config、network、proxy、extension、permission、logger、datastore、component）
-- 当前版本: 查看各模块的 build.gradle.kts 中的 version 配置（例如 1.0.1）
+- artifactId: 对应模块名(config、network、proxy、extension、permission、logger、datastore、component)
+- 当前版本: 查看各模块的 build.gradle.kts 中的 version 配置(例如 1.0.1)
 
 ### 发布配置说明
-每个模块的 build.gradle.kts 包含：
+每个模块的 build.gradle.kts 包含:
 ```kotlin
 android {
     publishing {
@@ -347,7 +347,7 @@ afterEvaluate {
 ```
 
 ### 使用已发布的模块
-在项目中添加 JitPack 仓库和依赖：
+在项目中添加 JitPack 仓库和依赖:
 ```gradle
 repositories {
     maven { url = uri("https://jitpack.io") }
@@ -371,20 +371,20 @@ dependencies {
 1. 在 settings.gradle.kts 添加 `include(":module_name")`
 2. 创建模块目录和 build.gradle.kts
 3. 配置模块的包名、依赖等
-4. 如需发布，添加 maven-publish 配置
+4. 如需发布,添加 maven-publish 配置
 
 ### 网络请求使用指南
 
-项目提供两种网络请求方式，分别适用于不同场景：
+项目提供两种网络请求方式,分别适用于不同场景:
 
-#### 1. `requestStateFlow` - 流式请求（推荐用于 UI 交互场景）
+#### 1. `requestStateFlow` - 流式请求(推荐用于 UI 交互场景)
 
-**特点**：
+**特点**:
 - 返回 `Flow<RequestState<T>>`
 - 包含完整的 Loading/Success/Error 状态
 - 适合需要显示加载状态的 UI 场景
 
-**使用示例**：
+**使用示例**:
 ```kotlin
 // 在 ViewModel 中
 class UserViewModel : ViewModel() {
@@ -412,16 +412,16 @@ fun UserScreen(viewModel: UserViewModel) {
 }
 ```
 
-#### 2. `requestResult` - 单次请求（推荐用于后台操作）
+#### 2. `requestResult` - 单次请求(推荐用于后台操作)
 
-**特点**：
+**特点**:
 - 返回 Kotlin 标准库 `Result<T?>`
-- 无 Loading 状态，只有成功/失败
+- 无 Loading 状态,只有成功/失败
 - 适合上传日志、文件上传、提交表单等一次性操作
 
-**使用示例**：
+**使用示例**:
 ```kotlin
-// 示例 1: 使用 onSuccess/onFailure（适合副作用操作）
+// 示例 1: 使用 onSuccess/onFailure(适合副作用操作)
 suspend fun uploadLog(logData: String) {
     requestResult { apiService.uploadLog(logData) }
         .onSuccess { data ->
@@ -434,7 +434,7 @@ suspend fun uploadLog(logData: String) {
         }
 }
 
-// 示例 2: 使用 fold（适合值转换）
+// 示例 2: 使用 fold(适合值转换)
 suspend fun submitForm(form: FormData): String {
     return requestResult { apiService.submitForm(form) }.fold(
         onSuccess = { "提交成功" },
@@ -442,7 +442,7 @@ suspend fun submitForm(form: FormData): String {
     )
 }
 
-// 示例 3: 使用 getOrNull（获取数据或默认值）
+// 示例 3: 使用 getOrNull(获取数据或默认值)
 suspend fun getUserName(): String {
     val user = requestResult { apiService.getUser() }.getOrNull()
     return user?.name ?: "游客"
@@ -462,15 +462,15 @@ class LogRepository {
 |------|---------|------|
 | 列表加载 | `requestStateFlow` | 需要显示 Loading 状态 |
 | 详情查询 | `requestStateFlow` | 需要显示 Loading 状态 |
-| 上传日志 | `requestResult` | 后台操作，无需 Loading |
+| 上传日志 | `requestResult` | 后台操作,无需 Loading |
 | 文件上传 | `requestResult` | 一次性操作 |
 | 表单提交 | `requestResult` | 一次性操作 |
 | 数据同步 | `requestResult` | 后台操作 |
 
 ### 调试网络请求
-Debug 模式下会自动添加网络日志拦截器，可以在 Logcat 中查看请求详情。Debug 版本集成 Chucker 可视化抓包工具。
+Debug 模式下会自动添加网络日志拦截器,可以在 Logcat 中查看请求详情。Debug 版本集成 Chucker 可视化抓包工具。
 
 ### 依赖配置说明
 - 项目强制指定统一的 activity 和 kotlinx-coroutines-core 版本
-- 支持 Bundle 依赖，如 network-okhttp、network-ktor、testBundle 等
-- Debug 和 Release 构建分别使用不同的依赖（如 Chucker、LeakCanary）
+- 支持 Bundle 依赖,如 network-okhttp、network-ktor、testBundle 等
+- Debug 和 Release 构建分别使用不同的依赖(如 Chucker、LeakCanary)
