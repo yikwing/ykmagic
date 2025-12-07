@@ -202,10 +202,7 @@ dependencies {
     ksp(libs.room.compiler)
 
     // 三方依赖库
-    implementation(libs.bundles.network.okhttp)
-
-    implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.kotlin.codegen)
+    implementation(libs.bundles.network.ktor)
 
     implementation(libs.kotlinx.coroutines.android)
 

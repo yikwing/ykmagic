@@ -3,10 +3,10 @@ package com.yikwing.ykquickdev.api.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.Serializable
 
 @Entity(tableName = "t_chapter")
-@JsonClass(generateAdapter = true)
+@Serializable
 data class ChapterBean(
     @ColumnInfo(name = "course_id") val courseId: Int,
     @PrimaryKey val id: Int,

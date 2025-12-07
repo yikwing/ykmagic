@@ -1,10 +1,9 @@
 package com.yikwing.network
 
-import com.squareup.moshi.JsonClass
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class BaseHttpResult<T>(
     val data: T?,
     val errorMsg: String,

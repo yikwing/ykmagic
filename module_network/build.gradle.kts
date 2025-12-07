@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
 
     id("maven-publish")
@@ -59,14 +60,14 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
 
-    implementation(libs.bundles.network.okhttp)
-
-    implementation(libs.moshi.kotlin)
-    ksp(libs.moshi.kotlin.codegen)
+    implementation(libs.bundles.network.ktor)
 
     implementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.kotlinx.serialization.json.okio)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
 
     testImplementation(libs.bundles.testBundle)
     androidTestImplementation(libs.bundles.androidTestBundle)

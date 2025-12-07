@@ -1,16 +1,16 @@
 package com.yikwing.ykquickdev.api.entity
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class HttpBinHeaders(
     val headers: Headers,
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class Headers(
-    @property:Json(name = "Host") val host: String,
-    @property:Json(name = "User-Agent") val userAgent: String,
-    @property:Json(name = "X-Amzn-Trace-Id") val traceId: String,
+    @property:SerialName("Host") val host: String,
+    @property:SerialName("User-Agent") val userAgent: String,
+    @property:SerialName("X-Amzn-Trace-Id") val traceId: String,
 )

@@ -25,9 +25,10 @@ class OtherViewModel @Inject constructor(
 
     fun initHttpBinData() {
         viewModelScope.launch {
-            _headers.update {
-                val repo = otherRepository.initHttpBinData()
-                it.copy(repo = repo)
+            otherRepository.initHttpBinData().collect { result ->
+                _headers.update {
+                    it.copy(repo = result)
+                }
             }
         }
     }
