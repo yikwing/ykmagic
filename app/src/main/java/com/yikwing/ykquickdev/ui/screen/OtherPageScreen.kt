@@ -19,17 +19,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.yikwing.network.RequestState
 import com.yikwing.network.onFailure
 import com.yikwing.network.onSuccess
 import com.yikwing.ykquickdev.components.Center
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun OtherPageScreen(
     msg: String?,
-    viewModel: OtherViewModel = hiltViewModel(),
+    viewModel: OtherViewModel = koinViewModel(),
 ) {
     val httpBin by viewModel.headers.collectAsState()
 

@@ -4,20 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.yikwing.extension.NetConnectManager
 import com.yikwing.proxy.BaseActivity
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import com.yikwing.ykquickdev.manager.UserManager
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
-@AndroidEntryPoint
 class MainActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::inflate) {
     private var backPressTime by Delegates.observable(0L) { _: KProperty<*>, oldValue: Long, newValue: Long ->
         if (newValue - oldValue < 2000) {
@@ -27,7 +25,7 @@ class MainActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::infl
         }
     }
 
-    private val vm: DataStoreViewModel by viewModels()
+    private val vm: DataStoreViewModel by viewModel()
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)

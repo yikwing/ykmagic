@@ -1,11 +1,9 @@
 package com.yikwing.ykquickdev.manager
 
 import android.util.Log
-import com.yikwing.extension.GlobalContextProvider
 import com.yikwing.ykquickdev.UserInfo
-import com.yikwing.ykquickdev.di.EntryPointDependencies
-import dagger.hilt.android.EntryPointAccessors
 import kotlinx.serialization.json.Json
+import org.koin.java.KoinJavaComponent.inject
 
 /**
  * <pre>
@@ -28,16 +26,7 @@ import kotlinx.serialization.json.Json
 object UserManager {
     private const val TAG = "UserManager"
 
-    private val entryPoint: EntryPointDependencies by lazy {
-        EntryPointAccessors.fromApplication(
-            GlobalContextProvider.appContext,
-            EntryPointDependencies::class.java,
-        )
-    }
-
-    private val json: Json by lazy {
-        entryPoint.getJson()
-    }
+    private val json: Json by inject(Json::class.java)
 
     fun printUserIsMan() {
         val jsonWithBooleanId =

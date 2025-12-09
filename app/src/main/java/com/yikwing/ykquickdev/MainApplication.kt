@@ -28,17 +28,30 @@ import com.yikwing.ykquickdev.task.DataStoreInitTask
 import com.yikwing.ykquickdev.task.LoggerInitTask
 import com.yikwing.ykquickdev.task.NetworkInitTask
 import com.yikwing.ykquickdev.work.CleanCacheWork
-import dagger.hilt.android.HiltAndroidApp
+import io.kotzilla.sdk.analytics.koin.analytics
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.annotation.KoinApplication
+import org.koin.ksp.generated.startKoin
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
-@HiltAndroidApp
+@KoinApplication
 class MainApplication :
     Application(),
     SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            androidContext(this@MainApplication)
+            analytics {
+                onConfig {
+                    refreshRate = 15_000L // Send metrics every 15 seconds
+                    useDebugLogs = true
+                }
+            }
+        }
 
         R.color.black.asColor()
 

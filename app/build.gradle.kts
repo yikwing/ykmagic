@@ -8,12 +8,13 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
 
+    alias(libs.plugins.kotzilla)
+
     alias(libs.plugins.compose.compiler)
 
     alias(libs.plugins.wire)
 
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
 
     id("com.github.ben-manes.versions") version "0.53.0"
@@ -171,6 +172,7 @@ android {
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
+    arg("KOIN_CONFIG_CHECK", "true")
 }
 
 wire {
@@ -271,9 +273,17 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
 
     // -------------- hilt 代支持ksp 再合并 ----------------
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
+    implementation(platform(libs.koin.bom))
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.compose.viewmodel)
+
+    implementation(libs.kotzilla.sdk)
+
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.ksp.compiler)
+
+    implementation(libs.javax.inject)
 
     // https://juejin.cn/post/7079229035254906888
     implementation(libs.kotlinx.serialization.json.okio)

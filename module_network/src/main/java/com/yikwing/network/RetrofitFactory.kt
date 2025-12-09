@@ -1,10 +1,6 @@
 package com.yikwing.network
 
 import android.util.Log
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
@@ -18,6 +14,8 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -54,7 +52,7 @@ annotation class NetworkInterceptors
  * - Debug 日志
  */
 @Module
-@InstallIn(SingletonComponent::class)
+@Configuration
 object NetworkModule {
     private const val TIMEOUT_MS = 30_000L
     private const val CONNECT_TIMEOUT_MS = 15_000L
@@ -70,7 +68,6 @@ object NetworkModule {
      * 4. 网络层拦截器
      */
     @Singleton
-    @Provides
     fun provideOkHttpClient(
         @ApplicationInterceptors applicationInterceptors: List<@JvmSuppressWildcards Interceptor>,
         @NetworkInterceptors networkInterceptors: List<@JvmSuppressWildcards Interceptor>,
@@ -101,7 +98,6 @@ object NetworkModule {
      * 提供 JSON 序列化配置
      */
     @Singleton
-    @Provides
     fun provideJson(): Json =
         Json {
             isLenient = true
@@ -119,7 +115,6 @@ object NetworkModule {
      * - 支持可配置的 BaseUrl
      */
     @Singleton
-    @Provides
     fun provideHttpClient(
         okHttpClient: OkHttpClient,
         json: Json,

@@ -8,11 +8,9 @@ import com.yikwing.network.ApplicationInterceptors
 import com.yikwing.network.BaseUrl
 import com.yikwing.network.NetworkInterceptors
 import com.yikwing.ykquickdev.HeaderInterceptor
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import okhttp3.Interceptor
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
 import javax.inject.Singleton
 
 /**
@@ -23,14 +21,13 @@ import javax.inject.Singleton
  * - 自定义应用层拦截器 (Chucker + HeaderInterceptor)
  */
 @Module
-@InstallIn(SingletonComponent::class)
+@Configuration
 object AppNetworkModule {
     /**
      * 提供 BaseUrl
      * 从 YkConfigManager 获取配置
      */
     @Singleton
-    @Provides
     @BaseUrl
     fun provideBaseUrl(): String = YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl
 
@@ -40,7 +37,6 @@ object AppNetworkModule {
      * - HeaderInterceptor: 添加自定义 Header
      */
     @Singleton
-    @Provides
     @ApplicationInterceptors
     fun provideApplicationInterceptors(application: Application): List<Interceptor> =
         listOf(
@@ -52,7 +48,6 @@ object AppNetworkModule {
      * 提供网络层拦截器列表
      */
     @Singleton
-    @Provides
     @NetworkInterceptors
     fun provideNetworkInterceptors(): List<Interceptor> = emptyList()
 }

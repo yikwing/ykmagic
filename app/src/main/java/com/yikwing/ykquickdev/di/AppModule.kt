@@ -1,9 +1,10 @@
 package com.yikwing.ykquickdev.di
 
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Configuration
+import org.koin.core.annotation.Module
 
 @Module
-@InstallIn(SingletonComponent::class)
+@Configuration
+@ComponentScan("com.yikwing.ykquickdev")
 object AppModule

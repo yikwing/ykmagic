@@ -10,7 +10,7 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 - Kotlin 2.2.21 + Coroutines 1.10.2
 - Gradle 版本目录 (libs.versions.toml) 统一管理依赖
 - JDK 21
-- 依赖注入:Hilt(主要) + Koin(可选,通过技能支持)
+- 依赖注入: Koin 4.1.1 + Koin Annotations 2.3.1 (已从 Hilt 迁移)
 - KSP 2.3.3 注解处理
 - Jetpack Compose UI
 - 支持通过 JitPack (com.github.yikwing.ykmagic:模块名:版本号) 或本地模块依赖
@@ -172,14 +172,99 @@ class ConfigInjectInitTask : Initializer<Unit> {
 **构建时注入**: app/build.gradle.kts 中通过 `buildConfigField` 将 JSON 注入到 BuildConfig
 
 ### 依赖注入架构
-- 使用 Hilt 进行依赖注入 (@HiltAndroidApp 标记 Application)
-- 通过 KSP 处理注解,生成代码
-- 支持 ViewModel + Repository + Hilt 的完整依赖链
+
+项目使用 **Koin Annotations** 进行依赖注入,提供声明式 DI 体验。
+
+**Application 初始化** (MainApplication.kt:38-47):
+```kotlin
+@KoinApplication
+class MainApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        startKoin {
+            androidContext(this@MainApplication)
+        }
+    }
+}
+```
+
+**依赖模块定义** (使用 Koin Annotations):
+```kotlin
+@Module
+@Configuration
+@ComponentScan("com.yikwing.ykquickdev")
+object AppModule
+
+@Module
+object DataModule {
+    @Singleton
+    fun provideDataBase(context: Context): UserDatabase = ...
+
+    @Factory
+    fun provideUserDao(userDatabase: UserDatabase): UserDao = ...
+}
+```
+
+**ViewModel 注入**:
+```kotlin
+// 定义 ViewModel
+@KoinViewModel
+class MyViewModel @Inject constructor(
+    private val repository: Repository,
+    @InjectedParam val name: String  // 运行时参数
+) : ViewModel()
+
+// 在 Activity/Fragment 中使用
+class MainActivity : BaseActivity() {
+    private val vm: DataStoreViewModel by viewModel()
+}
+```
+
+**构造器注入**:
+```kotlin
+class Repository @Inject constructor(
+    private val repo: Repo
+)
+```
+
+**非 Android 组件注入** (如 Object 单例):
+```kotlin
+object UserManager {
+    private val json: Json by inject(Json::class.java)
+}
+```
+
+**Qualifier 支持** (区分同类型依赖):
+```kotlin
+@Singleton
+@BaseUrl
+fun provideBaseUrl(): String = "https://api.example.com"
+
+@Singleton
+@ApplicationInterceptors
+fun provideApplicationInterceptors(): List<Interceptor> = ...
+```
+
+**KSP 配置** (app/build.gradle.kts):
+```kotlin
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+    arg("KOIN_CONFIG_CHECK", "true")  // 启用编译时依赖检查
+}
+```
+
+**核心特性**:
+- 使用 `@Module` + `@Configuration` + `@ComponentScan` 自动扫描依赖
+- 使用 `@KoinViewModel` 标记 ViewModel,无需手动注册
+- 使用 `@InjectedParam` 传递运行时参数 (替代 Hilt 的 AssistedInject)
+- 使用标准 `@Inject` 注解 (javax.inject),保持代码可移植性
+- 使用 `@Singleton` / `@Factory` 控制依赖作用域
+- 完整支持 ViewModel + Repository + Koin 的依赖链
 
 ### Compose UI 架构
 - 主应用使用 Jetpack Compose 构建 UI
 - Navigation Compose 进行页面导航
-- Hilt Navigation Compose 支持 ViewModel 注入
+- Koin Compose ViewModel 支持 ViewModel 注入
 - Coil 3 处理图片加载(在 MainApplication 中配置 SingletonImageLoader)
 
 ### Activity 生命周期管理
@@ -312,8 +397,8 @@ val topActivity = ActivityHierarchyManager.getTopActivity()
 
 ### KSP 注解处理
 - module_config: 处理 `@YkConfigNode` 和 `@YkConfigValue`
-- Moshi: 使用 `@JsonClass(generateAdapter = true)` 生成 JSON 适配器
-- Hilt: 使用 `@HiltAndroidApp`, `@AndroidEntryPoint` 等注解
+- kotlinx.serialization: 使用 `@Serializable` 生成序列化代码
+- Koin: 处理 `@Module`, `@KoinViewModel`, `@Inject` 等注解
 - Room: 使用 `@Entity`, `@Dao`, `@Database` 等注解
 
 ## 模块发布

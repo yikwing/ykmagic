@@ -3,11 +3,11 @@ package com.yikwing.ykquickdev
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
 import javax.inject.Inject
 
-@HiltViewModel
+@KoinViewModel
 class DataStoreViewModel
     @Inject
     constructor(

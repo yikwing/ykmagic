@@ -9,7 +9,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yikwing.extension.unSafeLazy
@@ -21,11 +20,11 @@ import com.yikwing.network.observeState
 import com.yikwing.permission.PermissionX
 import com.yikwing.proxy.BaseFragment
 import com.yikwing.ykquickdev.databinding.MainFragmentBinding
-import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.lifecycle.withCreationCallback
+import io.kotzilla.sdk.KotzillaSDK
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
-@AndroidEntryPoint
 class MainFragment :
     BaseFragment<MainFragmentBinding>(MainFragmentBinding::inflate),
     CustomListAdapterCallBack {
@@ -33,13 +32,9 @@ class MainFragment :
         fun newInstance() = MainFragment()
     }
 
-    private val viewModel: MyViewModel by viewModels(
-        extrasProducer = {
-            defaultViewModelCreationExtras.withCreationCallback<MyViewModel.Factory> { factory ->
-                factory.create("yikwing")
-            }
-        },
-    )
+    private val viewModel: MyViewModel by KotzillaSDK.trace("MyViewModel") {
+        viewModel { parametersOf("yikwing") }
+    }
 
     var forActivityResultLauncher =
         registerForActivityResult(

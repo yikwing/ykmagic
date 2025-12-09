@@ -5,21 +5,14 @@ import androidx.room.Room
 import com.yikwing.ykquickdev.db.ChapterDao
 import com.yikwing.ykquickdev.db.UserDao
 import com.yikwing.ykquickdev.db.UserDatabase
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
+import org.koin.core.annotation.Factory
+import org.koin.core.annotation.Module
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
 object DataModule {
     @Singleton
-    @Provides
-    fun provideDataBase(
-        @ApplicationContext context: Context,
-    ): UserDatabase =
+    fun provideDataBase(context: Context): UserDatabase =
         Room
             .databaseBuilder(
                 context.applicationContext,
@@ -27,9 +20,9 @@ object DataModule {
                 "Users.db",
             ).build()
 
-    @Provides
+    @Factory
     fun provideUserDao(userDatabase: UserDatabase): UserDao = userDatabase.getUserDao()
 
-    @Provides
+    @Factory
     fun provideChapterDao(userDatabase: UserDatabase): ChapterDao = userDatabase.getChapterDao()
 }

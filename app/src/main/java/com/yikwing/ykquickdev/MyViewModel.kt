@@ -8,20 +8,19 @@ import com.yikwing.network.RStateLiveData
 import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.InjectedParam
+import javax.inject.Inject
 
-@HiltViewModel(assistedFactory = MyViewModel.Factory::class)
+@KoinViewModel
 class MyViewModel
-    @AssistedInject
+    @Inject
     constructor(
         private val repository: Repository,
-        @Assisted val name: String,
+        @InjectedParam val name: String,
     ) : ViewModel() {
         private val _headers = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
 
@@ -75,11 +74,5 @@ class MyViewModel
         init {
             initHttpBinData()
             initWanAndroidData()
-        }
-
-        @AssistedFactory
-        fun interface Factory {
-            // create 方法的参数必须和 @Assisted 标记的参数完全匹配
-            fun create(name: String): MyViewModel
         }
     }

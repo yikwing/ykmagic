@@ -8,9 +8,7 @@ import androidx.activity.OnBackPressedCallback
 import com.yikwing.proxy.BaseActivity
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import com.yikwing.ykquickdev.ui.fragment.HiltScreenFragment
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class SecondActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::inflate) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
