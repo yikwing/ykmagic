@@ -26,7 +26,6 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import coil3.compose.AsyncImage
 import com.yikwing.extension.app.getMetaData
-import com.yikwing.extension.unSafeLazy
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -36,7 +35,7 @@ fun PackageInfoScreen(
 ) {
     val context: Context = LocalContext.current
 
-    val buildTime by unSafeLazy {
+    val buildTime by lazy {
         context.getMetaData("com.yikwing.debug.time")
     }
 

@@ -15,8 +15,10 @@ import coil3.load
 import coil3.request.transformations
 import coil3.size.Scale
 import coil3.transform.CircleCropTransformation
-import com.yikwing.extension.FragmentArgumentDelegate
 import com.yikwing.extension.image.compressImageFromUri
+import com.yikwing.extension.intArgument
+import com.yikwing.extension.plus.yes
+import com.yikwing.extension.stringArgument
 import com.yikwing.extension.view.backGroundRadiusColor
 import com.yikwing.proxy.BaseFragment
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding
@@ -24,8 +26,8 @@ import java.io.File
 import kotlin.random.Random
 
 class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::inflate) {
-    private var param1: Int by FragmentArgumentDelegate(0)
-    private var param2: String by FragmentArgumentDelegate("")
+    private var param1: Int by intArgument()
+    private var param2: String by stringArgument()
 
     private lateinit var pickMedia: ActivityResultLauncher<PickVisualMediaRequest>
 
@@ -117,11 +119,5 @@ class HiltFragment : BaseFragment<FragmentHiltBinding>(FragmentHiltBinding::infl
         val clip = ClipData.newPlainText("simple text", copyStr)
         clipboard.setPrimaryClip(clip)
         Toast.makeText(context, tips, Toast.LENGTH_SHORT).show()
-    }
-}
-
-inline fun Boolean.yes(block: () -> Unit) {
-    if (this) {
-        block()
     }
 }

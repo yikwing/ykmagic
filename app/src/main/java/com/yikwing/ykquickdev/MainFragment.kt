@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.yikwing.extension.unSafeLazy
 import com.yikwing.extension.util.alphaColor
 import com.yikwing.logger.Logger
 import com.yikwing.network.ApiException
@@ -58,7 +57,7 @@ class MainFragment :
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
 
-    private val adapter by unSafeLazy {
+    private val adapter by lazy {
         CustomListAdapter(this)
     }
 

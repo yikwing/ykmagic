@@ -4,78 +4,154 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAccessor
 
 /**
- * @Author yikwing
- * @Date 2024-09-28 23:17
- * @Description: Java 8 新时间 API 工具
+ * Java 8 时间 API 扩展函数
+ *
+ * 提供更符合 Kotlin 习惯的日期时间操作
  */
 
-object LocalDateUtils {
-    /**
-     * 显示年月日时分秒，例如 2015-08-11 09:51:53.
-     */
-    private const val DATETIME_PATTERN: String = "yyyy-MM-dd HH:mm:ss"
+// ========== 常用格式化器（避免重复创建） ==========
 
-    /**
-     * 仅显示年月日，例如 2015-08-11.
-     */
-    private const val DATE_PATTERN: String = "yyyy-MM-dd"
+private val DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+private val DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+private val TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss")
 
-    /**
-     * 仅显示时分秒，例如 09:51:53.
-     */
-    private const val TIME_PATTERN: String = "HH:mm:ss"
+// ========== LocalDateTime 扩展 ==========
 
-    /**
-     * 获取当前日期和时间字符串.
-     *
-     * @return String 日期时间字符串，例如 2015-08-11 09:51:53
-     */
-    fun getLocalDateTimeStr(): String = format(LocalDateTime.now(), DATETIME_PATTERN)
+/**
+ * 格式化为标准日期时间字符串
+ * @return 格式: yyyy-MM-dd HH:mm:ss
+ *
+ * 示例:
+ * ```kotlin
+ * LocalDateTime.now().formatDateTime()  // "2024-12-10 14:30:00"
+ * ```
+ */
+fun LocalDateTime.formatDateTime(): String = DATETIME_FORMATTER.format(this)
 
-    /**
-     * 获取当前日期字符串.
-     *
-     * @return String 日期字符串，例如2015-08-11
-     */
-    fun getLocalDateStr(): String = format(LocalDate.now(), DATE_PATTERN)
+/**
+ * 使用自定义格式格式化
+ * @param pattern 日期时间格式，例如 "yyyy/MM/dd HH:mm"
+ *
+ * 示例:
+ * ```kotlin
+ * LocalDateTime.now().format("yyyy年MM月dd日")  // "2024年12月10日"
+ * ```
+ */
+fun LocalDateTime.format(pattern: String): String = DateTimeFormatter.ofPattern(pattern).format(this)
 
-    /**
-     * 获取当前时间字符串.
-     *
-     * @return String 时间字符串，例如 09:51:53
-     */
-    fun getLocalTimeStr(): String = format(LocalTime.now(), TIME_PATTERN)
+/**
+ * 获取当前日期时间字符串
+ * @return 格式: yyyy-MM-dd HH:mm:ss
+ */
+fun nowDateTime(): String = LocalDateTime.now().formatDateTime()
 
-    /**
-     * 获取日期时间字符串
-     *
-     * @param temporal 需要转化的日期时间
-     * @param pattern  时间格式
-     * @return String 日期时间字符串，例如 2015-08-11 09:51:53
-     */
-    private fun format(
-        temporal: TemporalAccessor,
-        pattern: String,
-    ): String {
-        val dateTimeFormatter = DateTimeFormatter.ofPattern(pattern)
-        return dateTimeFormatter.format(temporal)
-    }
+// ========== LocalDate 扩展 ==========
 
-    /**
-     * 解析日期
-     *
-     * @param dateStr  需要解析的日期字符串
-     * @param pattern  日期格式，例如yyyy-MM-dd
-     * @return LocalDate
-     */
-    fun parseDate(
-        dateStr: String,
-        pattern: String = DATE_PATTERN,
-    ): LocalDate {
-        val formatter = DateTimeFormatter.ofPattern(pattern)
-        return LocalDate.parse(dateStr, formatter)
-    }
-}
+/**
+ * 格式化为标准日期字符串
+ * @return 格式: yyyy-MM-dd
+ *
+ * 示例:
+ * ```kotlin
+ * LocalDate.now().formatDate()  // "2024-12-10"
+ * ```
+ */
+fun LocalDate.formatDate(): String = DATE_FORMATTER.format(this)
+
+/**
+ * 使用自定义格式格式化
+ * @param pattern 日期格式，例如 "yyyy/MM/dd"
+ *
+ * 示例:
+ * ```kotlin
+ * LocalDate.now().format("yyyy年MM月dd日")  // "2024年12月10日"
+ * ```
+ */
+fun LocalDate.format(pattern: String): String = DateTimeFormatter.ofPattern(pattern).format(this)
+
+/**
+ * 解析日期字符串
+ * @param pattern 日期格式，默认 "yyyy-MM-dd"
+ *
+ * 示例:
+ * ```kotlin
+ * "2024-12-10".toLocalDate()  // LocalDate(2024, 12, 10)
+ * "2024/12/10".toLocalDate("yyyy/MM/dd")
+ * ```
+ */
+fun String.toLocalDate(pattern: String = "yyyy-MM-dd"): LocalDate = LocalDate.parse(this, DateTimeFormatter.ofPattern(pattern))
+
+/**
+ * 获取当前日期字符串
+ * @return 格式: yyyy-MM-dd
+ */
+fun nowDate(): String = LocalDate.now().formatDate()
+
+/**
+ * 计算两个日期之间的天数差
+ *
+ * 示例:
+ * ```kotlin
+ * val start = LocalDate.of(2024, 1, 1)
+ * val end = LocalDate.of(2024, 12, 31)
+ * start.daysBetween(end)  // 365
+ * ```
+ */
+fun LocalDate.daysBetween(other: LocalDate): Long = ChronoUnit.DAYS.between(this, other)
+
+/**
+ * 判断是否是今天
+ */
+fun LocalDate.isToday(): Boolean = this == LocalDate.now()
+
+/**
+ * 判断是否是过去的日期
+ */
+fun LocalDate.isPast(): Boolean = this < LocalDate.now()
+
+/**
+ * 判断是否是未来的日期
+ */
+fun LocalDate.isFuture(): Boolean = this > LocalDate.now()
+
+// ========== LocalTime 扩展 ==========
+
+/**
+ * 格式化为标准时间字符串
+ * @return 格式: HH:mm:ss
+ *
+ * 示例:
+ * ```kotlin
+ * LocalTime.now().formatTime()  // "14:30:00"
+ * ```
+ */
+fun LocalTime.formatTime(): String = TIME_FORMATTER.format(this)
+
+/**
+ * 使用自定义格式格式化
+ * @param pattern 时间格式，例如 "HH:mm"
+ *
+ * 示例:
+ * ```kotlin
+ * LocalTime.now().format("HH:mm")  // "14:30"
+ * ```
+ */
+fun LocalTime.format(pattern: String): String = DateTimeFormatter.ofPattern(pattern).format(this)
+
+/**
+ * 获取当前时间字符串
+ * @return 格式: HH:mm:ss
+ */
+fun nowTime(): String = LocalTime.now().formatTime()
+
+// ========== 通用扩展 ==========
+
+/**
+ * 格式化任意 TemporalAccessor
+ * @param pattern 格式模式
+ */
+fun TemporalAccessor.format(pattern: String): String = DateTimeFormatter.ofPattern(pattern).format(this)
