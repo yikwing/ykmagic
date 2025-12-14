@@ -460,7 +460,66 @@ dependencies {
 
 ### 网络请求使用指南
 
-项目提供两种网络请求方式,分别适用于不同场景:
+项目提供两种网络请求方式,分别适用于不同场景。
+
+#### Ktor Client Repository 定义
+
+```kotlin
+class Repo @Inject constructor(
+    private val httpClient: HttpClient,
+) {
+    // GET 请求 - 直接返回数据类型
+    suspend fun binGet(): HttpBinHeaders =
+        httpClient.get {
+            url {
+                takeFrom("https://httpbin.org")
+                appendPathSegments("get")
+                parameters.append("token", "abc123")
+            }
+        }.body()
+
+    // POST 请求 - 使用 setBody 发送 JSON
+    suspend fun binPost(): JsonElement =
+        httpClient.post {
+            url {
+                takeFrom("https://httpbin.org")
+                appendPathSegments("post")
+            }
+            setBody(buildJsonObject { put("key", "value") })
+        }.body()
+
+    // 使用 BaseHttpResult 包装的响应
+    suspend fun getChapters(): BaseHttpResult<List<ChapterBean>> =
+        httpClient.get { url("wxarticle/chapters/json") }.body()
+}
+```
+
+**JSON 字段映射**: 使用 `@property:SerialName` 处理字段名映射
+```kotlin
+@Serializable
+data class Headers(
+    @property:SerialName("User-Agent") val userAgent: String,
+)
+```
+
+**Parcelize 支持**: 数据类可同时使用 `@Serializable` 和 `@Parcelize`
+```kotlin
+// 需要在 build.gradle.kts 中添加插件: id("kotlin-parcelize")
+@Serializable
+@Parcelize
+data class HttpBinHeaders(
+    val headers: Headers,
+) : Parcelable
+
+@Serializable
+@Parcelize
+data class Headers(
+    @property:SerialName("Host") val host: String,
+    @property:SerialName("User-Agent") val userAgent: String,
+) : Parcelable
+```
+- `@Serializable` - kotlinx.serialization JSON 序列化
+- `@Parcelize` - Kotlin 自动生成 Parcelable 实现，用于 Intent/Bundle 传递
 
 #### 1. `requestStateFlow` - 流式请求(推荐用于 UI 交互场景)
 
@@ -472,26 +531,26 @@ dependencies {
 **使用示例**:
 ```kotlin
 // 在 ViewModel 中
-class UserViewModel : ViewModel() {
-    private val _userState = MutableStateFlow<RequestState<User?>>(RequestState.Loading)
-    val userState: StateFlow<RequestState<User?>> = _userState
+class ChapterViewModel(private val repo: Repo) : ViewModel() {
+    private val _chapterState = MutableStateFlow<RequestState<List<ChapterBean>?>>(RequestState.Loading)
+    val chapterState: StateFlow<RequestState<List<ChapterBean>?>> = _chapterState
 
-    fun fetchUserList() = viewModelScope.launch {
-        requestStateFlow { apiService.getUserList() }
+    fun fetchChapters() = viewModelScope.launch {
+        requestStateFlow { repo.getChapters() }
             .collect { state ->
-                _userState.value = state
+                _chapterState.value = state
             }
     }
 }
 
 // 在 Compose UI 中
 @Composable
-fun UserScreen(viewModel: UserViewModel) {
-    val state by viewModel.userState.collectAsState()
+fun ChapterScreen(viewModel: ChapterViewModel) {
+    val state by viewModel.chapterState.collectAsState()
 
     when (state) {
         is RequestState.Loading -> CircularProgressIndicator()
-        is RequestState.Success -> UserList((state as RequestState.Success).value)
+        is RequestState.Success -> ChapterList((state as RequestState.Success).value)
         is RequestState.Error -> ErrorView((state as RequestState.Error).throwable)
     }
 }
@@ -507,37 +566,28 @@ fun UserScreen(viewModel: UserViewModel) {
 **使用示例**:
 ```kotlin
 // 示例 1: 使用 onSuccess/onFailure(适合副作用操作)
-suspend fun uploadLog(logData: String) {
-    requestResult { apiService.uploadLog(logData) }
+suspend fun uploadData(repo: Repo) {
+    requestResult { repo.binPost() }
         .onSuccess { data ->
             Log.d("Upload", "上传成功: $data")
-            analytics.track("upload_success")
         }
         .onFailure { error ->
             Log.e("Upload", "上传失败: ${error.message}")
-            analytics.track("upload_failure")
         }
 }
 
 // 示例 2: 使用 fold(适合值转换)
-suspend fun submitForm(form: FormData): String {
-    return requestResult { apiService.submitForm(form) }.fold(
-        onSuccess = { "提交成功" },
-        onFailure = { "提交失败: ${it.message}" }
+suspend fun fetchHeaders(repo: Repo): String {
+    return requestResult { repo.binGet() }.fold(
+        onSuccess = { "Host: ${it.headers.host}" },
+        onFailure = { "请求失败: ${it.message}" }
     )
 }
 
 // 示例 3: 使用 getOrNull(获取数据或默认值)
-suspend fun getUserName(): String {
-    val user = requestResult { apiService.getUser() }.getOrNull()
-    return user?.name ?: "游客"
-}
-
-// 示例 4: 在 Repository 中使用
-class LogRepository {
-    suspend fun syncLogs(logs: List<LogEntry>): Boolean {
-        return requestResult { apiService.uploadLogs(logs) }.isSuccess
-    }
+suspend fun getHostName(repo: Repo): String {
+    val result = requestResult { repo.binGet() }.getOrNull()
+    return result?.headers?.host ?: "unknown"
 }
 ```
 
