@@ -1,6 +1,7 @@
 package com.yikwing.ykquickdev.ui.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ fun OtherPageScreen(
     viewModel: OtherViewModel = koinViewModel(),
 ) {
     val httpBin by viewModel.headers.collectAsState()
+    val userName by viewModel.userName.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Center {
@@ -41,7 +43,7 @@ fun OtherPageScreen(
                 modifier = Modifier.padding(horizontal = 8.dp),
             ) {
                 Text(
-                    text = "$msg",
+                    text = "$msg === $userName",
                     modifier =
                         Modifier
                             .background(Color.Green)
@@ -69,7 +71,13 @@ fun OtherPageScreen(
 
                     is RequestState.Success -> {
                         httpBin.repo.onSuccess {
-                            Text(text = it.userAgent)
+                            Text(
+                                text = it.userAgent,
+                                modifier =
+                                    Modifier.clickable {
+                                        viewModel.updateName("abc")
+                                    },
+                            )
                         }
                     }
 

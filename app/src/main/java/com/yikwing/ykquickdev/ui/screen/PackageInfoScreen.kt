@@ -69,6 +69,8 @@ fun PackageInfoScreen(
 //    }
 
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+        Spacer(modifier = Modifier.height(50.dp))
+
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = {

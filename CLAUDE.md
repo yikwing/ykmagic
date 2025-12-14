@@ -83,10 +83,10 @@ adb install app/build/outputs/apk/release/app-release.apk
    - 使用 KSP 处理注解 `@YkConfigNode` 和 `@YkConfigValue`
 
 2. **module_network** - 网络请求模块
-   - 基于 OkHttp + Retrofit 封装
+   - 基于 Ktor Client + OkHttp Engine 封装（已从 Retrofit 迁移）
    - 提供统一的拦截器机制(HeaderInterceptor、RetryInterceptor、LogInterceptor)
    - 支持 Debug 模式网络抓包视图(Chucker)
-   - 集成 Moshi 进行 JSON 序列化
+   - 集成 kotlinx.serialization 进行 JSON 序列化
    - 支持 IgnoreHttpResult 灵活解析响应
    - 提供两种 API 请求方式:
      * `requestStateFlow` - 流式请求,返回 `Flow<RequestState<T>>`,包含 Loading/Success/Error 状态
@@ -554,6 +554,66 @@ class LogRepository {
 
 ### 调试网络请求
 Debug 模式下会自动添加网络日志拦截器,可以在 Logcat 中查看请求详情。Debug 版本集成 Chucker 可视化抓包工具。
+
+### DataStore 使用指南
+
+项目使用 Proto DataStore 存储结构化数据（如 UserPreferences），Wire 生成 Protobuf 类。
+
+**Compose 中读取 DataStore**:
+```kotlin
+// 使用 collectAsState() 订阅 Flow（持续观测）
+val context = LocalContext.current
+val userName by context.userPreferencesStore.data
+    .map { it.name }
+    .collectAsState(initial = "")  // initial 类型必须匹配 map 输出类型
+```
+
+**ViewModel 中使用 DataStore**（推荐）:
+```kotlin
+@KoinViewModel
+class MyViewModel(
+    private val dataStore: DataStore<UserPreferences>  // 通过 Koin 注入
+) : ViewModel() {
+
+    // 持续观测 - 使用 stateIn 转换为 StateFlow
+    val userName: StateFlow<String> = dataStore.data
+        .map { it.name }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),  // 5秒超时处理配置变更
+            initialValue = ""
+        )
+
+    // 一次性读取 - 使用 first()
+    suspend fun getUserNameOnce(): String = dataStore.data.map { it.name }.first()
+
+    // 写入数据 - 必须在协程中
+    fun updateName(name: String) {
+        viewModelScope.launch {
+            dataStore.updateData { it.copy(name = name) }
+        }
+    }
+}
+```
+
+**DataStore 注入配置** (di/DataModule.kt):
+```kotlin
+@Singleton
+fun provideUserPreferencesDataStore(context: Context): DataStore<UserPreferences> =
+    context.userPreferencesStore
+```
+
+**Flow 操作对比**:
+| 操作 | 行为 | 适用场景 |
+|------|------|---------|
+| `.stateIn()` / `.collectAsState()` | 持续观测，数据变化自动更新 | UI 实时显示 |
+| `.first()` | 一次性获取当前值 | 初始化、条件判断 |
+| `.firstOrNull()` | 一次性获取，空流返回 null | 安全读取 |
+
+**注意事项**:
+- `StateFlow.collectAsState()` 不需要 initial（StateFlow 自带初始值）
+- `Flow.collectAsState(initial = ...)` 必须提供 initial
+- initial 类型必须与 Flow 泛型类型一致，否则会推断为公共父类型
 
 ### 依赖配置说明
 - 项目强制指定统一的 activity 和 kotlinx-coroutines-core 版本

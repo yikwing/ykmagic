@@ -9,8 +9,7 @@ import com.yikwing.extension.NetConnectManager
 import com.yikwing.proxy.BaseActivity
 import com.yikwing.ykquickdev.databinding.MainActivityBinding
 import com.yikwing.ykquickdev.manager.UserManager
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.properties.Delegates
@@ -80,12 +79,10 @@ class MainActivity : BaseActivity<MainActivityBinding>(MainActivityBinding::infl
         }
     }
 
-    private suspend fun getUserPreferences(): UserPreferences = userPreferencesStore.data.map { it }.first()
-
     private fun logUserPreferences() {
         lifecycleScope.launch {
-            val preferences = getUserPreferences()
-            Log.d("==== lifecycleScope", preferences.toString())
+            val preferences = userPreferencesStore.data.firstOrNull()
+            Log.d("==== dataStore", preferences.toString())
         }
     }
 

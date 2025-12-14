@@ -1,10 +1,13 @@
 package com.yikwing.ykquickdev.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.room.Room
+import com.yikwing.ykquickdev.UserPreferences
 import com.yikwing.ykquickdev.db.ChapterDao
 import com.yikwing.ykquickdev.db.UserDao
 import com.yikwing.ykquickdev.db.UserDatabase
+import com.yikwing.ykquickdev.userPreferencesStore
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
@@ -27,4 +30,7 @@ object DataModule {
 
     @Factory
     fun provideChapterDao(userDatabase: UserDatabase): ChapterDao = userDatabase.getChapterDao()
+
+    @Singleton
+    fun provideUserPreferencesDataStore(context: Context): DataStore<UserPreferences> = context.userPreferencesStore
 }

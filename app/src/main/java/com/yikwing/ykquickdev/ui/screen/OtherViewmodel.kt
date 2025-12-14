@@ -1,12 +1,17 @@
 package com.yikwing.ykquickdev.ui.screen
 
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yikwing.network.RequestState
+import com.yikwing.ykquickdev.UserPreferences
 import com.yikwing.ykquickdev.api.entity.Headers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
@@ -21,6 +26,7 @@ class OtherViewModel
     @Inject
     constructor(
         private val otherRepository: OtherRepository,
+        private val userPreferencesStore: DataStore<UserPreferences>,
     ) : ViewModel() {
         private val _headers = MutableStateFlow<HttpBinUiState>(HttpBinUiState())
         val headers: StateFlow<HttpBinUiState> = _headers.asStateFlow()
@@ -31,6 +37,21 @@ class OtherViewModel
                     _headers.update {
                         it.copy(repo = result)
                     }
+                }
+            }
+        }
+
+        // 读取
+        val userName: StateFlow<String> =
+            userPreferencesStore.data
+                .map { it.name }
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
+        // 写入
+        fun updateName(name: String) {
+            viewModelScope.launch {
+                userPreferencesStore.updateData { current ->
+                    current.copy(name = name)
                 }
             }
         }
