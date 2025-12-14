@@ -7,17 +7,8 @@ plugins {
 
 android {
     namespace = "com.yikwing.logger"
-    compileSdk =
-        libs.versions.compileSdk
-            .get()
-            .toInt()
 
     defaultConfig {
-        minSdk =
-            libs.versions.minSdk
-                .get()
-                .toInt()
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -25,7 +16,6 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            // 启用资源压缩
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
@@ -33,16 +23,6 @@ android {
         }
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    kotlin {
-        jvmToolchain(21)
-    }
-
-    // 添加以下代码块
     publishing {
         singleVariant("release") {}
     }

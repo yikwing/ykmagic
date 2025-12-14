@@ -75,21 +75,9 @@ fun getJsonStr(): String {
 
 android {
     namespace = "com.yikwing.ykquickdev"
-    compileSdk =
-        libs.versions.compileSdk
-            .get()
-            .toInt()
 
     defaultConfig {
         applicationId = "com.yikwing.ykquickdev"
-        minSdk =
-            libs.versions.minSdk
-                .get()
-                .toInt()
-        targetSdk =
-            libs.versions.compileSdk
-                .get()
-                .toInt()
         versionCode = gitVersionCode()
         versionName = "1.0.0"
 
@@ -124,9 +112,7 @@ android {
 
         release {
             signingConfig = signingConfigs.getByName("config")
-            // 启用代码压缩、优化及混淆
             isMinifyEnabled = true
-            // 启用资源压缩
             isShrinkResources = true
             buildConfigField(
                 "String",
@@ -138,15 +124,6 @@ android {
                 "proguard-rules.pro",
             )
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    kotlin {
-        jvmToolchain(21)
     }
 
     buildFeatures {

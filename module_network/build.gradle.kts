@@ -8,17 +8,7 @@ plugins {
 }
 
 android {
-    compileSdk =
-        libs.versions.compileSdk
-            .get()
-            .toInt()
-
     defaultConfig {
-        minSdk =
-            libs.versions.minSdk
-                .get()
-                .toInt()
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -26,21 +16,11 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            // 启用资源压缩
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
         }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-
-    kotlin {
-        jvmToolchain(21)
     }
 
     buildFeatures {
@@ -49,7 +29,6 @@ android {
 
     namespace = "com.yikwing.network"
 
-    // 添加以下代码块
     publishing {
         singleVariant("release") {}
     }
