@@ -1,4 +1,4 @@
-package com.yikwing.extension
+package com.yikwing.extension.delegate
 
 import kotlin.properties.Delegates
 import kotlin.properties.ReadWriteProperty

@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
-import com.yikwing.extension.common.dp
+import com.yikwing.extension.util.dp
 
 /**
  * 状态栏高度包装器（顶部）

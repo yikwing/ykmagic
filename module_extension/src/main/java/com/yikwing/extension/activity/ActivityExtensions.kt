@@ -1,4 +1,4 @@
-package com.yikwing.extension
+package com.yikwing.extension.activity
 
 import android.app.Activity
 import android.content.Context

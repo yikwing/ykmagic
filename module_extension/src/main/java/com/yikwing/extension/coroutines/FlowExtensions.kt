@@ -1,4 +1,4 @@
-package com.yikwing.extension
+package com.yikwing.extension.coroutines
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

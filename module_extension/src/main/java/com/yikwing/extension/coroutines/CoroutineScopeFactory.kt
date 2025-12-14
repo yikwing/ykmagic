@@ -1,4 +1,4 @@
-package com.yikwing.extension
+package com.yikwing.extension.coroutines
 
 import android.util.Log
 import kotlinx.coroutines.CoroutineDispatcher

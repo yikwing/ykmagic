@@ -1,4 +1,4 @@
-package com.yikwing.extension.plus
+package com.yikwing.extension.json
 
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi

@@ -1,6 +1,6 @@
 package com.yikwing.ykquickdev
 
-import com.yikwing.extension.plus.prettierJson
+import com.yikwing.extension.json.prettierJson
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.Test

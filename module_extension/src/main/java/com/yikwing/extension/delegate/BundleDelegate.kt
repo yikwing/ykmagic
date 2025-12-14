@@ -1,4 +1,4 @@
-package com.yikwing.extension
+package com.yikwing.extension.delegate
 
 import android.app.Activity
 import android.os.Bundle

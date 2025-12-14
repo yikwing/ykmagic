@@ -2,7 +2,7 @@ package com.yikwing.extension.util
 
 import android.util.SparseIntArray
 import androidx.core.graphics.toColorInt
-import com.yikwing.extension.plus.getOrPut
+import com.yikwing.extension.collection.getOrPut
 
 /**
  * Alpha 值缓存，避免重复计算

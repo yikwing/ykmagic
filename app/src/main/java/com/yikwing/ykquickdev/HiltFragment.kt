@@ -15,10 +15,10 @@ import coil3.load
 import coil3.request.transformations
 import coil3.size.Scale
 import coil3.transform.CircleCropTransformation
+import com.yikwing.extension.collection.yes
+import com.yikwing.extension.delegate.intArgument
+import com.yikwing.extension.delegate.stringArgument
 import com.yikwing.extension.image.compressImageFromUri
-import com.yikwing.extension.intArgument
-import com.yikwing.extension.plus.yes
-import com.yikwing.extension.stringArgument
 import com.yikwing.extension.view.backGroundRadiusColor
 import com.yikwing.proxy.BaseFragment
 import com.yikwing.ykquickdev.databinding.FragmentHiltBinding

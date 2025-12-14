@@ -1,4 +1,4 @@
-package com.yikwing.extension.plus
+package com.yikwing.extension.collection
 
 /**
  * Boolean 扩展函数，提供更流畅的条件执行语法

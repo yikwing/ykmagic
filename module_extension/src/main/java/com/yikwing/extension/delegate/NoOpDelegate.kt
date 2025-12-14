@@ -1,4 +1,4 @@
-package com.yikwing.extension.plus
+package com.yikwing.extension.delegate
 
 import java.lang.reflect.InvocationHandler
 import java.lang.reflect.Proxy

@@ -1,6 +1,6 @@
 package com.yikwing.extension
 
-import com.yikwing.extension.plus.prettierJson
+import com.yikwing.extension.json.prettierJson
 import org.junit.Assert.*
 import org.junit.Test
 

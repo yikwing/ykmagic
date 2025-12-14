@@ -1,4 +1,4 @@
-package com.yikwing.extension.plus
+package com.yikwing.extension.collection
 
 import android.util.SparseIntArray
 

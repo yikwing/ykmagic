@@ -12,7 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.yikwing.extension.stringIntent
+import com.yikwing.extension.delegate.stringIntent
 
 class TestActivity : ComponentActivity() {
     private val fromTag by stringIntent("tag")

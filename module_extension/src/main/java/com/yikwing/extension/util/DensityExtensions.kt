@@ -1,4 +1,4 @@
-package com.yikwing.extension.common
+package com.yikwing.extension.util
 
 import android.content.Context
 import android.content.res.Resources

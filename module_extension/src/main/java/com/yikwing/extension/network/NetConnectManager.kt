@@ -1,4 +1,4 @@
-package com.yikwing.extension
+package com.yikwing.extension.network
 
 import android.content.BroadcastReceiver
 import android.content.Context

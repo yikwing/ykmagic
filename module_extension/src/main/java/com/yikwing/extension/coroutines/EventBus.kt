@@ -1,4 +1,4 @@
-package com.yikwing.extension
+package com.yikwing.extension.coroutines
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
