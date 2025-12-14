@@ -97,6 +97,7 @@ adb install app/build/outputs/apk/release/app-release.apk
    - 包含协程工具、EventBus、图片压缩、日期处理等
    - GlobalContextProvider 提供全局 Context 访问
    - 资源扩展函数简化资源获取
+   - CacheManager 提供线程安全的内存缓存（LRU + TTL）
 
 4. **module_datastore** - DataStore 封装
    - 基于 Jetpack DataStore Preferences
@@ -669,3 +670,41 @@ fun provideUserPreferencesDataStore(context: Context): DataStore<UserPreferences
 - 项目强制指定统一的 activity 和 kotlinx-coroutines-core 版本
 - 支持 Bundle 依赖,如 network-okhttp、network-ktor、testBundle 等
 - Debug 和 Release 构建分别使用不同的依赖(如 Chucker、LeakCanary)
+
+### 内存缓存使用指南
+
+项目提供 `CacheManager` 进行线程安全的内存缓存管理。
+
+**核心特性**:
+- LRU 淘汰（默认 256 条上限）
+- TTL 过期（基于单调时钟，不受系统时间调整影响）
+- 线程安全（synchronized 保护）
+
+**使用示例**:
+```kotlin
+// 写入（永不过期）
+CacheManager.put("user", userObj)
+
+// 写入（5分钟过期）
+CacheManager.put("token", "abc123", ttlMillis = 5 * 60 * 1000L)
+
+// 读取
+val user: User? = CacheManager.get("user")
+
+// 获取或计算（未命中时执行 lambda）
+val config = CacheManager.getOrPut("config", ttlMillis = 60_000L) {
+    loadConfigFromDisk()
+}
+
+// 其他操作
+CacheManager.remove("key")
+CacheManager.contains("key")  // 不刷新 LRU
+CacheManager.clear()
+CacheManager.setMaxSize(512)
+```
+
+**注意事项**:
+- `get()` / `getOrPut()` 命中会刷新 LRU 访问顺序
+- `contains()` 不刷新 LRU 访问顺序
+- 永不过期的数据仍可能被 LRU 淘汰（当缓存满时）
+- 位置: module_extension/src/main/java/com/yikwing/extension/util/CacheManager.kt
