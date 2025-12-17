@@ -57,6 +57,7 @@ junit = "4.13.2"
 mockk = "1.14.7"
 androidx-test-ext-junit = "1.3.0"
 espresso-core = "3.7.0"
+ui = "1.10.0"
 
 [libraries]
 #   官方依赖库
@@ -170,6 +171,7 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

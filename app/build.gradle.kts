@@ -187,6 +187,7 @@ dependencies {
     implementation(libs.webkit)
 
     implementation(libs.room.ktx)
+    implementation(libs.androidx.ui)
     ksp(libs.room.compiler)
 
     // 三方依赖库

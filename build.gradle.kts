@@ -45,7 +45,9 @@ val minSdkVersion =
         .toInt()
 
 fun CommonExtension<*, *, *, *, *, *>.configureAndroidCommon() {
-    compileSdk = compileSdkVersion
+    compileSdk {
+        version = release(36)
+    }
 
     defaultConfig {
         minSdk = minSdkVersion
