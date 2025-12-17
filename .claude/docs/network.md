@@ -138,6 +138,58 @@ val result = requestResult { repo.binGet() }.fold(
 | 列表/详情加载 | `requestStateFlow` | 需要 Loading 状态 |
 | 上传/提交/同步 | `requestResult` | 一次性后台操作 |
 
+## Flow 生命周期收集
+
+### `repeatOnLifecycle` 状态选择
+
+#### `Lifecycle.State.STARTED`（推荐默认值）
+
+| 属性 | 说明 |
+|------|------|
+| 生命周期范围 | `onStart` ↔ `onStop` |
+| 开始条件 | 页面可见时（包括被半透明对话框遮挡、分屏模式） |
+| 停止条件 | 页面完全不可见时（按 Home 键、跳转新页面） |
+| 记忆口诀 | "只要眼睛能看到，就更新；看不到，就暂停" |
+
+**适用场景**：
+- 收集 `StateFlow` / `SharedFlow` 更新 UI（标准姿势）
+- 解决内存泄漏和后台资源浪费问题
+- 用户回到页面时数据立刻恢复更新
+
+**结论**：如果不确定选哪个，闭眼选 `STARTED`。
+
+#### `Lifecycle.State.RESUMED`（最严格）
+
+| 属性 | 说明 |
+|------|------|
+| 生命周期范围 | `onResume` ↔ `onPause` |
+| 开始条件 | 页面可见 **且** 拥有焦点（用户可交互） |
+| 停止条件 | 失去焦点（系统弹窗、半透明 Activity 覆盖、分屏切换） |
+| 记忆口诀 | "只有当你能实际操作这个页面时，才运行" |
+
+**适用场景**：
+- 独占资源：相机预览、麦克风录音
+- 高频传感器：重力感应游戏
+- 高耗能动画：复杂粒子动画
+
+**结论**：仅在需要"用户必须处于交互状态"时使用。
+
+### 代码示例
+
+```kotlin
+// Fragment 中收集 Flow（推荐 STARTED）
+viewLifecycleOwner.lifecycleScope.launch {
+    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewModel.uiState.collect { state ->
+            updateUI(state)
+        }
+    }
+}
+
+// Compose 中使用 collectAsStateWithLifecycle（内部使用 STARTED）
+val state by viewModel.uiState.collectAsStateWithLifecycle()
+```
+
 ## Koin 依赖注入
 
 ### NetworkModule

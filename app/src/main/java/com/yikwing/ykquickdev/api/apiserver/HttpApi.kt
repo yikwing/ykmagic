@@ -16,7 +16,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import javax.inject.Inject
 
-class Repo
+class HttpApi
     @Inject
     constructor(
         private val httpClient: HttpClient,

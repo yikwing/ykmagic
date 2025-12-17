@@ -121,7 +121,7 @@ class MainFragment :
 //        }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.wanAndroidList.collectState {
+            viewModel.chapters.collectState {
                 onLoading = {
                     Log.d("headers", "加载中")
                 }

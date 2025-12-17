@@ -32,6 +32,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.yikwing.network.RequestState
 import com.yikwing.network.onFailure
 import com.yikwing.network.onSuccess
@@ -92,7 +93,7 @@ fun ItemDepot(
     forActivityResultLauncher: ActivityResultLauncher<String>,
     mainViewModel: MyViewModel = koinViewModel { parametersOf("yikwing") },
 ) {
-    val data by mainViewModel.wanAndroidList.collectAsState()
+    val data by mainViewModel.chapters.collectAsStateWithLifecycle()
 
     when (data) {
         is RequestState.Loading -> {

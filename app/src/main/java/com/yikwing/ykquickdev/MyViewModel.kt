@@ -8,8 +8,12 @@ import com.yikwing.network.RStateLiveData
 import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
+import com.yikwing.ykquickdev.repository.NetRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
@@ -19,7 +23,7 @@ import javax.inject.Inject
 class MyViewModel
     @Inject
     constructor(
-        private val repository: Repository,
+        private val netRepository: NetRepository,
         @InjectedParam val name: String,
     ) : ViewModel() {
         private val _headers = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
@@ -29,7 +33,7 @@ class MyViewModel
 
         private fun initHttpBinData() {
             viewModelScope.launch {
-                _headers.value = repository.initHttpBinData()
+                _headers.value = netRepository.initHttpBinData()
             }
         }
 
@@ -38,11 +42,18 @@ class MyViewModel
 
         val wanAndroidList = _wanAndroidList.asStateFlow()
 
+        val chapters: StateFlow<RequestState<List<ChapterBean>>> =
+            netRepository.observeChapters().stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = RequestState.Loading,
+            )
+
         private fun initWanAndroidData() {
             Log.d("==== initWanAndroidData", "assistedInject $name")
 
             viewModelScope.launch {
-                repository
+                netRepository
                     .initWanAndroidData()
                     .collect { result ->
                         _wanAndroidList.value = result
@@ -50,12 +61,7 @@ class MyViewModel
             }
 
             viewModelScope.launch {
-                val cc = repository.initWanAndroidData2()
-                cc.fold(onSuccess = { _data ->
-                    Log.d("==== initWanAndroidData", "$name ${_data?.firstOrNull()?.name}")
-                }, onFailure = { _err ->
-                    Log.e("==== initWanAndroidData", "$name ${_err.message}")
-                })
+                netRepository.fetchAndCacheChapters()
             }
         }
 
