@@ -1,0 +1,175 @@
+# 构建和发布配置
+
+## 构建命令
+
+### 基础构建
+```bash
+# 编译 Debug APK
+./gradlew assembleDebug
+./android_build.sh dev
+
+# 编译 Release APK
+./gradlew assembleRelease
+./android_build.sh build
+
+# 清理构建
+./gradlew clean
+./android_build.sh clean
+
+# 完整构建流程(清理、构建、安装)
+./android_build.sh all
+
+# 安装 Release APK
+adb install app/build/outputs/apk/release/app-release.apk
+./android_build.sh install
+
+# 查看构建脚本帮助
+./android_build.sh help
+```
+
+### 依赖管理
+```bash
+# 检查依赖更新
+./gradlew dependencyUpdates
+./android_build.sh dependency
+```
+
+### 测试相关
+```bash
+# 运行单元测试
+./gradlew test
+
+# 运行指定模块的单元测试
+./gradlew :module_config:test
+
+# 运行 Android 仪器测试
+./gradlew connectedAndroidTest
+
+# 运行单个测试类
+./gradlew test --tests "com.yikwing.config.ReturnsTest"
+
+# 打印证书签名信息
+./gradlew signingReport
+```
+
+## 环境要求
+
+| 配置项 | 值 |
+|--------|-----|
+| JDK 版本 | 21 |
+| 编译 SDK | 36 (Android 15) |
+| 最低 SDK | 26 (Android 8.0) |
+| Kotlin 版本 | 2.2.21 |
+| KSP 版本 | 2.3.3 |
+
+## 必需配置文件
+
+### android_env.json
+应用配置数据:
+```json
+{
+  "base_url": "https://api.example.com"
+}
+```
+
+### keystore.properties
+签名配置:
+```properties
+storeFile=path/to/keystore.jks
+keyAlias=your_alias
+keyPassword=your_key_password
+storePassword=your_store_password
+```
+
+## 核心配置文件
+
+- **gradle/libs.versions.toml** - 版本目录,统一管理所有依赖版本和插件
+- **settings.gradle.kts** - 项目模块配置
+- **build.gradle.kts (root)** - 根项目构建配置,包含强制依赖版本设置
+- **android_build.sh** - 便捷构建脚本
+
+## app/build.gradle.kts 关键配置
+
+- **版本号生成**: `gitVersionCode()` 通过 Git commit 计数生成(基础值 4645)
+- **构建时间注入**: `manifestPlaceholders["debug_time"]` 记录打包时间
+- **JSON 配置注入**: `buildConfigField("String", "YK_CONFIG", ...)` 将 android_env.json 注入到 BuildConfig
+- **资源重定向**: `sourceSets.getByName("main") { res.setSrcDirs(...) }` 支持多资源目录
+- **Wire 配置**: Protobuf 支持,proto 文件位于 `src/main/protos`
+- **Room Schema**: KSP 参数配置 Room 数据库 schema 导出位置
+
+## 资源目录结构
+
+app 模块的资源文件按功能分类:
+- `src/main/res/common` - 通用资源
+- `src/main/res/activity` - Activity 相关资源
+- `src/main/res/fragment` - Fragment 相关资源
+
+## 依赖版本管理
+
+- 根 build.gradle.kts 通过 `resolutionStrategy.force()` 强制统一关键依赖版本
+- 强制版本包括: `activity` 和 `kotlinx-coroutines-core`
+- 所有版本在 `gradle/libs.versions.toml` 中集中管理
+- 支持 Bundle 依赖配置: `network-okhttp`, `network-ktor`, `testBundle`, `androidTestBundle`
+
+## Debug 工具
+
+仅 Debug 版本启用:
+- **Chucker**: 网络请求可视化抓包工具
+- **LeakCanary**: 内存泄漏检测
+- **Glance**: 性能监控工具
+
+使用 `BuildConfig.DEBUG` 控制调试功能开关。
+
+## 模块发布
+
+各模块配置了 Maven 发布,可以发布到 JitPack:
+- groupId: com.github.yikwing.ykmagic
+- artifactId: 对应模块名(config、network、proxy、extension、permission、logger、datastore、component)
+
+### 发布配置
+每个模块的 build.gradle.kts:
+```kotlin
+android {
+    publishing {
+        singleVariant("release") {}
+    }
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("release") {
+                groupId = "com.yikwing"
+                artifactId = "模块名"
+                version = "版本号"
+                from(components["release"])
+            }
+        }
+    }
+}
+```
+
+### 使用已发布的模块
+```gradle
+repositories {
+    maven { url = uri("https://jitpack.io") }
+}
+
+dependencies {
+    implementation("com.github.yikwing.ykmagic:config:版本号")
+    implementation("com.github.yikwing.ykmagic:network:版本号")
+}
+```
+
+## 常见任务
+
+### 添加新的依赖
+1. 在 `gradle/libs.versions.toml` 的 [versions] 部分添加版本号
+2. 在 [libraries] 部分添加依赖声明
+3. 在需要的模块 build.gradle.kts 中引用
+
+### 创建新模块
+1. 在 settings.gradle.kts 添加 `include(":module_name")`
+2. 创建模块目录和 build.gradle.kts
+3. 配置模块的包名、依赖等
+4. 如需发布,添加 maven-publish 配置
