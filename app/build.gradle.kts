@@ -90,6 +90,14 @@ android {
         manifestPlaceholders.apply {
             put("debug_time", getDateStr())
         }
+
+        ndk {
+            abiFilters += "arm64-v8a"
+        }
+
+        androidResources {
+            localeFilters += listOf("en")
+        }
     }
 
     signingConfigs {
@@ -164,7 +172,6 @@ wire {
 
 dependencies {
     // 官方依赖库
-    implementation(libs.activity)
     implementation(libs.activity.ktx)
     implementation(libs.activity.compose)
     implementation(libs.fragment.ktx)
