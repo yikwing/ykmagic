@@ -39,7 +39,7 @@ import androidx.navigation.compose.rememberNavController
 import com.yikwing.ykquickdev.R
 import com.yikwing.ykquickdev.app.AppNavGraph
 import com.yikwing.ykquickdev.app.TabDestination
-import com.yikwing.ykquickdev.ui.base.NoIndication
+import com.yikwing.ykquickdev.components.NoIndication
 
 /**
  * <pre>

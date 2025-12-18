@@ -1,4 +1,4 @@
-package com.yikwing.ykquickdev
+package com.yikwing.ykquickdev.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData

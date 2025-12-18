@@ -3,7 +3,6 @@ package com.yikwing.ykquickdev.app
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,7 +12,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.example.jetpackcompose.widget.ConstraintPage
 import com.example.jetpackcompose.widget.MyMaterial3ModalBottomSheetExample
-import com.yikwing.ykquickdev.ui.base.Center
+import com.yikwing.ykquickdev.components.Center
 import com.yikwing.ykquickdev.ui.screen.AuthLoginScreen
 import com.yikwing.ykquickdev.ui.screen.AuthRegisterScreen
 import com.yikwing.ykquickdev.ui.screen.DiyInputScreen

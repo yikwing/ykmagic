@@ -1,6 +1,7 @@
-package com.yikwing.ykquickdev.ui.screen
+package com.yikwing.ykquickdev.viewmodel
 
 import androidx.datastore.core.DataStore
+import com.yikwing.ykquickdev.repository.OtherRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yikwing.network.RequestState

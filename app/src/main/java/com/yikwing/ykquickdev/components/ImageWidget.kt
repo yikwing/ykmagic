@@ -1,4 +1,4 @@
-package com.yikwing.ykquickdev.ui.base
+package com.yikwing.ykquickdev.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image

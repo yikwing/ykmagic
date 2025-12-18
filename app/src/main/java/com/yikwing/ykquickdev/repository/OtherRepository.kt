@@ -1,4 +1,4 @@
-package com.yikwing.ykquickdev.ui.screen
+package com.yikwing.ykquickdev.repository
 
 import android.util.Log
 import com.yikwing.network.ApiException
