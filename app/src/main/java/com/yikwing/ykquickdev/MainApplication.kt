@@ -57,8 +57,6 @@ class MainApplication :
 
         Log.i("checkProxy", checkProxy().toString())
 
-        registerActivityLifecycleCallbacks(AppActivityLifecycleCallbacks())
-
         featureTest()
 
         initSetup()
@@ -148,19 +146,4 @@ class MainApplication :
                     }
                 },
             ).build()
-}
-
-class AppActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks by noOpDelegate() {
-    override fun onActivityCreated(
-        activity: Activity,
-        savedInstanceState: Bundle?,
-    ) {
-        ActivityHierarchyManager.register(activity)
-        ActivityHierarchyManager.printActivityHierarchy(BuildConfig.DEBUG)
-    }
-
-    override fun onActivityDestroyed(activity: Activity) {
-        ActivityHierarchyManager.unregister(activity)
-        ActivityHierarchyManager.printActivityHierarchy(BuildConfig.DEBUG)
-    }
 }
