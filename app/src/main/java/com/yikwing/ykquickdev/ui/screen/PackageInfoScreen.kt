@@ -1,177 +1,136 @@
 package com.yikwing.ykquickdev.ui.screen
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.pm.PackageInfo
-import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintSet
-import coil3.compose.AsyncImage
-import com.yikwing.extension.app.getMetaData
+import androidx.compose.ui.unit.sp
+import com.yikwing.ykquickdev.R
 
-@OptIn(ExperimentalLayoutApi::class)
+val rubikGemstonesRegular =
+    FontFamily(
+        Font(R.font.rubik_gemstones_regular, FontWeight.Normal),
+    )
+
+val permanentMarkerRegular =
+    FontFamily(
+        Font(R.font.permanent_marker_regular, FontWeight.Normal),
+    )
+
 @Composable
 fun PackageInfoScreen(
-    navigationToPage: (String) -> Unit = {},
-    navigationToDiy: () -> Unit = {},
+    navigationToPage: (str: String) -> Unit,
+    navigationToDiy: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val context: Context = LocalContext.current
-
-    val buildTime by lazy {
-        context.getMetaData("com.yikwing.debug.time")
-    }
-
-//    Column(
-//        modifier = Modifier.padding(horizontal = 16.dp, vertical = 30.dp)
-//    ) {
-//        TopHeader(packageInfo = packageInfo)
-//
-//        PackageInfoDes(
-//            "versionCode:",
-//            (packageInfo?.versionCode ?: 0).toString()
-//        )
-//        PackageInfoDes(
-//            "versionName:",
-//            (packageInfo?.versionName ?: "").toString()
-//        )
-//        PackageInfoDes(
-//            "MD5:",
-//            (packageInfo?.signMD5 ?: "").toString(),
-//            onClick = {
-//                copyToClipboard(context, packageInfo?.signMD5, "MD5值已复制")
-//            }
-//        )
-//        PackageInfoDes(
-//            "SHA1:",
-//            (packageInfo?.signSHA1 ?: "").toString(),
-//            onClick = {
-//                copyToClipboard(context, packageInfo?.signSHA1, "SHA1值已复制")
-//            }
-//        )
-//    }
-
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-        Spacer(modifier = Modifier.height(50.dp))
-
+    Column(
+        modifier = Modifier.then(modifier),
+    ) {
         Button(
-            modifier = Modifier.fillMaxWidth(),
             onClick = {
-                navigationToPage("hello")
+                navigationToPage("kotlin")
             },
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         ) {
-            Text(text = "参数传递")
+            Text("to Other", fontFamily = rubikGemstonesRegular)
         }
 
         Button(
-            modifier = Modifier.fillMaxWidth(),
             onClick = navigationToDiy,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         ) {
-            Text(text = "diy input")
+            Text("to Diy", fontFamily = rubikGemstonesRegular)
         }
     }
 }
 
-private fun copyToClipboard(
-    context: Context,
-    copyStr: String?,
-    tips: String,
-) {
-    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    val clip = ClipData.newPlainText("simple text", copyStr)
-    clipboard.setPrimaryClip(clip)
-    Toast.makeText(context, tips, Toast.LENGTH_SHORT).show()
-}
-
 @Composable
-fun TopHeader(packageInfo: PackageInfo?) {
-    val decoupledConstraints =
-        ConstraintSet {
-            val cover = createRefFor("cover")
-            val appName = createRefFor("appName")
-            val appPackageName = createRefFor("appPackageName")
-
-            constrain(cover) {
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-            }
-            constrain(appName) {
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                top.linkTo(cover.bottom, margin = 8.dp)
-            }
-            constrain(appPackageName) {
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                top.linkTo(appName.bottom, margin = 8.dp)
-            }
-        }
-
-    ConstraintLayout(decoupledConstraints, modifier = Modifier.fillMaxWidth()) {
-        AsyncImage(
-            model = packageInfo?.applicationInfo?.icon ?: 0,
-            contentDescription = null,
-            modifier =
-                Modifier
-                    .size(120.dp)
-                    .layoutId("cover"),
-        )
-        Text(packageInfo?.applicationInfo?.name ?: "", modifier = Modifier.layoutId("appName"))
+fun OtherPageScreen(
+    str: String,
+    navigationToUI: () -> Unit,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize(),
+    ) {
         Text(
-            packageInfo?.applicationInfo?.packageName ?: "",
+            "OtherPage : $str",
+            fontFamily = rubikGemstonesRegular,
+            fontSize = 24.sp,
+            color = Color(0xFF4C1B24),
             modifier =
-                Modifier
-                    .layoutId("appPackageName")
-                    .padding(bottom = 30.dp),
+                Modifier.clickable {
+                    navigationToUI()
+                },
         )
     }
 }
 
 @Composable
-fun PackageInfoDes(
-    title: String,
-    info: String,
-    onClick: () -> Unit = {},
-) {
-    Column {
-        Text(title, color = Color(0xFF999999))
+fun DiyInputScreen(navigationToAuth: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize(),
+    ) {
         Text(
-            info,
-            color = Color(0xFF666666),
+            "DiyInput",
+            fontFamily = rubikGemstonesRegular,
+            fontSize = 24.sp,
+            color = Color(0xFF002FA7),
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .clickable { onClick() },
+                Modifier.clickable {
+                    navigationToAuth()
+                },
         )
-        Spacer(modifier = Modifier.height(30.dp))
     }
 }
 
-@Preview
 @Composable
-fun PackageInfoDesPreview() {
-    PackageInfoDes("123", "456")
+fun AuthLoginScreen(navigationToRegister: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Text(
+            "AuthLogin",
+            fontFamily = permanentMarkerRegular,
+            fontSize = 24.sp,
+            color = Color(0xFF002FA7),
+            modifier =
+                Modifier.clickable {
+                    navigationToRegister()
+                },
+        )
+    }
 }
 
-@Preview
 @Composable
-fun TopHeaderPreview() {
-    TopHeader(null)
+fun AuthRegisterScreen(navigationToHome: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        Text(
+            "AuthRegister",
+            fontFamily = permanentMarkerRegular,
+            fontSize = 24.sp,
+            color = Color(0xFF002FA7),
+            modifier =
+                Modifier.clickable {
+                    navigationToHome()
+                },
+        )
+    }
 }
