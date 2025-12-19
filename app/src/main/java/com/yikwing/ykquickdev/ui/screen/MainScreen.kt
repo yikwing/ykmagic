@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.exclude
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -28,10 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.ConstraintSet
 import com.yikwing.ykquickdev.components.Center
 import com.yikwing.ykquickdev.ui.BottomNavItems
 import com.yikwing.ykquickdev.ui.CustomBottomBar
+import com.yikwing.ykquickdev.ui.utils.sdp
 import com.yikwing.ykquickdev.ui.widget.SystemBarsStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -141,12 +147,63 @@ fun CategoryRoute(paddingValues: PaddingValues) {
 @Composable
 fun CartRoute() {
     SystemBarsStyle(darkIcons = true)
-    Center(
+    Box(
         modifier = Modifier.fillMaxSize().background(Color.White),
     ) {
         Text("Cart", color = Color.Black)
+        ConstraintLayout(
+            modifier = Modifier.fillMaxWidth().height(100.sdp).align(Alignment.Center),
+            constraintSet = decoupledConstraints(),
+        ) {
+            Spacer(
+                modifier =
+                    Modifier
+                        .layoutId(CartLayoutId.Start)
+                        .size(100.sdp, 50.sdp)
+                        .background(Color.Yellow),
+            )
+
+            Spacer(
+                modifier =
+                    Modifier
+                        .layoutId(CartLayoutId.Center)
+                        .size(120.sdp, 50.sdp)
+                        .background(Color.Red),
+            )
+
+            Spacer(
+                modifier =
+                    Modifier
+                        .layoutId(CartLayoutId.End)
+                        .size(155.sdp, 50.sdp)
+                        .background(Color.Blue),
+            )
+        }
     }
 }
+
+private fun decoupledConstraints(): ConstraintSet =
+    ConstraintSet {
+        val startRef = createRefFor(CartLayoutId.Start)
+        val centerRef = createRefFor(CartLayoutId.Center)
+        val endRef = createRefFor(CartLayoutId.End)
+
+        constrain(startRef) {
+            top.linkTo(parent.top)
+            start.linkTo(parent.start)
+        }
+
+        constrain(centerRef) {
+            top.linkTo(parent.top)
+            bottom.linkTo(parent.bottom)
+            start.linkTo(startRef.end)
+        }
+
+        constrain(endRef) {
+            bottom.linkTo(parent.bottom)
+            end.linkTo(parent.end)
+        }
+    }
 
 @Composable
 fun MeRoute() {
@@ -156,4 +213,10 @@ fun MeRoute() {
     ) {
         Text("Me", color = Color.White)
     }
+}
+
+private enum class CartLayoutId {
+    Start,
+    Center,
+    End,
 }

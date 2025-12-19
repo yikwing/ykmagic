@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yikwing.ykquickdev.R
 import com.yikwing.ykquickdev.app.AppNavGraph
+import com.yikwing.ykquickdev.ui.utils.ProvideDesignScale
 
 /**
  * <pre>
@@ -78,7 +79,9 @@ class ComposeActivity : ComponentActivity() {
         }
 
         setContent {
-            AppNavGraph()
+            ProvideDesignScale {
+                AppNavGraph()
+            }
         }
     }
 }
