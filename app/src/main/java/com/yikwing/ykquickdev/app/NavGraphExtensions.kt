@@ -16,6 +16,7 @@ import com.yikwing.ykquickdev.components.Center
 import com.yikwing.ykquickdev.ui.screen.AuthLoginScreen
 import com.yikwing.ykquickdev.ui.screen.AuthRegisterScreen
 import com.yikwing.ykquickdev.ui.screen.DiyInputScreen
+import com.yikwing.ykquickdev.ui.screen.MainScreen
 import com.yikwing.ykquickdev.ui.screen.OtherPageScreen
 import com.yikwing.ykquickdev.ui.screen.PackageInfoScreen
 import com.yikwing.ykquickdev.ui.widget.GradientPage
@@ -30,30 +31,22 @@ fun NavGraphBuilder.tabNavGraph(
     ) {
         composable<TabDestination.Home> {
             Center(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.Black),
+                modifier = Modifier.fillMaxSize().background(Color.Black),
             ) {
                 Text(
                     "Home",
                     color = Color.Black,
                     modifier =
-                        modifier
-                            .background(Color.Yellow)
-                            .clickable {
-                                navActions.navigationToA()
-                            },
+                        modifier.background(Color.Yellow).clickable {
+                            navActions.navigationToA()
+                        },
                 )
             }
         }
 
         composable<TabDestination.Mine> {
             Center(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.Black),
+                modifier = Modifier.fillMaxSize().background(Color.Black),
             ) {
                 Text("Mine", color = Color.White)
             }
@@ -130,5 +123,9 @@ fun NavGraphBuilder.mainScreens(
         DiyInputScreen(
             navigationToAuth = navActions::navigationToAuth,
         )
+    }
+
+    composable<MainScreen> {
+        MainScreen()
     }
 }

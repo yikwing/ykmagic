@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 sealed interface AppDestination
 
 @Serializable
+data object MainScreen : AppDestination
+
+@Serializable
 data object PackageInfoScreen : AppDestination
 
 @Serializable

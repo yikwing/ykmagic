@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 @Composable
 inline fun Center(
     modifier: Modifier = Modifier,
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center,
-        content = content
+        content = content,
     )
 }
