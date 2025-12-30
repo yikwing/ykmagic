@@ -114,19 +114,16 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 arrow-core = { group = "io.arrow-kt", name = "arrow-core", version.ref = "arrow" }
 arrow-fx-coroutines = { group = "io.arrow-kt", name = "arrow-fx-coroutines", version.ref = "arrow" }
 
-
-
 #   compose依赖库
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
-ui = { group = "androidx.compose.ui", name = "ui" }
-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-compose-material = { group = "androidx.compose.material", name = "material" }
-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
-#compose-material3 = { group = "androidx.compose.material3", name = "material3", version = "1.2.0" }
+#   全自定义专用
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 

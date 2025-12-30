@@ -229,11 +229,10 @@ dependencies {
 
     // compose依赖库
     implementation(platform(libs.compose.bom))
-    implementation(libs.ui)
-    implementation(libs.ui.graphics)
-    implementation(libs.ui.tooling.preview)
-    implementation(libs.material.icons.extended)
     implementation(libs.compose.material3)
+    implementation(libs.material.icons.extended)
+
+    implementation(libs.ui.tooling.preview)
 
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.lifecycle.viewmodel.compose)
