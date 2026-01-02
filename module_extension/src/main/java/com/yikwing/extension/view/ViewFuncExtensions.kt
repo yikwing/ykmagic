@@ -1,5 +1,7 @@
 package com.yikwing.extension.view
 
+import android.graphics.Rect
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
@@ -150,4 +152,17 @@ fun View.setWidth(width: Int) {
  */
 fun View.setHeight(height: Int) {
     setSize(height = height)
+}
+
+// ========== 触摸事件相关 ==========
+
+/**
+ * 判断触摸事件是否在 View 的可见区域内
+ * @param event 触摸事件
+ * @return true 表示触摸点在 View 内
+ */
+fun View.containsTouchEvent(event: MotionEvent): Boolean {
+    val rect = Rect()
+    getGlobalVisibleRect(rect)
+    return rect.contains(event.rawX.toInt(), event.rawY.toInt())
 }

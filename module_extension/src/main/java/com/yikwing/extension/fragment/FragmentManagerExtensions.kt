@@ -22,7 +22,7 @@ sealed class DialogShowResult {
         data object Destroyed : Failure()
     }
 
-    val isSuccess: Boolean get() = this is Success
+    val isSuccess: Boolean get() = this !is Failure
     val isFailure: Boolean get() = this is Failure
 }
 
