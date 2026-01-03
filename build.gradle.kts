@@ -4,8 +4,6 @@ import com.android.build.api.dsl.LibraryExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
@@ -20,7 +18,7 @@ plugins {
     alias(libs.plugins.ksp) apply false
 }
 
-// 强制制定依赖
+// 强制指定依赖版本
 allprojects {
     configurations.configureEach {
         resolutionStrategy {
@@ -30,32 +28,23 @@ allprojects {
     }
 }
 
-// 全局 Android 配置
-val compileSdkVersion =
-    libs.versions.compileSdk
-        .get()
-        .toInt()
-val targetSdkVersion =
-    libs.versions.targetSdk
-        .get()
-        .toInt()
-val minSdkVersion =
-    libs.versions.minSdk
-        .get()
-        .toInt()
+// 全局版本配置
+val compileSdkVersion = 36
+val targetSdkVersion = 36
+val minSdkVersion = 26
+val javaVersion = JavaVersion.VERSION_17
+val jvmTargetVersion = JvmTarget.JVM_17
 
 fun CommonExtension<*, *, *, *, *, *>.configureAndroidCommon() {
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = compileSdkVersion
 
     defaultConfig {
         minSdk = minSdkVersion
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = javaVersion
+        targetCompatibility = javaVersion
     }
 }
 
@@ -79,7 +68,7 @@ subprojects {
         extensions.configure<KotlinAndroidProjectExtension> {
             jvmToolchain(17)
             compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_17)
+                jvmTarget.set(jvmTargetVersion)
             }
         }
     }

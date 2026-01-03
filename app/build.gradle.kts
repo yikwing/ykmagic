@@ -177,7 +177,6 @@ dependencies {
     implementation(libs.fragment.ktx)
     implementation(libs.core.ktx)
     implementation(libs.collection.ktx)
-    implementation(libs.kotlinx.collections.immutable)
     implementation(libs.appcompat)
     implementation(libs.datastore.preferences)
     implementation(libs.androidx.work.runtime.ktx)
@@ -187,7 +186,6 @@ dependencies {
     implementation(libs.webkit)
 
     implementation(libs.room.ktx)
-    implementation(libs.androidx.ui)
     ksp(libs.room.compiler)
 
     // 三方依赖库
