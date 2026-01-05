@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
@@ -111,7 +112,10 @@ private val BordeauxRed = Color(0xFF6D2C41)
 fun HomeRoute() {
     SystemBarsStyle(darkIcons = false)
     Center(
-        modifier = Modifier.fillMaxSize().background(KleinBlue),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(KleinBlue),
     ) {
         Text("Home", color = Color.White)
     }
@@ -120,7 +124,10 @@ fun HomeRoute() {
 @Composable
 fun CategoryRoute(paddingValues: PaddingValues) {
     Box(
-        modifier = Modifier.fillMaxSize().background(BordeauxRed),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(BordeauxRed),
     ) {
         // 主内容居中
         Text(
@@ -148,11 +155,17 @@ fun CategoryRoute(paddingValues: PaddingValues) {
 fun CartRoute() {
     SystemBarsStyle(darkIcons = true)
     Box(
-        modifier = Modifier.fillMaxSize().background(Color.White),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.White),
     ) {
-        Text("Cart", color = Color.Black)
         ConstraintLayout(
-            modifier = Modifier.fillMaxWidth().height(100.sdp).align(Alignment.Center),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(100.sdp)
+                    .align(Alignment.Center),
             constraintSet = decoupledConstraints(),
         ) {
             Spacer(
@@ -209,7 +222,10 @@ private fun decoupledConstraints(): ConstraintSet =
 fun MeRoute() {
     SystemBarsStyle(darkIcons = false)
     Center(
-        modifier = Modifier.fillMaxSize().background(Color.Black),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black),
     ) {
         Text("Me", color = Color.White)
     }
@@ -219,4 +235,14 @@ private enum class CartLayoutId {
     Start,
     Center,
     End,
+}
+
+@Preview(
+    name = "UI-375",
+    widthDp = 375,
+    showBackground = true,
+)
+@Composable
+fun MainScreenPreview() {
+    CartRoute()
 }

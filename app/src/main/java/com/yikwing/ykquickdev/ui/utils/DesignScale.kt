@@ -2,12 +2,11 @@ package com.yikwing.ykquickdev.ui.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
@@ -28,15 +27,8 @@ import androidx.compose.ui.unit.dp
  * Box(modifier = Modifier.size(200.sdp, 100.sdp))
  * ```
  */
-@Immutable
-data class DesignScale(
-    val scale: Float,
-)
 
-val LocalDesignScale =
-    staticCompositionLocalOf<DesignScale> {
-        error("DesignScale not provided. Please wrap your content with ProvideDesignScale.")
-    }
+val LocalDesignScale = staticCompositionLocalOf { 1f }
 
 private const val DESIGN_WIDTH_DP = 375f
 
@@ -46,46 +38,36 @@ private const val DESIGN_WIDTH_DP = 375f
  */
 @Composable
 fun ProvideDesignScale(content: @Composable () -> Unit) {
-    // 读取 LocalConfiguration 确保分屏/窗口变化时触发重组
     val configuration = LocalConfiguration.current
-    val context = LocalContext.current
-    val density = LocalDensity.current.density
-    val screenWidthPx = context.resources.displayMetrics.widthPixels
-    // 预计算缩放因子：screenWidthDp / 375
+    val screenWidthDp = configuration.screenWidthDp
+    val density = LocalDensity.current
+
     val designScale =
-        remember(screenWidthPx, density, configuration.screenWidthDp) {
-            val screenWidthDp = screenWidthPx / density
-            DesignScale(scale = screenWidthDp / DESIGN_WIDTH_DP)
+        remember(screenWidthDp) {
+            // 这里的逻辑可以根据你的项目需求灵活调整
+            if (screenWidthDp > 600) {
+                // 平板模式下：限制最大缩放比例，避免 UI 元素过大
+                (screenWidthDp / DESIGN_WIDTH_DP).coerceAtMost(1.4f)
+            } else {
+                screenWidthDp / DESIGN_WIDTH_DP
+            }
         }
-    CompositionLocalProvider(LocalDesignScale provides designScale) {
+
+    // 关键点：创建一个新的 Density 实例，强制将 fontScale 设为固定值（如 1.0）
+    val fixedDensity =
+        Density(
+            density = density.density,
+            // 强制字体缩放为 1.0
+            fontScale = 1f,
+        )
+
+    CompositionLocalProvider(
+        LocalDesignScale provides designScale,
+        LocalDensity provides fixedDensity,
+    ) {
         content()
     }
 }
 
-/**
- * 将设计稿尺寸转换为当前屏幕的实际 Dp
- * 计算公式：designValue * scale
- * @param value 设计稿中的 dp 值
- * @return 缩放后的 Dp
- */
-@Composable
-fun designDp(value: Int): Dp {
-    val scale = LocalDesignScale.current.scale
-    return (value * scale).dp
-}
-
-@Composable
-fun designDp(value: Float): Dp {
-    val scale = LocalDesignScale.current.scale
-    return (value * scale).dp
-}
-
-/**
- * Int 扩展属性，更简洁的写法
- * 使用：200.sdp
- */
-val Int.sdp: Dp
-    @Composable get() = designDp(this)
-
-val Float.sdp: Dp
-    @Composable get() = designDp(this)
+val Number.sdp: Dp
+    @Composable get() = (this.toFloat() * LocalDesignScale.current).dp

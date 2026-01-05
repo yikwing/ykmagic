@@ -50,8 +50,8 @@ import com.yikwing.ykquickdev.ui.utils.ProvideDesignScale
  */
 // 定义数据类，避免在 UI 中硬编码
 data class BottomNavItem(
-    @DrawableRes val normalIcon: Int,
-    @DrawableRes val selectedIcon: Int,
+    @param:DrawableRes val normalIcon: Int,
+    @param:DrawableRes val selectedIcon: Int,
 )
 
 val BottomNavItems =
@@ -110,13 +110,15 @@ fun CustomBottomBar(
 
             Column(
                 modifier =
-                    Modifier.weight(1f).pointerInput(Unit) {
-                        detectTapGestures(
-                            onTap = {
-                                onItemSelected(index)
-                            },
-                        )
-                    },
+                    Modifier
+                        .weight(1f)
+                        .pointerInput(Unit) {
+                            detectTapGestures(
+                                onTap = {
+                                    onItemSelected(index)
+                                },
+                            )
+                        },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(
