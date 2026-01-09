@@ -42,8 +42,8 @@ fun getImageDimensions(
 fun getCompressedBitmapByResolution(
     context: Context,
     uri: Uri,
-    targetWidth: Int = 960,
-    targetHeight: Int = 1280,
+    targetWidth: Int = 1440,
+    targetHeight: Int = 2560,
 ): Bitmap? {
     val originSize = getImageDimensions(context, uri) ?: return null
     val widthScale = originSize.width.toFloat() / targetWidth

@@ -97,20 +97,18 @@ class MainApplication :
 
     private fun testCompress() {
         val fileName = "beautiful-girl-8080757.jpg"
-        val copiedFile = copyAssetToCache(this, fileName)
-
-        if (copiedFile != null) {
-            Log.i("CopyAsset", "文件已成功复制到 cache 目录: ${copiedFile.absolutePath}")
-
-            compressImageFromUri(
-                this,
-                Uri.fromFile(copiedFile),
-                File(this.cacheDir, "cache_uri_$fileName").path,
-                100,
-            )
-        } else {
-            Log.e("CopyAsset", "文件复制失败")
-        }
+        copyAssetToCache(this, fileName)
+            .onSuccess { file ->
+                Log.i("CopyAsset", "文件已成功复制到 cache 目录: ${file.absolutePath}")
+                compressImageFromUri(
+                    this,
+                    Uri.fromFile(file),
+                    File(this.cacheDir, "cache_uri_$fileName").path,
+                    100,
+                )
+            }.onFailure { e ->
+                Log.e("CopyAsset", "文件复制失败: ${e.message}")
+            }
     }
 
     private fun initSetup() {

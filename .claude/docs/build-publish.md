@@ -56,7 +56,7 @@ adb install app/build/outputs/apk/release/app-release.apk
 
 | 配置项 | 值 |
 |--------|-----|
-| JDK 版本 | 21 |
+| JDK 版本 | 17 |
 | 编译 SDK | 36 (Android 15) |
 | 最低 SDK | 26 (Android 8.0) |
 | Kotlin 版本 | 2.3.0 |

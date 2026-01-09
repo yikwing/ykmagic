@@ -27,6 +27,7 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 | [datastore.md](.claude/docs/datastore.md) | Proto DataStore、Flow 操作 | 存储用户偏好 |
 | [modules.md](.claude/docs/modules.md) | 模块化设计、AppInitializer、CacheManager | 了解项目结构 |
 | [build-publish.md](.claude/docs/build-publish.md) | 构建命令、环境配置、模块发布 | 构建 APK、发布 |
+| [patterns.md](.claude/docs/patterns.md) | Event Wrapper、Flow 生命周期、Compose 技巧 | 开发模式参考 |
 
 ## 快速参考
 
@@ -37,7 +38,8 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 ./android_build.sh all         # 清理+构建+安装
 ./android_build.sh dependency  # 检查依赖更新
 ./gradlew test                 # 运行所有单元测试
-./gradlew testDebugUnitTest    # 运行 Debug 单元测试
+./gradlew :module_config:test  # 运行指定模块测试
+./gradlew test --tests "com.yikwing.config.ReturnsTest"  # 运行单个测试类
 ./gradlew connectedDebugAndroidTest  # 运行 Instrumented 测试
 ./gradlew lint                 # 运行 Lint 检查
 ./gradlew lintFix              # 自动修复 Lint 问题
