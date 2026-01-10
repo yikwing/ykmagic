@@ -2,11 +2,10 @@ package com.yikwing.component
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.widget.FrameLayout
-import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 
 /**
  * WindowInsets 包装器基类
@@ -42,7 +41,7 @@ abstract class WindowInsetsWrapperView
          * 子类实现具体的 padding 应用逻辑
          */
         protected abstract fun applyInsetsPadding(
-            view: android.view.View,
+            view: View,
             insets: WindowInsetsCompat,
         )
 

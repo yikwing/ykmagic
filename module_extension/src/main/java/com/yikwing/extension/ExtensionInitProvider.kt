@@ -11,28 +11,33 @@ import android.util.Log
  *
  * 通过 ContentProvider 实现 GlobalContextProvider 的自动初始化，
  * 无需在 Application.onCreate() 中手动调用。
- *
- * 工作原理：
- * 1. Android 系统在应用启动时自动调用 ContentProvider.onCreate()
- * 2. onCreate() 在主线程调用，保证初始化顺序
- * 3. 自动获取 Application Context 并初始化 GlobalContextProvider
  */
-class ExtensionInitProvider : ContentProvider() {
+class ExtensionInitProvider : ContentProviderAdapter() {
     override fun onCreate(): Boolean {
-        // 获取 Application Context 并初始化
-        val context = context?.applicationContext
-        if (context != null) {
-            Log.d("============", "ExtensionInitProvider")
-            GlobalContextProvider.initialize(context)
+        val appContext = context?.applicationContext
+        if (appContext != null) {
+            Log.d(TAG, "GlobalContextProvider initialized")
+            GlobalContextProvider.initialize(appContext)
+        } else {
+            Log.w(TAG, "Context is null, initialization skipped")
         }
         return true
     }
 
+    private companion object {
+        const val TAG = "ExtensionInitProvider"
+    }
+}
+
+/**
+ * ContentProvider 适配器，提供空实现，子类只需重写 onCreate
+ */
+abstract class ContentProviderAdapter : ContentProvider() {
     override fun query(
         uri: Uri,
-        projection: Array<out String>?,
+        projection: Array<out String?>?,
         selection: String?,
-        selectionArgs: Array<out String>?,
+        selectionArgs: Array<out String?>?,
         sortOrder: String?,
     ): Cursor? = null
 
@@ -46,13 +51,13 @@ class ExtensionInitProvider : ContentProvider() {
     override fun delete(
         uri: Uri,
         selection: String?,
-        selectionArgs: Array<out String>?,
+        selectionArgs: Array<out String?>?,
     ): Int = 0
 
     override fun update(
         uri: Uri,
         values: ContentValues?,
         selection: String?,
-        selectionArgs: Array<out String>?,
+        selectionArgs: Array<out String?>?,
     ): Int = 0
 }
