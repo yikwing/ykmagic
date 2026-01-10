@@ -69,6 +69,7 @@ subprojects {
             jvmToolchain(17)
             compilerOptions {
                 jvmTarget.set(jvmTargetVersion)
+                freeCompilerArgs.add("-XXLanguage:+ExplicitBackingFields")
             }
         }
     }

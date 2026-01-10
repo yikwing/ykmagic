@@ -26,14 +26,12 @@ class MyViewModel
         private val netRepository: NetRepository,
         @InjectedParam val name: String,
     ) : ViewModel() {
-        private val _headers = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
-
         val headers: RStateLiveData<Headers>
-            get() = _headers
+            field = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
 
         private fun initHttpBinData() {
             viewModelScope.launch {
-                _headers.value = netRepository.initHttpBinData()
+                headers.value = netRepository.initHttpBinData()
             }
         }
 
