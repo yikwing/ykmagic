@@ -1,11 +1,9 @@
 package com.yikwing.config
 
-import com.squareup.moshi.JsonClass
-import com.yikwing.config.annotations.YkConfigNode
-import com.yikwing.config.annotations.YkConfigValue
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@YkConfigNode
-@JsonClass(generateAdapter = true)
-data class NetworkConfig(
-    @YkConfigValue(path = "base_url") val baseUrl: String,
+@Serializable
+data class AppConfig(
+    @SerialName("base_url") val baseUrl: String,
 )

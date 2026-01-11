@@ -49,7 +49,7 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 ### 模块概览
 | 模块 | 功能 |
 |------|------|
-| module_config | 配置注入 (@YkConfigNode) |
+| module_config | 配置管理 (kotlinx.serialization) |
 | module_network | Ktor Client 网络请求 |
 | module_extension | 扩展函数、CacheManager、NetConnectManager |
 | module_datastore | Proto DataStore 封装 |
@@ -63,8 +63,7 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 - `keystore.properties` - 签名配置
 
 ### KSP 注解
-- `@YkConfigNode` / `@YkConfigValue` - 配置注入
-- `@Serializable` - JSON 序列化
+- `@Serializable` / `@SerialName` - JSON 序列化
 - `@KoinViewModel` / `@Inject` - 依赖注入
 - `@Entity` / `@Dao` / `@Database` - Room 数据库
 
@@ -75,20 +74,20 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 
 ## 核心架构设计
 
-### 配置注入流程
-`android_env.json` → BuildConfig.YK_CONFIG (构建时) → YkConfigManager (运行时) → KSP 生成代码
+### 配置管理 (YkConfigManager)
+`android_env.json` → BuildConfig.YK_CONFIG (构建时) → YkConfigManager (运行时)
 
 使用方式:
 ```kotlin
-@YkConfigNode
+// 定义配置类
 @Serializable
-data class NetworkConfig(@YkConfigValue(path = "base_url") val baseUrl: String)
+data class AppConfig(@SerialName("base_url") val baseUrl: String)
 
 // 初始化 (Application.onCreate)
 YkConfigManager.setUp(BuildConfig.YK_CONFIG)
 
 // 获取配置
-val config = YkConfigManager.getConfig(NetworkConfig::class.java)
+val baseUrl = YkConfigManager.config.baseUrl
 ```
 
 ### 模块初始化机制 (AppInitializer)

@@ -47,8 +47,8 @@
 -keep class com.squareup.wire.** { *; }
 -keep class com.yikwing.ykquickdev.UserPreferences { *; }
 
-# 保留配置类(YkConfig 相关)
--keep @com.yikwing.config.annotations.YkConfigNode class * { *; }
+# 保留配置类
+-keep class com.yikwing.config.AppConfig { *; }
 -keep class com.yikwing.config.YkConfigManager { *; }
 
 # ===== Koin 依赖注入规则 (官方推荐) =====

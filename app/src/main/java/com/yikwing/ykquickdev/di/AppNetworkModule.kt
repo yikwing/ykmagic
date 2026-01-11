@@ -2,7 +2,6 @@ package com.yikwing.ykquickdev.di
 
 import android.app.Application
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.yikwing.config.NetworkConfig
 import com.yikwing.config.YkConfigManager
 import com.yikwing.network.ApplicationInterceptors
 import com.yikwing.network.BaseUrl
@@ -30,7 +29,7 @@ object AppNetworkModule {
      */
     @Singleton
     @BaseUrl
-    fun provideBaseUrl(): String = YkConfigManager.getConfig(NetworkConfig::class.java).baseUrl
+    fun provideBaseUrl(): String = YkConfigManager.config.baseUrl
 
     /**
      * 提供应用层拦截器列表
