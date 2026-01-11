@@ -19,10 +19,10 @@ import com.yikwing.extension.io.copyAssetToCache
 import com.yikwing.network.checkProxy
 import com.yikwing.proxy.startup.AppInitializer
 import com.yikwing.ykquickdev.task.ConfigInjectInitTask
-import com.yikwing.ykquickdev.task.DataStoreInitTask
 import com.yikwing.ykquickdev.task.LoggerInitTask
 import com.yikwing.ykquickdev.task.NetworkInitTask
 import com.yikwing.ykquickdev.work.CleanCacheWork
+import io.kotzilla.sdk.KotzillaSDK.onConfig
 import io.kotzilla.sdk.analytics.koin.analytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinApplication
@@ -113,7 +113,6 @@ class MainApplication :
                     .addTask(ConfigInjectInitTask())
                     .addTask(LoggerInitTask())
                     .addTask(NetworkInitTask())
-                    .addTask(DataStoreInitTask())
                     .build(debug = true)
             }
         Log.i("initSetup", "spendTime: $spendTime")

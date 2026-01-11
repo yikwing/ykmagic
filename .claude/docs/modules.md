@@ -4,10 +4,10 @@
 
 ## 模块列表
 
-### 1. module_config - 配置注入模块
+### 1. module_config - 配置管理模块
 - 通过 `android_env.json` 注入配置数据
-- 维护全局 Application Context
-- 使用 KSP 处理注解 `@YkConfigNode` 和 `@YkConfigValue`
+- 使用 kotlinx.serialization 静态解析 JSON 配置
+- 提供类型安全的配置访问
 
 ### 2. module_network - 网络请求模块
 - 基于 Ktor Client + OkHttp Engine 封装（已从 Retrofit 迁移）
@@ -29,6 +29,7 @@
 ### 4. module_datastore - DataStore 封装
 - 基于 Jetpack DataStore Preferences
 - 提供属性委托方式的便捷访问
+- 通过 ContentProvider 自动初始化，无需手动调用
 
 ### 5. module_permission - 权限请求模块
 - 基于 Fragment 封装统一的权限请求流程
@@ -58,9 +59,10 @@ AppInitializer.getInstance(this)
     .addTask(ConfigInjectInitTask())
     .addTask(LoggerInitTask())
     .addTask(NetworkInitTask())
-    .addTask(DataStoreInitTask())
     .build(debug = true)
 ```
+
+> **注意**: DataStore 模块已改为 ContentProvider 自动初始化，无需添加 DataStoreInitTask。
 
 **创建初始化任务**:
 ```kotlin
@@ -80,22 +82,39 @@ class ConfigInjectInitTask : Initializer<Unit> {
 - 循环依赖检测(会抛出 "存在回环依赖" 错误)
 - 位置: module_proxy/src/main/java/com/yikwing/proxy/startup/AppInitializer.kt:28
 
-## 配置注入机制 (module_config)
+## 配置管理 (module_config)
 
-**流程**: android_env.json → BuildConfig.YK_CONFIG → YkQuickManager.setUp() → KSP 生成代码
+**流程**: android_env.json → BuildConfig.YK_CONFIG (构建时) → YkConfigManager.setUp() (运行时)
 
 **使用步骤**:
-1. 在根目录创建 `android_env.json` 配置文件
-2. 使用注解标记配置类:
+1. 在根目录创建 `android_env.json` 配置文件:
+   ```json
+   {
+     "base_url": "https://api.example.com"
+   }
+   ```
+2. 定义配置类（使用 kotlinx.serialization）:
    ```kotlin
-   @YkConfigNode
-   @JsonClass(generateAdapter = true)
-   data class NetworkConfig(
-       @YkConfigValue(path = "base_url") val baseUrl: String
+   @Serializable
+   data class AppConfig(
+       @SerialName("base_url") val baseUrl: String
    )
    ```
-3. KSP 会自动生成 YkQuickManager 和相关配置代码
-4. 在 Application 中调用 `YkQuickManager.setUp(BuildConfig.YK_CONFIG)`
+3. 在 Application 初始化时调用:
+   ```kotlin
+   YkConfigManager.setUp(BuildConfig.YK_CONFIG)
+   ```
+4. 获取配置:
+   ```kotlin
+   val baseUrl = YkConfigManager.config.baseUrl
+   ```
+
+**API**:
+| 方法/属性 | 说明 |
+|-----------|------|
+| `setUp(json: String)` | 初始化配置 |
+| `config` | 获取配置对象 |
+| `isInitialized` | 检查是否已初始化 |
 
 **构建时注入**: app/build.gradle.kts 中通过 `buildConfigField` 将 JSON 注入到 BuildConfig
 

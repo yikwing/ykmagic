@@ -2,6 +2,12 @@
 
 项目使用 Proto DataStore 存储结构化数据（如 UserPreferences），Wire 生成 Protobuf 类。
 
+## 初始化
+
+DataStore 模块通过 `DataStoreInitProvider` (ContentProvider) 自动初始化，无需在 Application 中手动调用。
+
+**原理**: ContentProvider 在 Application.onCreate() 之前执行，自动设置 `IDataStoreOwner.application`。
+
 ## Compose 中读取 DataStore
 
 ```kotlin
@@ -64,3 +70,17 @@ fun provideUserPreferencesDataStore(context: Context): DataStore<UserPreferences
 - `StateFlow.collectAsState()` 不需要 initial（StateFlow 自带初始值）
 - `Flow.collectAsState(initial = ...)` 必须提供 initial
 - initial 类型必须与 Flow 泛型类型一致，否则会推断为公共父类型
+
+## DataStorePreference API
+
+`DataStorePreference<V>` 是对单个偏好项的封装，提供类型安全的读写操作。
+
+| 方法 | 说明 |
+|------|------|
+| `asFlow()` | 返回 `Flow<V?>` 持续观测值变化 |
+| `get()` | 挂起函数，一次性获取当前值 |
+| `getOrDefault()` | 获取值，null 时返回 default，都为 null 则抛异常 |
+| `set(block)` | 设置值，block 接收当前值和 Preferences |
+| `remove()` | 删除存储的值 |
+
+**线程安全**: `PreferenceProperty` 使用双重检查锁定 (DCL) 确保线程安全。

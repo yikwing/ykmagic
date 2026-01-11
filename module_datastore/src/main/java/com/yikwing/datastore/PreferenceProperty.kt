@@ -8,13 +8,16 @@ class PreferenceProperty<V>(
     private val key: (String) -> Preferences.Key<V>,
     private val default: V? = null,
 ) : ReadOnlyProperty<IDataStoreOwner, DataStorePreference<V>> {
+    @Volatile
     private var cache: DataStorePreference<V>? = null
 
     override fun getValue(
         thisRef: IDataStoreOwner,
         property: KProperty<*>,
     ): DataStorePreference<V> =
-        cache ?: DataStorePreference(thisRef.dataStore, key(property.name), default).also {
-            cache = it
+        cache ?: synchronized(this) {
+            cache ?: DataStorePreference(thisRef.dataStore, key(property.name), default).also {
+                cache = it
+            }
         }
 }

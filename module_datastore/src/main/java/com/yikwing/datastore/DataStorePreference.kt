@@ -12,7 +12,6 @@ open class DataStorePreference<V>(
     private val key: Preferences.Key<V>,
     open val default: V?,
 ) {
-
     suspend fun set(block: suspend V?.(Preferences) -> V?): Preferences =
         dataStore.edit { preferences ->
             val value = block(preferences[key] ?: default, preferences)
@@ -29,5 +28,13 @@ open class DataStorePreference<V>(
 
     suspend fun get(): V? = asFlow().first()
 
-    suspend fun getOrDefault(): V = get() ?: throw IllegalStateException("No default value")
+    /**
+     * 获取值，如果值为 null 则返回 default，如果 default 也为 null 则抛出异常
+     */
+    suspend fun getOrDefault(): V = get() ?: default ?: throw IllegalStateException("Value is null and no default provided")
+
+    /**
+     * 删除存储的值
+     */
+    suspend fun remove(): Preferences = set(null)
 }
