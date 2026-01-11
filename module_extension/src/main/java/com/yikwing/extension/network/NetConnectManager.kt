@@ -1,203 +1,222 @@
 package com.yikwing.extension.network
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Single
+import java.io.Closeable
 
-sealed class ConnectType(
-    val value: Int,
-) {
-    object Mobile : ConnectType(0)
+/**
+ * 网络连接类型
+ */
+enum class NetworkType {
+    /** WiFi 网络 */
+    WIFI,
 
-    object Wifi : ConnectType(1)
+    /** 移动数据网络 */
+    CELLULAR,
 
-    object None : ConnectType(-1)
+    /** 以太网 */
+    ETHERNET,
 
-    companion object {
-        fun convert2Type(value: Int): ConnectType =
-            when (value) {
-                Mobile.value -> Mobile
-                Wifi.value -> Wifi
-                else -> None
-            }
-    }
+    /** VPN 网络 */
+    VPN,
+
+    /** 无网络连接 */
+    NONE,
 }
 
-object NetConnectManager {
-    private var mConnectivityManager: ConnectivityManager? = null
-    private val mainHandler = Handler(Looper.getMainLooper())
-    private val mNetTypeListener = mutableListOf<(type: ConnectType) -> Unit>()
-    private val mNetStateListener = mutableListOf<(isAvailable: Boolean) -> Unit>()
-    private var mCurrentConnectType: ConnectType? = null
-    private var mIsNetAvailable: Boolean? = null
+/**
+ * 网络状态数据类
+ *
+ * @property isConnected 是否已连接网络
+ * @property type 网络类型
+ */
+data class NetworkState(
+    val isConnected: Boolean = false,
+    val type: NetworkType = NetworkType.NONE,
+)
 
-    /**
-     * 初始化
-     */
-    fun init(context: Context) {
-        mConnectivityManager = context.getSystemService(ConnectivityManager::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mConnectivityManager?.registerDefaultNetworkCallback(DefaultNetConnectCallback())
-        } else {
-            context.registerReceiver(
-                NetConnectReceiver(),
-                IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION),
-            )
-        }
-    }
+/**
+ * 网络连接管理器
+ *
+ * 使用 Flow 提供响应式的网络状态监听，支持 Compose 和协程。
+ *
+ * ## 特性
+ * - 使用 StateFlow 暴露网络状态，支持 Compose collectAsState
+ * - 提供一次性查询 API
+ * - 支持 VPN 检测（独立于底层网络类型）
+ * - 实现 Closeable 接口，支持显式资源清理
+ * - 线程安全（Koin 单例）
+ * - 生命周期与 Application 相同
+ *
+ * ## 使用示例
+ *
+ * ### Koin 注入
+ * ```kotlin
+ * // 在 ViewModel 中
+ * @KoinViewModel
+ * class MyViewModel(
+ *     private val netConnectManager: NetConnectManager
+ * ) : ViewModel()
+ *
+ * // 在其他类中
+ * class MyRepository @Inject constructor(
+ *     private val netConnectManager: NetConnectManager
+ * )
+ * ```
+ *
+ * ### Compose 中使用
+ * ```kotlin
+ * val networkState by netConnectManager.networkState.collectAsState()
+ *
+ * if (networkState.isConnected) {
+ *     Text("已连接: ${networkState.type}")
+ * } else {
+ *     Text("无网络连接")
+ * }
+ * ```
+ *
+ * ### 协程中使用
+ * ```kotlin
+ * // 监听网络状态变化
+ * lifecycleScope.launch {
+ *     repeatOnLifecycle(Lifecycle.State.STARTED) {
+ *         netConnectManager.networkState.collect { state ->
+ *             Log.d("Network", "Connected: ${state.isConnected}, Type: ${state.type}")
+ *         }
+ *     }
+ * }
+ *
+ * // 仅监听连接状态
+ * netConnectManager.isConnected.collect { connected ->
+ *     if (connected) loadData()
+ * }
+ *
+ * // 仅监听网络类型
+ * netConnectManager.networkType.collect { type ->
+ *     when (type) {
+ *         NetworkType.WIFI -> enableHighQuality()
+ *         NetworkType.CELLULAR -> enableDataSaver()
+ *         NetworkType.VPN -> handleVpnConnection()
+ *         else -> showOffline()
+ *     }
+ * }
+ * ```
+ *
+ * ### 一次性查询
+ * ```kotlin
+ * if (netConnectManager.isCurrentlyConnected) {
+ *     // 执行网络操作
+ * }
+ *
+ * when (netConnectManager.currentNetworkType) {
+ *     NetworkType.WIFI -> // WiFi 网络
+ *     NetworkType.CELLULAR -> // 移动网络
+ *     NetworkType.VPN -> // 纯 VPN 网络
+ *     else -> // 无网络
+ * }
+ *
+ * // 检测 VPN 是否激活（即使底层是 WiFi 或移动网络）
+ * if (netConnectManager.isVpnActive) {
+ *     // VPN 已激活，可能同时有 WiFi/Cellular 底层连接
+ * }
+ * ```
+ */
+@Single
+class NetConnectManager(
+    context: Context,
+) : Closeable {
+    private val connectivityManager: ConnectivityManager =
+        context.applicationContext.getSystemService(ConnectivityManager::class.java)
 
-    /**
-     * 注册网络类型监听
-     */
-    fun addNetTypeChangeListener(listener: (type: ConnectType) -> Unit) {
-        mNetTypeListener.add(listener)
-    }
+    private val _networkState = MutableStateFlow(NetworkState())
 
-    /**
-     * 反注册网络类型监听
-     */
+    /** 网络状态 StateFlow，包含连接状态和网络类型 */
+    val networkState: StateFlow<NetworkState> = _networkState.asStateFlow()
 
-    fun removeNetTypeChangeListener(listener: (type: ConnectType) -> Unit) {
-        mNetTypeListener.remove(listener)
-    }
+    /** 是否已连接网络的 Flow */
+    val isConnected: Flow<Boolean> = networkState.map { it.isConnected }.distinctUntilChanged()
 
-    /**
-     * 注册网络状态监听
-     */
-    fun addNetStatusChangeListener(listener: (isAvailable: Boolean) -> Unit) {
-        mNetStateListener.add(listener)
-    }
+    /** 网络类型的 Flow */
+    val networkType: Flow<NetworkType> = networkState.map { it.type }.distinctUntilChanged()
 
-    /**
-     * 反注册网络状态监听
-     */
-    fun removeNetStatusChangeListener(listener: (isAvailable: Boolean) -> Unit) {
-        mNetStateListener.remove(listener)
-    }
+    /** 一次性查询：当前是否已连接网络 */
+    val isCurrentlyConnected: Boolean get() = networkState.value.isConnected
 
-    /**
-     * 获取当前网络类型
-     */
-    fun getConnectType(): ConnectType {
-        if (mConnectivityManager == null) {
-            throw UninitializedPropertyAccessException("请先调用init()初始化")
-        }
-        return mCurrentConnectType ?: mConnectivityManager
-            ?.getNetworkCapabilities(
-                mConnectivityManager?.activeNetwork,
-            ).let {
-                return if (it?.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) == true) {
-                    ConnectType.Mobile
-                } else if (it?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) == true) {
-                    ConnectType.Wifi
-                } else {
-                    ConnectType.None
-                }
+    /** 一次性查询：当前网络类型 */
+    val currentNetworkType: NetworkType get() = networkState.value.type
+
+    /** 一次性查询：VPN 是否激活（无论底层网络类型） */
+    val isVpnActive: Boolean
+        get() = connectivityManager.activeNetwork?.let {
+            connectivityManager.getNetworkCapabilities(it)
+                ?.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
+        } ?: false
+
+    private val networkCallback =
+        object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                // 网络可用时，等待 onCapabilitiesChanged 获取详细信息
             }
-    }
 
-    /**
-     * 获取当前是否网络已连接
-     */
-    fun isConnected(): Boolean {
-        if (mConnectivityManager == null) {
-            throw UninitializedPropertyAccessException("请先调用init()初始化")
-        }
-        return (
-            mIsNetAvailable
-                ?: mConnectivityManager
-                    ?.getNetworkCapabilities(mConnectivityManager?.activeNetwork)
-                    ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-        ) == true
-    }
+            override fun onLost(network: Network) {
+                _networkState.value = NetworkState(isConnected = false, type = NetworkType.NONE)
+            }
 
-    private class DefaultNetConnectCallback : ConnectivityManager.NetworkCallback() {
-        override fun onLost(network: Network) {
-            super.onLost(network)
-            mCurrentConnectType = ConnectType.None
-            mainHandler.postDelayed({
-                if (mCurrentConnectType == ConnectType.None && mIsNetAvailable == true) {
-                    mIsNetAvailable = false
-                    mNetStateListener.forEach { it.invoke(false) }
-                    mNetTypeListener.forEach { it(ConnectType.None) }
-                }
-            }, 500)
-        }
-
-        override fun onCapabilitiesChanged(
-            network: Network,
-            networkCapabilities: NetworkCapabilities,
-        ) {
-            super.onCapabilitiesChanged(network, networkCapabilities)
-            mainHandler.post {
-                val isConnected =
-                    networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
-                val isCellular =
-                    networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
-                val isWifi = networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-
-                if (isConnected) {
-                    val newConnectType =
-                        if (isCellular) {
-                            ConnectType.Mobile
-                        } else if (isWifi) {
-                            ConnectType.Wifi
-                        } else {
-                            ConnectType.None
-                        }
-                    if (mIsNetAvailable == null || mIsNetAvailable == false) {
-                        mIsNetAvailable = true
-                        mNetStateListener.forEach { it(true) }
-                    }
-                    if (mCurrentConnectType != newConnectType) {
-                        mCurrentConnectType = newConnectType
-                        mNetTypeListener.forEach { it(newConnectType) }
-                    }
-                }
+            override fun onCapabilitiesChanged(
+                network: Network,
+                capabilities: NetworkCapabilities,
+            ) {
+                _networkState.value = parseNetworkState(capabilities)
             }
         }
+
+    init {
+        // 先注册回调，避免查询和注册之间的状态丢失窗口
+        connectivityManager.registerDefaultNetworkCallback(networkCallback)
+
+        // 再查询当前网络状态
+        _networkState.value = queryCurrentNetworkState()
     }
 
-    private class NetConnectReceiver : BroadcastReceiver() {
-        override fun onReceive(
-            context: Context?,
-            intent: Intent?,
-        ) {
-            val activityNetworkInfo =
-                context
-                    ?.getSystemService(ConnectivityManager::class.java)
-                    ?.allNetworkInfo
-                    ?.filter {
-                        (it.type == ConnectType.Mobile.value || it.type == ConnectType.Wifi.value) && it.isConnected
-                    }?.firstOrNull()
-            if (activityNetworkInfo != null) {
-                if (mIsNetAvailable == null || mIsNetAvailable == false) {
-                    mIsNetAvailable = true
-                    mNetStateListener.forEach { it(true) }
-                }
-                ConnectType.convert2Type(activityNetworkInfo.type).let { connectType ->
-                    if (connectType != mCurrentConnectType) {
-                        mCurrentConnectType = connectType
-                        mNetTypeListener.forEach { it(connectType) }
-                    }
-                }
-                return
-            }
-            mCurrentConnectType = ConnectType.None
-            mainHandler.postDelayed({
-                if (mCurrentConnectType == ConnectType.None && mIsNetAvailable == true) {
-                    mIsNetAvailable = false
-                    mNetStateListener.forEach { it(false) }
-                    mNetTypeListener.forEach { it(ConnectType.None) }
-                }
-            }, 500)
+    // ==================== Private ====================
+
+    private fun queryCurrentNetworkState(): NetworkState {
+        val network = connectivityManager.activeNetwork ?: return NetworkState()
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(network) ?: return NetworkState()
+        return parseNetworkState(capabilities)
+    }
+
+    private fun parseNetworkState(capabilities: NetworkCapabilities): NetworkState {
+        // NET_CAPABILITY_VALIDATED 确保网络有实际的互联网连接，而不仅仅是连接到路由器/门户
+        val isValidated = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        if (!isValidated) {
+            return NetworkState(isConnected = false, type = NetworkType.NONE)
         }
+
+        // 优先级: WiFi > Cellular > Ethernet > VPN
+        val type =
+            when {
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> NetworkType.WIFI
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> NetworkType.CELLULAR
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> NetworkType.ETHERNET
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> NetworkType.VPN
+                else -> NetworkType.NONE
+            }
+
+        return NetworkState(isConnected = true, type = type)
+    }
+
+    override fun close() {
+        connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 }

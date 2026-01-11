@@ -28,6 +28,7 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 | [modules.md](.claude/docs/modules.md) | 模块化设计、AppInitializer、CacheManager | 了解项目结构 |
 | [build-publish.md](.claude/docs/build-publish.md) | 构建命令、环境配置、模块发布 | 构建 APK、发布 |
 | [patterns.md](.claude/docs/patterns.md) | Event Wrapper、Flow 生命周期、Compose 技巧 | 开发模式参考 |
+| [android-studio-tips.md](.claude/docs/android-studio-tips.md) | 字体连字、IDE 配置 | IDE 优化 |
 
 ## 快速参考
 
@@ -50,12 +51,12 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 |------|------|
 | module_config | 配置注入 (@YkConfigNode) |
 | module_network | Ktor Client 网络请求 |
-| module_extension | 扩展函数、CacheManager |
+| module_extension | 扩展函数、CacheManager、NetConnectManager |
 | module_datastore | Proto DataStore 封装 |
 | module_permission | 权限请求 |
 | module_logger | 日志组件 |
 | module_proxy | BaseActivity、AppInitializer |
-| module_component | UI 组件 |
+| module_component | UI 组件 (RoundedImageView, ImBarWrapperView) |
 
 ### 必需配置文件
 - `android_env.json` - 应用配置 (base_url 等)
@@ -146,3 +147,55 @@ val config = CacheManager.getOrPut("config", ttlMillis = 60_000L) { loadConfigFr
 - Kotzilla SDK 1.4.2 监控 (15 秒刷新率)
 - Application 需添加 `@KoinApplication` 注解
 - ViewModel 使用 `@KoinViewModel` 注解
+
+### ViewModel 状态声明 (Explicit Backing Fields)
+Kotlin 2.3.0+ 支持 explicit backing fields，简化 ViewModel 中 StateFlow 的声明：
+
+```kotlin
+@KoinViewModel
+class MyViewModel : ViewModel() {
+    // 传统写法需要两个属性
+    // private val _state = MutableStateFlow(UiState())
+    // val state: StateFlow<UiState> = _state
+
+    // 使用 explicit backing fields 简化
+    val uiState: StateFlow<UiState>
+        field = MutableStateFlow(UiState())
+
+    fun updateState() {
+        uiState.update { it.copy(loading = true) }
+    }
+}
+```
+
+### InitState 泛型状态类
+用于表示"未初始化"和"已初始化"两种状态，适合延迟加载场景。
+
+位置: `module_extension/src/main/java/com/yikwing/extension/util/InitState.kt`
+
+```kotlin
+sealed class InitState<out T> {
+    data object Uninitialized : InitState<Nothing>()
+    data class Value<out T>(val data: T) : InitState<T>()
+
+    val isInitialized: Boolean get() = this is Value
+    fun getOrNull(): T? = (this as? Value)?.data
+}
+
+// 使用示例
+val configState: StateFlow<InitState<Config>>
+    field = MutableStateFlow(InitState.Uninitialized)
+
+fun loadConfig() {
+    viewModelScope.launch {
+        val config = repository.getConfig()
+        configState.value = InitState.Value(config)
+    }
+}
+
+// UI 层判断
+when (val state = viewModel.configState.collectAsState().value) {
+    is InitState.Uninitialized -> LoadingView()
+    is InitState.Value -> ConfigView(state.data)
+}
+```

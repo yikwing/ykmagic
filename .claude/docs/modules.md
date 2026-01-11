@@ -160,3 +160,53 @@ val config = CacheManager.getOrPut("config", ttlMillis = 60_000L) {
     loadConfigFromDisk()
 }
 ```
+
+## 网络状态管理 (NetConnectManager)
+
+位置: module_extension/src/main/java/com/yikwing/extension/network/NetConnectManager.kt
+
+**核心特性**:
+- 响应式网络状态监听（StateFlow）
+- 支持 VPN 检测（独立于底层网络类型）
+- 实现 Closeable 接口，支持显式资源清理
+- 线程安全（Koin 单例）
+- 使用 `NET_CAPABILITY_VALIDATED` 确保真实互联网连接
+
+**网络类型**:
+- `NetworkType.WIFI` - WiFi 网络
+- `NetworkType.CELLULAR` - 移动数据网络
+- `NetworkType.ETHERNET` - 以太网
+- `NetworkType.VPN` - 纯 VPN 网络
+- `NetworkType.NONE` - 无网络连接
+
+**使用示例**:
+```kotlin
+// Koin 注入
+@KoinViewModel
+class MyViewModel(
+    private val netConnectManager: NetConnectManager
+) : ViewModel()
+
+// Compose 中使用
+val networkState by netConnectManager.networkState.collectAsState()
+when (networkState.type) {
+    NetworkType.WIFI -> // WiFi 网络
+    NetworkType.CELLULAR -> // 移动网络
+    NetworkType.VPN -> // VPN 网络
+    NetworkType.ETHERNET -> // 以太网
+    NetworkType.NONE -> // 无网络
+}
+
+// 协程中监听
+lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        netConnectManager.networkState.collect { state ->
+            Log.d("Network", "Connected: ${state.isConnected}, Type: ${state.type}")
+        }
+    }
+}
+
+// 一次性查询
+if (netConnectManager.isCurrentlyConnected) { /* 已连接 */ }
+if (netConnectManager.isVpnActive) { /* VPN 激活（无论底层网络类型） */ }
+```

@@ -1,9 +1,7 @@
 package com.yikwing.ykquickdev
 
-import android.app.Activity
 import android.app.Application
 import android.net.Uri
-import android.os.Bundle
 import android.util.Log
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -16,13 +14,10 @@ import coil3.SingletonImageLoader
 import coil3.request.crossfade
 import coil3.util.Logger
 import com.yikwing.extension.asColor
-import com.yikwing.extension.delegate.noOpDelegate
 import com.yikwing.extension.image.compressImageFromUri
 import com.yikwing.extension.io.copyAssetToCache
-import com.yikwing.extension.network.NetConnectManager
 import com.yikwing.network.checkProxy
 import com.yikwing.proxy.startup.AppInitializer
-import com.yikwing.proxy.util.ActivityHierarchyManager
 import com.yikwing.ykquickdev.task.ConfigInjectInitTask
 import com.yikwing.ykquickdev.task.DataStoreInitTask
 import com.yikwing.ykquickdev.task.LoggerInitTask
@@ -60,8 +55,6 @@ class MainApplication :
         featureTest()
 
         initSetup()
-
-        NetConnectManager.init(this)
 
         scheduleCacheCleanup()
     }
