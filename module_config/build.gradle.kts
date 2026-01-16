@@ -30,7 +30,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.kotlinx.serialization.json.okio)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.bundles.testBundle)
     androidTestImplementation(libs.bundles.androidTestBundle)

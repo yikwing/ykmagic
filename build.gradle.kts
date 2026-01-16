@@ -11,7 +11,7 @@ plugins {
 
     alias(libs.plugins.kotzilla) apply false
 
-    alias(libs.plugins.compose.compiler) apply false
+    alias(libs.plugins.kotlin.compose) apply false
 
     alias(libs.plugins.wire) apply false
 

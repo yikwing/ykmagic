@@ -35,7 +35,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.exifinterface)
 
-    implementation(libs.moshi.kotlin)
+    implementation(libs.okio)
     implementation(libs.lifecycle.runtime.compose)
 
     implementation(platform(libs.koin.bom))

@@ -42,7 +42,7 @@ dependencies {
 
     implementation(libs.kotlinx.coroutines.android)
 
-    implementation(libs.kotlinx.serialization.json.okio)
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)

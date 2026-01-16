@@ -11,7 +11,7 @@ plugins {
 
     alias(libs.plugins.kotzilla)
 
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.compose)
 
     alias(libs.plugins.wire)
 
@@ -270,8 +270,6 @@ dependencies {
     implementation(libs.javax.inject)
 
     // https://juejin.cn/post/7079229035254906888
-    implementation(libs.kotlinx.serialization.json.okio)
-
-    implementation(libs.arrow.core)
-    implementation(libs.arrow.fx.coroutines)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.okio)
 }
