@@ -8,10 +8,10 @@ import com.yikwing.ykquickdev.api.apiserver.HttpApi
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.db.ChapterDao
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
-import javax.inject.Inject
 
 @Single
 class NetRepository

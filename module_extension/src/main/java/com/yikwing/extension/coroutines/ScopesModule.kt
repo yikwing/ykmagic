@@ -1,13 +1,13 @@
 package com.yikwing.extension.coroutines
 
+import jakarta.inject.Named
+import jakarta.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
-import org.koin.core.annotation.Named
-import javax.inject.Singleton
 
 /**
  * 协程作用域模块
@@ -53,9 +53,10 @@ object ScopesModule {
     @Named(value = DEFAULT_SCOPE)
     fun provideApplicationScope(
         @Dispatcher(NiaDispatchers.Default) dispatcher: CoroutineDispatcher,
-    ): CoroutineScope = CoroutineScope(
-        SupervisorJob() + dispatcher + CoroutineName(DEFAULT_SCOPE)
-    )
+    ): CoroutineScope =
+        CoroutineScope(
+            SupervisorJob() + dispatcher + CoroutineName(DEFAULT_SCOPE),
+        )
 
     /**
      * 提供 IO 专用的 CoroutineScope
@@ -79,7 +80,8 @@ object ScopesModule {
     @Named(value = IO_SCOPE)
     fun provideIoScope(
         @Dispatcher(NiaDispatchers.IO) dispatcher: CoroutineDispatcher,
-    ): CoroutineScope = CoroutineScope(
-        SupervisorJob() + dispatcher + CoroutineName(IO_SCOPE)
-    )
+    ): CoroutineScope =
+        CoroutineScope(
+            SupervisorJob() + dispatcher + CoroutineName(IO_SCOPE),
+        )
 }

@@ -1,6 +1,6 @@
 package com.yikwing.extension.coroutines
 
-import javax.inject.Qualifier
+import jakarta.inject.Qualifier
 
 /**
  * Dispatcher 限定符

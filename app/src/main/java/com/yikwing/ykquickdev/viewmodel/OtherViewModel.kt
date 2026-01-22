@@ -7,6 +7,7 @@ import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.UserPreferences
 import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.repository.OtherRepository
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +16,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.android.annotation.KoinViewModel
-import javax.inject.Inject
 
 data class HttpBinUiState(
     val repo: RequestState<Headers> = RequestState.Loading,

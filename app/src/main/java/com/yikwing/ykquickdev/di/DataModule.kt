@@ -8,10 +8,10 @@ import com.yikwing.ykquickdev.db.ChapterDao
 import com.yikwing.ykquickdev.db.UserDao
 import com.yikwing.ykquickdev.db.UserDatabase
 import com.yikwing.ykquickdev.userPreferencesStore
+import jakarta.inject.Singleton
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
-import javax.inject.Singleton
 
 @Module
 @Configuration

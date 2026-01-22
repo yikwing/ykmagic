@@ -8,12 +8,13 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 
 **技术栈**:
 - Kotlin 2.3.0 + Coroutines 1.10.2
-- Gradle 8.13.2 + 版本目录 (libs.versions.toml) 统一管理依赖
+- Gradle 9.3.0 + AGP 8.13.2 + 版本目录 (libs.versions.toml) 统一管理依赖
 - JDK 17, compileSdk 36, minSdk 26
 - 依赖注入: Koin 4.1.1 + Koin Annotations 2.3.1 (KSP 2.3.4)
 - 网络层: Ktor 3.3.3 + OkHttp 5.3.2
-- UI: Jetpack Compose (BOM 2025.12.01) + Material3
+- UI: Jetpack Compose (BOM 2026.01.00) + Material3
 - 序列化: kotlinx.serialization 1.9.0
+- 测试: JUnit 4.13.2 + Hamcrest 3.0 + MockK 1.14.7
 - 发布: JitPack (com.github.yikwing.ykmagic:模块名:版本号)
 
 ## 详细文档索引
@@ -28,6 +29,7 @@ YkQuickDev 是一个 Android 快速开发框架库,提供了多个可独立使�
 | [modules.md](.claude/docs/modules.md) | 模块化设计、AppInitializer、CacheManager | 了解项目结构 |
 | [build-publish.md](.claude/docs/build-publish.md) | 构建命令、环境配置、模块发布 | 构建 APK、发布 |
 | [patterns.md](.claude/docs/patterns.md) | Event Wrapper、Flow 生命周期、Compose 技巧 | 开发模式参考 |
+| [testing.md](.claude/docs/testing.md) | Hamcrest 匹配器、测试命令 | 编写和运行测试 |
 | [android-studio-tips.md](.claude/docs/android-studio-tips.md) | 字体连字、IDE 配置 | IDE 优化 |
 
 ## 快速参考
@@ -198,3 +200,26 @@ when (val state = viewModel.configState.collectAsState().value) {
     is InitState.Value -> ConfigView(state.data)
 }
 ```
+
+## 项目约定
+
+### 构建配置
+- 所有模块的通用 Android 配置在根 `build.gradle.kts` 中统一管理
+- Application 和 Library 模块使用不同的配置函数，确保类型安全
+- Kotlin 编译器启用 `-XXLanguage:+ExplicitBackingFields` 特性
+
+### 依赖管理
+- 使用 `gradle/libs.versions.toml` 统一管理所有依赖版本
+- 避免在模块的 `build.gradle.kts` 中硬编码版本号
+- Debug 工具（Chucker、LeakCanary、Glance）仅在 Debug 版本引入
+
+### 代码风格
+- 优先使用 Kotlin 协程和 Flow 处理异步操作
+- 网络请求遵循"动词用 suspend，名词用 Flow"原则
+- ViewModel 使用 Explicit Backing Fields 简化 StateFlow 声明
+- 使用 `@Serializable` 而非反射进行 JSON 序列化
+
+### 测试规范
+- 单元测试使用 Hamcrest 匹配器提高可读性
+- 测试类命名：`<ClassName>Test`（如 `YkConfigManagerTest`）
+- 关键业务逻辑必须有对应的单元测试覆盖

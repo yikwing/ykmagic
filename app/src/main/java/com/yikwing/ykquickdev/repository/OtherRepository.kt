@@ -5,12 +5,12 @@ import com.yikwing.network.ApiException
 import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.api.apiserver.HttpApi
 import com.yikwing.ykquickdev.api.entity.Headers
+import jakarta.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
 class OtherRepository

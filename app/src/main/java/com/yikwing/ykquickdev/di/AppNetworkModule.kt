@@ -8,10 +8,10 @@ import com.yikwing.network.BaseUrl
 import com.yikwing.network.NetworkInterceptors
 import com.yikwing.ykquickdev.BuildConfig
 import com.yikwing.ykquickdev.HeaderInterceptor
+import jakarta.inject.Singleton
 import okhttp3.Interceptor
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
-import javax.inject.Singleton
 
 /**
  * App 模块的网络配置

@@ -44,7 +44,7 @@ dependencies {
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
 
-    implementation(libs.javax.inject)
+    implementation(libs.koin.jsr330)
 
     testImplementation(libs.bundles.testBundle)
 }

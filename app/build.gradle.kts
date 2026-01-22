@@ -159,6 +159,7 @@ android {
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
     arg("KOIN_CONFIG_CHECK", "true")
+    arg("KOIN_LOG_TIMES", "true")
 }
 
 wire {
@@ -267,7 +268,7 @@ dependencies {
     implementation(libs.koin.annotations)
     ksp(libs.koin.ksp.compiler)
 
-    implementation(libs.javax.inject)
+    implementation(libs.koin.jsr330)
 
     // https://juejin.cn/post/7079229035254906888
     implementation(libs.kotlinx.serialization.json)

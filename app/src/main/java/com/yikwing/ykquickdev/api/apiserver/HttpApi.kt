@@ -11,10 +11,10 @@ import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.appendPathSegments
 import io.ktor.http.takeFrom
+import jakarta.inject.Inject
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import javax.inject.Inject
 
 class HttpApi
     @Inject

@@ -12,14 +12,14 @@ import io.ktor.client.request.accept
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import jakarta.inject.Qualifier
+import jakarta.inject.Singleton
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import java.util.concurrent.TimeUnit
-import javax.inject.Qualifier
-import javax.inject.Singleton
 
 /**
  * 用于标记 BaseUrl 的限定符
@@ -63,9 +63,9 @@ object NetworkModule {
      * 提供共享的 OkHttpClient，支持注入自定义拦截器
      *
      * 拦截器执行顺序:
-     * 1. OkLogInterceptor (日志)
-     * 2. 应用层拦截器 (Header、Auth 等)
-     * 3. RetryInterceptor (重试)
+     * 1. 应用层拦截器 (Header、Auth 等)
+     * 2. RetryInterceptor (重试)
+     * 3. OkLogInterceptor (日志) - 记录最终请求/响应
      * 4. 网络层拦截器
      */
     @Singleton
@@ -76,14 +76,14 @@ object NetworkModule {
         OkHttpClient
             .Builder()
             .apply {
-                // 添加日志拦截器
-                addInterceptor(OkLogInterceptor())
-
                 // 添加应用层拦截器
                 applicationInterceptors.forEach { addInterceptor(it) }
 
                 // 添加重试拦截器
                 addInterceptor(RetryInterceptor())
+
+                // 添加日志拦截器 (放在最后，记录最终请求/响应)
+                addInterceptor(OkLogInterceptor())
 
                 // 添加网络层拦截器
                 networkInterceptors.forEach { addNetworkInterceptor(it) }

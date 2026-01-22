@@ -22,7 +22,6 @@ import com.yikwing.ykquickdev.task.ConfigInjectInitTask
 import com.yikwing.ykquickdev.task.LoggerInitTask
 import com.yikwing.ykquickdev.task.NetworkInitTask
 import com.yikwing.ykquickdev.work.CleanCacheWork
-import io.kotzilla.sdk.KotzillaSDK.onConfig
 import io.kotzilla.sdk.analytics.koin.analytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinApplication
