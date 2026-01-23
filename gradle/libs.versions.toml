@@ -39,7 +39,7 @@ navigation-compose = "2.9.6"
 
 glance = "1.1.0"
 leakcanary = "3.0-alpha-8"
-chuckerteam = "4.2.0"
+chuckerteam = "4.3.0"
 
 hamcrest = "3.0"
 junit = "4.13.2"
