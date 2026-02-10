@@ -25,13 +25,13 @@ import com.yikwing.network.RequestState
 import com.yikwing.network.onFailure
 import com.yikwing.network.onSuccess
 import com.yikwing.ykquickdev.components.Center
-import com.yikwing.ykquickdev.viewmodel.OtherViewModel
+import com.yikwing.ykquickdev.viewmodel.HttpBinViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun OtherPageScreen(
     msg: String?,
-    viewModel: OtherViewModel = koinViewModel(),
+    viewModel: HttpBinViewModel = koinViewModel(),
 ) {
     val httpBin by viewModel.headers.collectAsState()
     val userName by viewModel.userName.collectAsState()

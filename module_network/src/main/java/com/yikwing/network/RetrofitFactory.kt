@@ -29,18 +29,32 @@ import java.util.concurrent.TimeUnit
 annotation class BaseUrl
 
 /**
- * 用于标记应用层拦截器列表
+ * 用于标记 ChuckerInterceptor
  */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class ApplicationInterceptors
+annotation class ChuckerInterceptorQualifier
 
 /**
- * 用于标记网络层拦截器列表
+ * 用于标记 HeaderInterceptor
  */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class NetworkInterceptors
+annotation class HeaderInterceptorQualifier
+
+/**
+ * 用于标记 OkLogInterceptor
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class OkLogInterceptorQualifier
+
+/**
+ * 用于标记 Debug 标志
+ */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DebugFlag
 
 /**
  * Ktor 网络模块配置
@@ -70,23 +84,27 @@ object NetworkModule {
      */
     @Singleton
     fun provideOkHttpClient(
-        @ApplicationInterceptors applicationInterceptors: List<@JvmSuppressWildcards Interceptor>,
-        @NetworkInterceptors networkInterceptors: List<@JvmSuppressWildcards Interceptor>,
+        @ChuckerInterceptorQualifier chuckerInterceptor: Interceptor,
+        @HeaderInterceptorQualifier headerInterceptor: Interceptor,
+        @OkLogInterceptorQualifier okLogInterceptor: Interceptor,
+        @DebugFlag debug: Boolean,
     ): OkHttpClient =
         OkHttpClient
             .Builder()
             .apply {
                 // 添加应用层拦截器
-                applicationInterceptors.forEach { addInterceptor(it) }
+
+                // 仅在 Debug 模式添加 Chucker,避免 Release 版本的性能开销
+                if (debug) {
+                    addInterceptor(chuckerInterceptor)
+                }
+                addInterceptor(headerInterceptor)
 
                 // 添加重试拦截器
                 addInterceptor(RetryInterceptor())
 
                 // 添加日志拦截器 (放在最后，记录最终请求/响应)
-                addInterceptor(OkLogInterceptor())
-
-                // 添加网络层拦截器
-                networkInterceptors.forEach { addNetworkInterceptor(it) }
+                addInterceptor(okLogInterceptor)
 
                 // 超时配置
                 callTimeout(TIMEOUT_MS, TimeUnit.MILLISECONDS)

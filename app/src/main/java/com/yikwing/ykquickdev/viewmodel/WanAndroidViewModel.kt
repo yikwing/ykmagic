@@ -16,15 +16,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import org.koin.android.annotation.KoinViewModel
 import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.KoinViewModel
 
+/**
+ * WanAndroid 数据视图模型
+ *
+ * 负责管理 WanAndroid API 的数据加载和状态：
+ * - 章节列表数据（chapters）
+ * - HttpBin 请求头测试（headers）
+ */
 @KoinViewModel
-class MyViewModel
+class WanAndroidViewModel
     @Inject
     constructor(
         private val netRepository: NetRepository,
-        @InjectedParam val name: String,
+        @InjectedParam private val name: String,
     ) : ViewModel() {
         val headers: RStateLiveData<Headers>
             field = MutableLiveData<RequestState<Headers>>(RequestState.Loading)

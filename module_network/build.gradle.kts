@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.kotlin.serialization)
 
     id("maven-publish")
@@ -49,8 +50,6 @@ dependencies {
     implementation(libs.koin.android)
 
     implementation(libs.koin.annotations)
-    ksp(libs.koin.ksp.compiler)
-
     implementation(libs.koin.jsr330)
 
     testImplementation(libs.bundles.testBundle)

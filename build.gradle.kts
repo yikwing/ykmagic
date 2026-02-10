@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.wire) apply false
 
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.koin.compiler) apply false
 }
 
 // 强制指定依赖版本

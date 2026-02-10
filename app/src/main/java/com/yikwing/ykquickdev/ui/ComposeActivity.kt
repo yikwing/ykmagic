@@ -2,6 +2,7 @@ package com.yikwing.ykquickdev.ui
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -29,6 +30,9 @@ import androidx.compose.ui.unit.dp
 import com.yikwing.ykquickdev.R
 import com.yikwing.ykquickdev.app.AppNavGraph
 import com.yikwing.ykquickdev.ui.utils.ProvideDesignScale
+import com.yikwing.ykquickdev.viewmodel.WanAndroidViewModel
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * <pre>
@@ -63,6 +67,10 @@ val BottomNavItems =
     )
 
 class ComposeActivity : ComponentActivity() {
+    private val wanAndroidViewModel by inject<WanAndroidViewModel>(
+        parameters = { parametersOf("ComposeActivity") },
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge(
@@ -110,15 +118,13 @@ fun CustomBottomBar(
 
             Column(
                 modifier =
-                    Modifier
-                        .weight(1f)
-                        .pointerInput(Unit) {
-                            detectTapGestures(
-                                onTap = {
-                                    onItemSelected(index)
-                                },
-                            )
-                        },
+                    Modifier.weight(1f).pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = {
+                                onItemSelected(index)
+                            },
+                        )
+                    },
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(

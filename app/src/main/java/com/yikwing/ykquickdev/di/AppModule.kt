@@ -1,10 +1,14 @@
 package com.yikwing.ykquickdev.di
 
-import org.koin.core.annotation.ComponentScan
+import com.yikwing.network.di.NetworkScanModule
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 
-@Module
+@Module(
+    includes = [
+        AppFeatureModule::class,
+        NetworkScanModule::class,
+    ],
+)
 @Configuration
-@ComponentScan("com.yikwing.ykquickdev")
 object AppModule

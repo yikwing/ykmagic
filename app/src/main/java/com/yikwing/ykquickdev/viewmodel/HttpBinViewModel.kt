@@ -15,14 +15,21 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.KoinViewModel
 
+/**
+ * HttpBin 测试视图模型
+ *
+ * 负责管理 HttpBin API 的测试功能：
+ * - 请求头测试（headers）
+ * - 用户偏好设置（userName）
+ */
 data class HttpBinUiState(
     val repo: RequestState<Headers> = RequestState.Loading,
 )
 
 @KoinViewModel
-class OtherViewModel
+class HttpBinViewModel
     @Inject
     constructor(
         private val otherRepository: OtherRepository,

@@ -25,7 +25,7 @@ import com.yikwing.ykquickdev.work.CleanCacheWork
 import io.kotzilla.sdk.analytics.koin.analytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinApplication
-import org.koin.ksp.generated.startKoin
+import org.koin.plugin.module.dsl.startKoin
 import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
@@ -37,7 +37,7 @@ class MainApplication :
     override fun onCreate() {
         super.onCreate()
 
-        startKoin {
+        startKoin<MainApplication> {
             androidContext(this@MainApplication)
             analytics {
                 onConfig {

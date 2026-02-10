@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.wire)
 
     alias(libs.plugins.ksp)
+    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.kotlin.serialization)
 
     id("com.github.ben-manes.versions") version "0.53.0"
@@ -158,8 +159,10 @@ android {
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
-    arg("KOIN_CONFIG_CHECK", "true")
-    arg("KOIN_LOG_TIMES", "true")
+}
+
+koinCompiler {
+    userLogs = true
 }
 
 wire {
@@ -266,8 +269,6 @@ dependencies {
     implementation(libs.kotzilla.sdk)
 
     implementation(libs.koin.annotations)
-    ksp(libs.koin.ksp.compiler)
-
     implementation(libs.koin.jsr330)
 
     // https://juejin.cn/post/7079229035254906888
