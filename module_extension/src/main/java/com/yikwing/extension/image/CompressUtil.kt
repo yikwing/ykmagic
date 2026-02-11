@@ -13,6 +13,16 @@ import java.io.File
 
 private const val TAG = "CompressUtil"
 
+// 默认目标分辨率（1440p）
+private const val DEFAULT_TARGET_WIDTH = 1440
+private const val DEFAULT_TARGET_HEIGHT = 2560
+
+// 压缩阈值
+private const val COMPRESS_THRESHOLD_5MB = 5000 * 1024L
+private const val COMPRESS_THRESHOLD_1MB = 1000 * 1024L
+
+private const val BYTES_PER_KB = 1024
+
 /**
  * 获取图片的原始宽高
  */
@@ -42,8 +52,8 @@ fun getImageDimensions(
 fun getCompressedBitmapByResolution(
     context: Context,
     uri: Uri,
-    targetWidth: Int = 1440,
-    targetHeight: Int = 2560,
+    targetWidth: Int = DEFAULT_TARGET_WIDTH,
+    targetHeight: Int = DEFAULT_TARGET_HEIGHT,
 ): Bitmap? {
     val originSize = getImageDimensions(context, uri) ?: return null
     val widthScale = originSize.width.toFloat() / targetWidth
@@ -98,12 +108,12 @@ fun compressBitmap(
     Log.d(TAG, "初次压缩图片大小: ${buffer.size / 1024} KB")
 
     // 循环压缩直到满足文件大小要求
-    while (buffer.size > maxSizeKB * 1024 && quality > 10) {
+    while (buffer.size > maxSizeKB * BYTES_PER_KB && quality > 10) {
         compressCount++
         val subtract =
             when {
-                buffer.size > 5000 * 1024 && compressCount == 1 -> 50
-                buffer.size > 1000 * 1024 && compressCount == 2 -> 20
+                buffer.size > COMPRESS_THRESHOLD_5MB && compressCount == 1 -> 50
+                buffer.size > COMPRESS_THRESHOLD_1MB && compressCount == 2 -> 20
                 else -> 10
             }
 

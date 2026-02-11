@@ -5,6 +5,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import java.io.IOException
 import kotlin.math.pow
+import kotlin.random.Random
 
 class RetryInterceptor(
     private val maxRetries: Int = 3, // 定义为最大重试次数
@@ -41,7 +42,7 @@ class RetryInterceptor(
             // 计算延迟, 包含指数回退和抖动
             var nextDelay = initialDelay * (2.0.pow(attempt)).toLong()
             // 增加 +/- 20% 的抖动
-            val jitter = (nextDelay * 0.4 * Math.random() - nextDelay * 0.2).toLong()
+            val jitter = (nextDelay * 0.4 * Random.nextDouble() - nextDelay * 0.2).toLong()
             nextDelay += jitter
             // 确保延迟不超过最大值
             if (nextDelay > maxDelay) {
@@ -57,7 +58,7 @@ class RetryInterceptor(
                 val reason = lastException?.message ?: "服务器错误 ${response?.code}"
                 Log.w(
                     "RetryInterceptor",
-                    "重试请求 [${request.url}] - 尝试 $attempt/$maxRetries, 原因: $reason, 下次延迟: ${nextDelay}ms"
+                    "重试请求 [${request.url}] - 尝试 $attempt/$maxRetries, 原因: $reason, 下次延迟: ${nextDelay}ms",
                 )
             }
 
