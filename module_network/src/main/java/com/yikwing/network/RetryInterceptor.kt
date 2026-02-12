@@ -2,81 +2,96 @@ package com.yikwing.network
 
 import android.util.Log
 import okhttp3.Interceptor
+import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 import kotlin.math.pow
 import kotlin.random.Random
 
 class RetryInterceptor(
-    private val maxRetries: Int = 3, // 定义为最大重试次数
-    private val initialDelay: Long = 1000, // 初始延迟
-    private val maxDelay: Long = 30000, // 最大延迟, 默认30秒
+    private val maxRetries: Int = 3,
+    private val initialDelay: Long = 1000,
+    private val maxDelay: Long = 30000,
+    private val retryableMethods: Set<String> = IDEMPOTENT_METHODS,
 ) : Interceptor {
+
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
+
+        if (request.method !in retryableMethods) {
+            return chain.proceed(request)
+        }
+
+        return executeWithRetry(chain, request)
+    }
+
+    private fun executeWithRetry(chain: Interceptor.Chain, request: Request): Response {
         var response: Response? = null
         var lastException: IOException? = null
 
-        // 总尝试次数 = 1 (初次) + maxRetries (重试次数)
         for (attempt in 0..maxRetries) {
             try {
-                // 关键点: 每次重试前关闭上一次的响应体, 防止泄漏
                 response?.close()
-
                 response = chain.proceed(request)
 
-                // 如果成功, 或遇到不应重试的客户端错误(4xx), 则直接返回
-                if (response.isSuccessful || !isServerError(response)) {
+                if (response.isSuccessful || !isRetryableError(response)) {
                     return response
                 }
+                lastException = null
             } catch (e: IOException) {
                 lastException = e
-                // 如果是IO异常, 则继续重试
+                response = null
             }
 
-            // 如果是最后一次尝试, 则不再等待
-            if (attempt >= maxRetries) {
-                break
-            }
+            if (attempt >= maxRetries) break
 
-            // 计算延迟, 包含指数回退和抖动
-            var nextDelay = initialDelay * (2.0.pow(attempt)).toLong()
-            // 增加 +/- 20% 的抖动
-            val jitter = (nextDelay * 0.4 * Random.nextDouble() - nextDelay * 0.2).toLong()
-            nextDelay += jitter
-            // 确保延迟不超过最大值
-            if (nextDelay > maxDelay) {
-                nextDelay = maxDelay
-            }
-            // 确保延迟不为负
-            if (nextDelay < 0) {
-                nextDelay = 0
-            }
-
-            // 记录重试日志
-            if (attempt > 0) {
-                val reason = lastException?.message ?: "服务器错误 ${response?.code}"
-                Log.w(
-                    "RetryInterceptor",
-                    "重试请求 [${request.url}] - 尝试 $attempt/$maxRetries, 原因: $reason, 下次延迟: ${nextDelay}ms",
-                )
-            }
+            val delay = calculateDelay(attempt)
+            logRetry(request, attempt, lastException, response, delay)
 
             try {
-                Thread.sleep(nextDelay)
+                Thread.sleep(delay)
             } catch (ie: InterruptedException) {
                 Thread.currentThread().interrupt()
+                response?.close()
                 throw IOException("Retry interrupted", ie)
             }
         }
 
-        // 所有尝试结束后, 如果仍有异常, 则抛出最后的异常
+        response?.close()
         throw lastException
             ?: IOException("Request failed after $maxRetries retries, and no response was received.")
     }
 
-    private fun isServerError(response: Response): Boolean {
-        // 5xx 范围的错误码表示服务器端错误, 适合重试
-        return response.code in 500..599
+    private fun calculateDelay(attempt: Int): Long {
+        val baseDelay = (initialDelay.toDouble() * BACKOFF_BASE.pow(attempt)).toLong()
+        val jitter = (baseDelay * JITTER_FACTOR * (2 * Random.nextDouble() - 1)).toLong()
+        return (baseDelay + jitter).coerceIn(0L, maxDelay)
+    }
+
+    private fun logRetry(
+        request: Request,
+        attempt: Int,
+        exception: IOException?,
+        response: Response?,
+        delay: Long,
+    ) {
+        val reason = exception?.message ?: "服务器错误 ${response?.code}"
+        Log.w(
+            LOG_TAG,
+            "重试请求 [${request.url}] - 第 ${attempt + 1}/$maxRetries 次重试, 原因: $reason, 延迟: ${delay}ms",
+        )
+    }
+
+    private fun isRetryableError(response: Response): Boolean =
+        response.code in SERVER_ERROR_RANGE
+
+    companion object {
+        private const val LOG_TAG = "RetryInterceptor"
+        private const val BACKOFF_BASE = 2.0
+        private const val JITTER_FACTOR = 0.2
+        private val SERVER_ERROR_RANGE = 500..599
+
+        val IDEMPOTENT_METHODS: Set<String> = setOf("GET", "HEAD", "OPTIONS", "PUT", "DELETE")
+        val ALL_METHODS: Set<String> = IDEMPOTENT_METHODS + setOf("POST", "PATCH")
     }
 }
