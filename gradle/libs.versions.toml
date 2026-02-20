@@ -1,6 +1,6 @@
 [versions]
 agp = "8.13.2"
-kotlin = "2.3.20-Beta2"
+kotlin = "2.3.20-RC"
 ksp = "2.3.5"
 
 wire = "5.5.0"
