@@ -11,6 +11,7 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -35,13 +36,13 @@ class HttpBinViewModel
         private val otherRepository: OtherRepository,
         private val userPreferencesStore: DataStore<UserPreferences>,
     ) : ViewModel() {
-        val headers: StateFlow<HttpBinUiState>
-            field = MutableStateFlow<HttpBinUiState>(HttpBinUiState())
+        private val _headers = MutableStateFlow<HttpBinUiState>(HttpBinUiState())
+        val headers = _headers.asStateFlow()
 
         fun initHttpBinData() {
             viewModelScope.launch {
                 otherRepository.initHttpBinData().collect { result ->
-                    headers.update {
+                    _headers.update {
                         it.copy(repo = result)
                     }
                 }

@@ -94,9 +94,6 @@ subprojects {
             jvmToolchain(17)
             compilerOptions {
                 jvmTarget.set(jvmTargetVersion)
-                // 启用 Kotlin 2.3.0 的 Explicit Backing Fields 特性
-                // 用于简化 ViewModel 中 StateFlow 的声明
-                freeCompilerArgs.add("-XXLanguage:+ExplicitBackingFields")
             }
         }
     }

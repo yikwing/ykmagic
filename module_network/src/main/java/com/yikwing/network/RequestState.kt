@@ -1,14 +1,7 @@
 package com.yikwing.network
 
 import androidx.annotation.MainThread
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
 import kotlinx.coroutines.flow.StateFlow
-
-/**
- * 包含 [RequestState] 状态的 LiveData 类型别名
- */
-typealias RStateLiveData<T> = LiveData<RequestState<T>>
 
 /**
  * 包含 [RequestState] 状态的 StateFlow 类型别名
@@ -178,39 +171,6 @@ class ResultBuilder<T> {
 
     companion object {
         inline fun <T> build(init: ResultBuilder<T>.() -> Unit) = ResultBuilder<T>().apply(init)
-    }
-}
-
-/**
- * 以 DSL 风格观察 LiveData 的状态变化
- *
- * 使用 [ResultBuilder] 提供声明式的状态处理方式
- *
- * @param owner 生命周期拥有者
- * @param init ResultBuilder 的初始化 lambda
- *
- * 使用示例：
- * ```
- * viewModel.userLiveData.observeState(viewLifecycleOwner) {
- *     onLoading = { showLoading() }
- *     onSuccess = { user -> showUser(user) }
- *     onFailure = { error -> showError(error) }
- * }
- * ```
- */
-@MainThread
-inline fun <T> RStateLiveData<T>.observeState(
-    owner: LifecycleOwner,
-    init: ResultBuilder<T>.() -> Unit,
-) {
-    val result = ResultBuilder.build(init)
-
-    observe(owner) { state ->
-        when (state) {
-            is RequestState.Loading -> result.onLoading?.invoke()
-            is RequestState.Success -> result.onSuccess?.invoke(state.value)
-            is RequestState.Error -> result.onFailure?.invoke(state.throwable)
-        }
     }
 }
 

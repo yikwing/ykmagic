@@ -1,10 +1,8 @@
 package com.yikwing.ykquickdev.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yikwing.network.RStateLiveData
 import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
@@ -33,12 +31,12 @@ class WanAndroidViewModel
         private val netRepository: NetRepository,
         @InjectedParam private val name: String,
     ) : ViewModel() {
-        val headers: RStateLiveData<Headers>
-            field = MutableLiveData<RequestState<Headers>>(RequestState.Loading)
+        private val _headers = MutableStateFlow<RequestState<Headers>>(RequestState.Loading)
+        val headers = _headers.asStateFlow()
 
         private fun initHttpBinData() {
             viewModelScope.launch {
-                headers.value = netRepository.initHttpBinData()
+                _headers.value = netRepository.initHttpBinData()
             }
         }
 
