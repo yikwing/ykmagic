@@ -34,8 +34,6 @@ koin-bom = "4.2.0-RC1"
 koin-annotations = "2.3.1"
 koin-plugin = "0.3.0"
 
-kotzilla = "1.4.2"
-
 constraintlayout-compose = "1.1.1"
 navigation-compose = "2.9.7"
 
@@ -116,8 +114,6 @@ koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines" }
 koin-androidx-startup = { module = "io.insert-koin:koin-androidx-startup" }
 koin-ktor = { module = "io.insert-koin:koin-ktor" }
 
-kotzilla-sdk = { group = "io.kotzilla", name = "kotzilla-sdk", version.ref = "kotzilla" }
-
 #   koin annotations
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin-bom" }
 koin-jsr330 = { module = "io.insert-koin:koin-jsr330", version.ref = "koin-annotations" }
@@ -150,8 +146,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-
-kotzilla = { id = "io.kotzilla.kotzilla-plugin", version.ref = "kotzilla" }
 
 wire = { id = "com.squareup.wire", version.ref = "wire" }
 

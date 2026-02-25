@@ -9,8 +9,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     id("kotlin-parcelize")
 
-    alias(libs.plugins.kotzilla)
-
     alias(libs.plugins.kotlin.compose)
 
     alias(libs.plugins.wire)
@@ -265,8 +263,6 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose.viewmodel)
-
-    implementation(libs.kotzilla.sdk)
 
     implementation(libs.koin.annotations)
     implementation(libs.koin.jsr330)

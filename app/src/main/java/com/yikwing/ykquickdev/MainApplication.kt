@@ -22,7 +22,6 @@ import com.yikwing.ykquickdev.task.ConfigInjectInitTask
 import com.yikwing.ykquickdev.task.LoggerInitTask
 import com.yikwing.ykquickdev.task.NetworkInitTask
 import com.yikwing.ykquickdev.work.CleanCacheWork
-import io.kotzilla.sdk.analytics.koin.analytics
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.annotation.KoinApplication
 import org.koin.plugin.module.dsl.startKoin
@@ -39,12 +38,6 @@ class MainApplication :
 
         startKoin<MainApplication> {
             androidContext(this@MainApplication)
-            analytics {
-                onConfig {
-                    refreshRate = 15_000L // Send metrics every 15 seconds
-                    useDebugLogs = true
-                }
-            }
         }
 
         R.color.black.asColor()
