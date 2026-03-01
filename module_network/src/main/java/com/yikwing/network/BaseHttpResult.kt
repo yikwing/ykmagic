@@ -5,7 +5,7 @@ import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class BaseHttpResult<T>(
-    val data: T?,
+    val data: T,
     val errorMsg: String,
     val errorCode: Int,
 )

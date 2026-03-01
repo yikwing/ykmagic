@@ -11,10 +11,9 @@ import kotlin.random.Random
 class RetryInterceptor(
     private val maxRetries: Int = 3,
     private val initialDelay: Long = 1000,
-    private val maxDelay: Long = 30000,
+    private val maxDelay: Long = 10000,
     private val retryableMethods: Set<String> = IDEMPOTENT_METHODS,
 ) : Interceptor {
-
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
 
@@ -25,7 +24,10 @@ class RetryInterceptor(
         return executeWithRetry(chain, request)
     }
 
-    private fun executeWithRetry(chain: Interceptor.Chain, request: Request): Response {
+    private fun executeWithRetry(
+        chain: Interceptor.Chain,
+        request: Request,
+    ): Response {
         var response: Response? = null
         var lastException: IOException? = null
 
@@ -82,8 +84,7 @@ class RetryInterceptor(
         )
     }
 
-    private fun isRetryableError(response: Response): Boolean =
-        response.code in SERVER_ERROR_RANGE
+    private fun isRetryableError(response: Response): Boolean = response.code in SERVER_ERROR_RANGE
 
     companion object {
         private const val LOG_TAG = "RetryInterceptor"

@@ -1,11 +1,9 @@
 package com.yikwing.network
 
 import android.util.Log
-import com.yikwing.network.log.OkLogInterceptor
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.observer.ResponseObserver
 import io.ktor.client.request.accept
@@ -138,6 +136,7 @@ object NetworkModule {
         okHttpClient: OkHttpClient,
         json: Json,
         @BaseUrl baseUrl: String,
+        @DebugFlag debug: Boolean,
     ): HttpClient =
         HttpClient(OkHttp) {
             // 使用预配置的 OkHttpClient (包含所有拦截器)
@@ -150,13 +149,6 @@ object NetworkModule {
                 json(json)
             }
 
-            // 超时配置 (Ktor 层面)
-            install(HttpTimeout) {
-                requestTimeoutMillis = TIMEOUT_MS
-                connectTimeoutMillis = CONNECT_TIMEOUT_MS
-                socketTimeoutMillis = READ_WRITE_TIMEOUT_MS
-            }
-
             // 默认请求配置
             install(DefaultRequest) {
                 url(baseUrl)
@@ -164,23 +156,12 @@ object NetworkModule {
                 accept(ContentType.Application.Json)
             }
 
-//            // Debug 日志配置
-//            if (BuildConfig.DEBUG) {
-//                install(Logging) {
-//                    logger =
-//                        object : Logger {
-//                            override fun log(message: String) {
-//                                Log.d("Ktor", message)
-//                            }
-//                        }
-//                    level = LogLevel.BODY
-//                }
-//            }
-
             // 响应观察器
             install(ResponseObserver) {
                 onResponse { response ->
-                    Log.d("HTTP", "Status: ${response.status.value}")
+                    if (debug) {
+                        Log.d("HTTP", "Status: ${response.status.value}")
+                    }
                 }
             }
         }

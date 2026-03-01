@@ -35,7 +35,7 @@ fun checkProxy(): Boolean {
 
     // 检查 ProxySelector 的默认代理设置
     val defaultProxySelector = ProxySelector.getDefault()
-    val proxies = defaultProxySelector.select(URI("http://www.example.com"))
+    val proxies = defaultProxySelector.select(URI("http://localhost"))
     if (proxies.isNotEmpty() && proxies[0].type() != java.net.Proxy.Type.DIRECT) {
         return true
     }

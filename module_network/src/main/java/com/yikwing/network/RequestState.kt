@@ -1,6 +1,5 @@
 package com.yikwing.network
 
-import androidx.annotation.MainThread
 import kotlinx.coroutines.flow.StateFlow
 
 /**
@@ -154,20 +153,26 @@ fun <T> RequestState<T>.exceptionOrNull(): ApiException? = if (this is RequestSt
  * @param T 成功时的数据类型
  */
 class ResultBuilder<T> {
-    /**
-     * 加载中状态的回调
-     */
-    var onLoading: (() -> Unit)? = null
+    @PublishedApi
+    internal var onLoading: () -> Unit = {}
 
-    /**
-     * 成功状态的回调
-     */
-    var onSuccess: ((data: T) -> Unit)? = null
+    @PublishedApi
+    internal var onSuccess: (T) -> Unit = {}
 
-    /**
-     * 失败状态的回调
-     */
-    var onFailure: ((e: ApiException) -> Unit)? = null
+    @PublishedApi
+    internal var onFailure: (ApiException) -> Unit = {}
+
+    fun onLoading(block: () -> Unit) {
+        onLoading = block
+    }
+
+    fun onSuccess(block: (T) -> Unit) {
+        onSuccess = block
+    }
+
+    fun onFailure(block: (ApiException) -> Unit) {
+        onFailure = block
+    }
 
     companion object {
         inline fun <T> build(init: ResultBuilder<T>.() -> Unit) = ResultBuilder<T>().apply(init)
@@ -185,22 +190,21 @@ class ResultBuilder<T> {
  * ```
  * lifecycleScope.launch {
  *     viewModel.userFlow.collectState {
- *         onLoading = { showLoading() }
- *         onSuccess = { user -> showUser(user) }
- *         onFailure = { error -> showError(error) }
+ *         onLoading { showLoading() }
+ *         onSuccess { user -> showUser(user) }
+ *         onFailure { error -> showError(error) }
  *     }
  * }
  * ```
  */
-@MainThread
 suspend inline fun <T> RStateFlow<T>.collectState(init: ResultBuilder<T>.() -> Unit) {
     val result = ResultBuilder.build(init)
 
     collect { state ->
         when (state) {
-            is RequestState.Loading -> result.onLoading?.invoke()
-            is RequestState.Success -> result.onSuccess?.invoke(state.value)
-            is RequestState.Error -> result.onFailure?.invoke(state.throwable)
+            is RequestState.Loading -> result.onLoading()
+            is RequestState.Success -> result.onSuccess(state.value)
+            is RequestState.Error -> result.onFailure(state.throwable)
         }
     }
 }
