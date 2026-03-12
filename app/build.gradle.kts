@@ -235,7 +235,7 @@ dependencies {
     implementation(libs.ui.tooling.preview)
 
     implementation(libs.lifecycle.runtime.compose)
-    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.lifecycle.viewmodel.navigation3)
 
     implementation(libs.constraintlayout.compose)
     implementation(libs.navigation.compose)
@@ -260,12 +260,9 @@ dependencies {
 
     // -------------- hilt 代支持ksp 再合并 ----------------
     implementation(platform(libs.koin.bom))
-    implementation(libs.koin.core)
     implementation(libs.koin.android)
-    implementation(libs.koin.compose.viewmodel)
-
     implementation(libs.koin.annotations)
-    implementation(libs.koin.jsr330)
+    implementation(libs.koin.compose.viewmodel)
 
     // https://juejin.cn/post/7079229035254906888
     implementation(libs.kotlinx.serialization.json)

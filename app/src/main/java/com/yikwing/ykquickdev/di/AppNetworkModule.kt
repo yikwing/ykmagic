@@ -11,10 +11,10 @@ import com.yikwing.network.OkLogInterceptorQualifier
 import com.yikwing.network.log.OkLogInterceptor
 import com.yikwing.ykquickdev.BuildConfig
 import com.yikwing.ykquickdev.HeaderInterceptor
-import jakarta.inject.Singleton
 import okhttp3.Interceptor
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
 
 /**
  * 应用网络模块

@@ -7,7 +7,6 @@ import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.repository.NetRepository
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -25,63 +24,59 @@ import org.koin.core.annotation.KoinViewModel
  * - HttpBin 请求头测试（headers）
  */
 @KoinViewModel
-class WanAndroidViewModel
-    @Inject
-    constructor(
-        private val netRepository: NetRepository,
-        @InjectedParam private val name: String,
-    ) : ViewModel() {
-        private val _headers = MutableStateFlow<RequestState<Headers>>(RequestState.Loading)
-        val headers = _headers.asStateFlow()
+class WanAndroidViewModel(
+    private val netRepository: NetRepository,
+    @InjectedParam private val name: String,
+) : ViewModel() {
+    private val _headers = MutableStateFlow<RequestState<Headers>>(RequestState.Loading)
+    val headers = _headers.asStateFlow()
 
-        private fun initHttpBinData() {
-            viewModelScope.launch {
-                _headers.value = netRepository.initHttpBinData()
-            }
-        }
-
-        private val _wanAndroidList =
-            MutableStateFlow<RequestState<List<ChapterBean>?>>(RequestState.Loading)
-
-        val wanAndroidList = _wanAndroidList.asStateFlow()
-
-        val chapters: StateFlow<RequestState<List<ChapterBean>>> =
-            netRepository.observeChapters().stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = RequestState.Loading,
-            )
-
-        private fun initWanAndroidData() {
-            Log.d("==== initWanAndroidData", "assistedInject $name")
-
-            viewModelScope.launch {
-                netRepository
-                    .initWanAndroidData()
-                    .collect { result ->
-                        _wanAndroidList.value = result
-                    }
-            }
-
-            viewModelScope.launch {
-                netRepository.fetchAndCacheChapters()
-            }
-        }
-
-        fun removeItem(
-            position: Int,
-            list: List<ChapterBean>,
-        ) {
-            if (position in list.indices) {
-                val newData = list.toMutableList()
-                newData.removeAt(position)
-                _wanAndroidList.value = RequestState.Success(newData)
-            }
-        }
-
-        // 初始化代码应该在最后面
-        init {
-            initHttpBinData()
-            initWanAndroidData()
+    private fun initHttpBinData() {
+        viewModelScope.launch {
+            _headers.value = netRepository.initHttpBinData()
         }
     }
+
+    private val _wanAndroidList =
+        MutableStateFlow<RequestState<List<ChapterBean>?>>(RequestState.Loading)
+
+    val wanAndroidList = _wanAndroidList.asStateFlow()
+
+    val chapters: StateFlow<RequestState<List<ChapterBean>>> =
+        netRepository.observeChapters().stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = RequestState.Loading,
+        )
+
+    private fun initWanAndroidData() {
+        Log.d("==== initWanAndroidData", "assistedInject $name")
+
+        viewModelScope.launch {
+            netRepository.initWanAndroidData().collect { result ->
+                _wanAndroidList.value = result
+            }
+        }
+
+        viewModelScope.launch {
+            netRepository.fetchAndCacheChapters()
+        }
+    }
+
+    fun removeItem(
+        position: Int,
+        list: List<ChapterBean>,
+    ) {
+        if (position in list.indices) {
+            val newData = list.toMutableList()
+            newData.removeAt(position)
+            _wanAndroidList.value = RequestState.Success(newData)
+        }
+    }
+
+    // 初始化代码应该在最后面
+    init {
+        initHttpBinData()
+        initWanAndroidData()
+    }
+}

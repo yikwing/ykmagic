@@ -34,7 +34,7 @@ android {
 
 dependencies {
     implementation(libs.appcompat)
-    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.runtime.compose)
 
     testImplementation(libs.bundles.testBundle)
     androidTestImplementation(libs.bundles.androidTestBundle)

@@ -7,7 +7,6 @@ import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.UserPreferences
 import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.repository.OtherRepository
-import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,37 +29,35 @@ data class HttpBinUiState(
 )
 
 @KoinViewModel
-class HttpBinViewModel
-    @Inject
-    constructor(
-        private val otherRepository: OtherRepository,
-        private val userPreferencesStore: DataStore<UserPreferences>,
-    ) : ViewModel() {
-        private val _headers = MutableStateFlow<HttpBinUiState>(HttpBinUiState())
-        val headers = _headers.asStateFlow()
+class HttpBinViewModel(
+    private val otherRepository: OtherRepository,
+    private val userPreferencesStore: DataStore<UserPreferences>,
+) : ViewModel() {
+    private val _headers = MutableStateFlow<HttpBinUiState>(HttpBinUiState())
+    val headers = _headers.asStateFlow()
 
-        fun initHttpBinData() {
-            viewModelScope.launch {
-                otherRepository.initHttpBinData().collect { result ->
-                    _headers.update {
-                        it.copy(repo = result)
-                    }
-                }
-            }
-        }
-
-        // 读取
-        val userName: StateFlow<String> =
-            userPreferencesStore.data
-                .map { it.name }
-                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-
-        // 写入
-        fun updateName(name: String) {
-            viewModelScope.launch {
-                userPreferencesStore.updateData { current ->
-                    current.copy(name = name)
+    fun initHttpBinData() {
+        viewModelScope.launch {
+            otherRepository.initHttpBinData().collect { result ->
+                _headers.update {
+                    it.copy(repo = result)
                 }
             }
         }
     }
+
+    // 读取
+    val userName: StateFlow<String> =
+        userPreferencesStore.data
+            .map { it.name }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+
+    // 写入
+    fun updateName(name: String) {
+        viewModelScope.launch {
+            userPreferencesStore.updateData { current ->
+                current.copy(name = name)
+            }
+        }
+    }
+}

@@ -14,7 +14,7 @@ fun AppNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    startDestination: Any = MainScreen,
+    startDestination: Any = PackageInfoScreen,
     navActions: AppNavigationActions =
         remember(navController) {
             AppNavigationActions(navController)
