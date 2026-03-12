@@ -12,13 +12,14 @@
 // ViewModel
 @KoinViewModel
 class UserViewModel(private val api: ApiService) : ViewModel() {
-    val state = field: MutableStateFlow<RequestState<User>>(RequestState.Idle)
+    private val _state = MutableStateFlow<RequestState<User>>(RequestState.Loading)
+    val state = _state.asStateFlow()
 
     fun load(userId: String) {
         viewModelScope.launch {
             api.getUserInfo(userId)
                 .requestStateFlow()
-                .collect { state.value = it }
+                .collect { _state.value = it }
         }
     }
 }
@@ -29,10 +30,9 @@ fun UserScreen(vm: UserViewModel = koinViewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
 
     when (state) {
-        is RequestState.Idle -> Text("初始状态")
         is RequestState.Loading -> CircularProgressIndicator()
-        is RequestState.Success -> UserContent(state.data)
-        is RequestState.Error -> ErrorMessage(state.message)
+        is RequestState.Success -> UserContent(state.value)
+        is RequestState.Error -> ErrorMessage(state.throwable.message)
     }
 }
 ```
@@ -126,7 +126,8 @@ class DetailViewModel(
     @InjectedParam private val userId: String,
     private val repo: UserRepository
 ) : ViewModel() {
-    val state = field: MutableStateFlow<RequestState<User>>(RequestState.Idle)
+    private val _state = MutableStateFlow<RequestState<User>>(RequestState.Loading)
+    val state = _state.asStateFlow()
 
     init { loadUser() }
 
@@ -134,7 +135,7 @@ class DetailViewModel(
         viewModelScope.launch {
             repo.getUser(userId)
                 .requestStateFlow()
-                .collect { state.value = it }
+                .collect { _state.value = it }
         }
     }
 }
@@ -146,19 +147,36 @@ fun DetailScreen(userId: String) {
     val state by vm.state.collectAsStateWithLifecycle()
 }
 
-// Navigation
+// Navigation 3.x (类型安全)
+@Serializable
+data object ListScreen : NavKey
+
+@Serializable
+data class DetailScreen(val userId: String) : NavKey
+
 @Composable
 fun AppNavigation() {
-    NavHost(navController = rememberNavController(), startDestination = "list") {
-        composable("list") { ListScreen() }
-        composable(
-            route = "detail/{userId}",
-            arguments = listOf(navArgument("userId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getString("userId") ?: ""
-            DetailScreen(userId)
+    val backStack = rememberNavBackStack(ListScreen)
+
+    NavDisplay(
+        backStack = backStack,
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
+        entryProvider = entryProvider {
+            entry<ListScreen> {
+                ListScreen(
+                    onItemClick = { userId ->
+                        backStack.navigate(DetailScreen(userId))
+                    }
+                )
+            }
+            entry<DetailScreen> { detail ->
+                DetailScreen(userId = detail.userId)
+            }
         }
-    }
+    )
 }
 ```
 
@@ -308,26 +326,24 @@ fun SettingsScreen(vm: SettingsViewModel = koinViewModel()) {
 ```kotlin
 @KoinViewModel
 class MyViewModel : ViewModel() {
-    // 旧方式（仍有效）
-    private val _oldState = MutableStateFlow("initial")
-    val oldState: StateFlow<String> = _oldState.asStateFlow()
-
-    // 新方式（推荐）- Kotlin 2.3.0+
-    val newState = field: MutableStateFlow("initial")
-    // 编译器自动生成 backing field，外部只读
+    // 标准方式（推荐）
+    private val _state = MutableStateFlow("initial")
+    val state: StateFlow<String> = _state.asStateFlow()
 
     fun update(value: String) {
-        newState.value = value  // 内部可修改
+        _state.value = value  // 内部可修改
     }
 }
 
 // Composable
 @Composable
 fun MyScreen(vm: MyViewModel = koinViewModel()) {
-    val state by vm.newState.collectAsStateWithLifecycle()
+    val state by vm.state.collectAsStateWithLifecycle()
     // state 只读，无法修改
 }
 ```
+
+**注意**: Kotlin 2.3.0+ 支持 Explicit Backing Fields 语法（`val state = field: MutableStateFlow(...)`），但项目当前使用标准方式。
 
 ### 复杂状态管理
 
@@ -341,22 +357,23 @@ data class UserUiState(
 
 @KoinViewModel
 class UserViewModel(private val repo: UserRepository) : ViewModel() {
-    val uiState = field: MutableStateFlow(UserUiState())
+    private val _uiState = MutableStateFlow(UserUiState())
+    val uiState = _uiState.asStateFlow()
 
     fun loadUser(userId: String) {
         viewModelScope.launch {
-            uiState.value = uiState.value.copy(isLoading = true, error = null)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
             repo.getUser(userId)
                 .onSuccess { user ->
-                    uiState.value = uiState.value.copy(
+                    _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         user = user,
                         error = null
                     )
                 }
                 .onFailure { error ->
-                    uiState.value = uiState.value.copy(
+                    _uiState.value = _uiState.value.copy(
                         isLoading = false,
                         user = null,
                         error = error.message

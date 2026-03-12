@@ -30,7 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun OtherPageScreen(
-    msg: String?,
+    id: String,
     viewModel: HttpBinViewModel = koinViewModel(),
 ) {
     val httpBin by viewModel.headers.collectAsState()
@@ -44,7 +44,7 @@ fun OtherPageScreen(
                 modifier = Modifier.padding(horizontal = 8.dp),
             ) {
                 Text(
-                    text = "$msg === $userName",
+                    text = "Product ID: $id === User: $userName",
                     modifier =
                         Modifier
                             .background(Color.Green)
@@ -96,5 +96,5 @@ fun OtherPageScreen(
 @Composable
 @Preview
 fun OtherPageScreenPreview() {
-    OtherPageScreen(msg = "OtherPageScreen")
+    OtherPageScreen(id = "preview-product-123")
 }

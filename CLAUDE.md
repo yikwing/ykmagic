@@ -55,9 +55,11 @@ Compose回调: 参数匹配? 是→函数引用 否→需要缓存?→是→reme
 // 网络请求 (UI)
 @KoinViewModel
 class MyViewModel(private val api: ApiService) : ViewModel() {
-    val state = field: MutableStateFlow<RequestState<Data>>(RequestState.Idle)
+    private val _state = MutableStateFlow<RequestState<Data>>(RequestState.Loading)
+    val state = _state.asStateFlow()
+
     fun load() = viewModelScope.launch {
-        api.getData().requestStateFlow().collect { state.value = it }
+        api.getData().requestStateFlow().collect { _state.value = it }
     }
 }
 
