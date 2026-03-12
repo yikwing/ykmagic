@@ -35,7 +35,7 @@ koin-annotations = "2.3.1"
 koin-plugin = "0.3.0"
 
 constraintlayout-compose = "1.1.1"
-navigation-compose = "2.9.7"
+nav3-core = "1.0.1"
 
 glance = "1.1.0"
 leakcanary = "3.0-alpha-8"
@@ -116,15 +116,16 @@ koin-ktor = { module = "io.insert-koin:koin-ktor" }
 
 #   koin annotations
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin-bom" }
-koin-jsr330 = { module = "io.insert-koin:koin-jsr330", version.ref = "koin-annotations" }
 
 lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 lifecycle-viewmodel-navigation3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
 
 constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout-compose" }
-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation-compose" }
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3-core" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3-core" }
 
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
 # Debug依赖库
 glance = { group = "com.guolindev.glance", name = "glance", version.ref = "glance" }

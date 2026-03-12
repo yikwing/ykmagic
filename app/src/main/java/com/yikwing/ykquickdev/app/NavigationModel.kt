@@ -1,24 +1,23 @@
 package com.yikwing.ykquickdev.app
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
-sealed interface AppDestination
+@Serializable
+data object MainScreen : NavKey
 
 @Serializable
-data object MainScreen : AppDestination
-
-@Serializable
-data object PackageInfoScreen : AppDestination
+data object PackageInfoScreen : NavKey
 
 @Serializable
 data class Product(
     val id: String,
-) : AppDestination
+) : NavKey
 
 @Serializable
-data object DiyInputScreen : AppDestination
+data object DiyInputScreen : NavKey
 
-sealed interface TabDestination : AppDestination {
+sealed interface TabDestination : NavKey {
     @Serializable
     data object TabNavigation : TabDestination
 
@@ -29,7 +28,7 @@ sealed interface TabDestination : AppDestination {
     data object Mine : TabDestination
 }
 
-sealed interface AuthDestination : AppDestination {
+sealed interface AuthDestination : NavKey {
     @Serializable
     data object AuthNavigation : AuthDestination
 
@@ -42,7 +41,7 @@ sealed interface AuthDestination : AppDestination {
     data object Register : AuthDestination
 }
 
-sealed interface UIDestination : AppDestination {
+sealed interface UIDestination : NavKey {
     @Serializable
     data object UINavigation : UIDestination
 

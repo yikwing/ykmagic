@@ -52,7 +52,7 @@ fun OtherPageScreen(
                 )
 
                 AsyncImage(
-                    model = "https://pic.netbian.com/uploads/allimg/240528/213609-17169033695ae8.jpg",
+                    model = "https://images.pexels.com/photos/34353414/pexels-photo-34353414.jpeg",
                     contentDescription = null,
                     modifier =
                         Modifier.clip(

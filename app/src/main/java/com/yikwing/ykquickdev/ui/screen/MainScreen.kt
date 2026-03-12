@@ -21,11 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,24 +41,17 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(coroutineScope: CoroutineScope = rememberCoroutineScope()) {
-    var currentPageIndex by remember { mutableStateOf(0) }
-
-    // 创建分页器状态
     val pagerState =
-        rememberPagerState(
-            initialPage = currentPageIndex,
-        ) {
+        rememberPagerState {
             BottomNavItems.size
         }
 
     Scaffold(
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars),
         bottomBar = {
-            CustomBottomBar(currentPageIndex, { targetPage ->
-                currentPageIndex = targetPage
+            CustomBottomBar(pagerState.currentPage, { targetPage ->
                 coroutineScope.launch {
-//                    pagerState.animateScrollToPage(targetPage) // 带动画
-                    pagerState.scrollToPage(targetPage) // 无动画
+                    pagerState.scrollToPage(targetPage)
                 }
             })
         },
@@ -110,7 +99,7 @@ private val BordeauxRed = Color(0xFF6D2C41)
 
 @Composable
 fun HomeRoute() {
-    SystemBarsStyle(darkIcons = false)
+    SystemBarsStyle(statusBarDarkIcons = false)
     Center(
         modifier =
             Modifier
@@ -153,7 +142,7 @@ fun CategoryRoute(paddingValues: PaddingValues) {
 
 @Composable
 fun CartRoute() {
-    SystemBarsStyle(darkIcons = true)
+    SystemBarsStyle(statusBarDarkIcons = true)
     Box(
         modifier =
             Modifier
@@ -220,7 +209,7 @@ private fun decoupledConstraints(): ConstraintSet =
 
 @Composable
 fun MeRoute() {
-    SystemBarsStyle(darkIcons = false)
+    SystemBarsStyle(statusBarDarkIcons = false)
     Center(
         modifier =
             Modifier

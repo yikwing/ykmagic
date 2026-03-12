@@ -1,10 +1,10 @@
 package com.yikwing.extension.coroutines
 
-import jakarta.inject.Singleton
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
 
 /**
  * Dispatcher 模块

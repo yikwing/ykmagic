@@ -46,11 +46,8 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     implementation(platform(libs.koin.bom))
-    implementation(libs.koin.core)
     implementation(libs.koin.android)
-
     implementation(libs.koin.annotations)
-    implementation(libs.koin.jsr330)
 
     testImplementation(libs.bundles.testBundle)
     androidTestImplementation(libs.bundles.androidTestBundle)

@@ -45,7 +45,7 @@ class NetRepository(
         requestResult {
             httpApi.getChapters()
         }.onSuccess { _data ->
-            _data?.let { chapterDao.insertChapters(it) }
+            _data.let { chapterDao.insertChapters(it) }
         }
 
     // ==================== Chapters SSOT（读写分离）====================
@@ -69,7 +69,7 @@ class NetRepository(
      */
     suspend fun fetchAndCacheChapters() {
         runCatching { httpApi.getChapters() }.onSuccess { result ->
-            result.data?.let { chapterDao.insertChapters(it) }
+            result.data.let { chapterDao.insertChapters(it) }
         }
     }
 }

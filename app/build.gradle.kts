@@ -238,9 +238,11 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.navigation3)
 
     implementation(libs.constraintlayout.compose)
-    implementation(libs.navigation.compose)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
 
     implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 
     // Debug依赖库
     debugImplementation(libs.glance)

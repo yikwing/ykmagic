@@ -1,6 +1,6 @@
 package com.yikwing.extension.coroutines
 
-import jakarta.inject.Qualifier
+import org.koin.core.annotation.Qualifier
 
 /**
  * Dispatcher 限定符
