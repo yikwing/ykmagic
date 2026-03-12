@@ -43,6 +43,8 @@ YkQuickDev - Android 快速开发框架库
 网络请求: 需要UI状态? 是→requestStateFlow() 否→requestResult()
 数据缓存: 临时数据? 是→CacheManager 否→DataStore
 ViewModel: 需要参数? 是→@InjectedParam 否→构造注入
+Compose动画: 改变视觉? 是→drawBehind/graphicsLayer 否→改变位置?→offset { }
+Compose回调: 参数匹配? 是→函数引用 否→需要缓存?→是→remember+Lambda 否→Lambda
 ```
 
 ---
@@ -78,6 +80,26 @@ val vm: DetailViewModel = koinViewModel { parametersOf(id) }
 
 // 配置读取
 val baseUrl = YkConfigManager.config.baseUrl
+
+// Compose 性能优化 (避免过度重组)
+// ❌ 差：组合阶段读取动画状态，每帧重组
+.background(animatedColor)
+.offset(x = animatedX, y = animatedY)
+
+// ✅ 好：延迟到绘制/布局阶段，仅重绘
+.drawBehind { drawRect(animatedColor) }
+.offset { IntOffset(animatedX.roundToInt(), animatedY.roundToInt()) }
+
+// Compose 回调优化 (函数引用 vs Lambda)
+// ✅ 好：参数签名匹配，用函数引用（稳定，不触发重组）
+Button(onClick = viewModel::onButtonClick)
+
+// ✅ 好：需要传递参数，用 Lambda
+Button(onClick = { viewModel.onItemClick(item.id) })
+
+// ✅ 好：复杂逻辑，用 remember 缓存
+val onClick = remember(item.id) { { viewModel.onItemClick(item.id) } }
+Button(onClick = onClick)
 ```
 
 **详细示例**: [code-examples.md](.claude/docs/code-examples.md)
@@ -180,6 +202,8 @@ cat gradle/libs.versions.toml  # 查看版本
 **依赖**: `gradle/libs.versions.toml` 统一管理 | 避免硬编码 | Debug 工具仅 Debug 版本
 
 **代码**: 协程和 Flow | "动词 suspend，名词 Flow" | Explicit Backing Fields | `@Serializable`
+
+**Compose 性能**: 避免组合阶段读取高频状态 | 用 Lambda 延迟状态读取 | `drawBehind` 替代 `background` | `offset { }` 替代 `offset()` | 参数匹配用函数引用 | 参数转换用 Lambda | 复杂逻辑用 `remember` 缓存
 
 **测试**: Hamcrest 匹配器 | `<ClassName>Test` | 关键逻辑必须覆盖
 
