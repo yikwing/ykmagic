@@ -2,9 +2,21 @@ package com.yikwing.ykquickdev.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.yikwing.ykquickdev.R
+
+val RubikGemstonesRegular =
+    FontFamily(
+        Font(R.font.rubik_gemstones_regular, FontWeight.Normal),
+    )
+
+val PermanentMarkerRegular =
+    FontFamily(
+        Font(R.font.permanent_marker_regular, FontWeight.Normal),
+    )
 
 // Set of Material typography styles to start with
 val Typography =

@@ -13,22 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yikwing.ykquickdev.R
-
-val rubikGemstonesRegular =
-    FontFamily(
-        Font(R.font.rubik_gemstones_regular, FontWeight.Normal),
-    )
-
-val permanentMarkerRegular =
-    FontFamily(
-        Font(R.font.permanent_marker_regular, FontWeight.Normal),
-    )
+import com.yikwing.ykquickdev.ui.theme.PermanentMarkerRegular
+import com.yikwing.ykquickdev.ui.theme.RubikGemstonesRegular
 
 @Composable
 fun PackageInfoScreen(
@@ -45,14 +33,14 @@ fun PackageInfoScreen(
             },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         ) {
-            Text("to Other", fontFamily = rubikGemstonesRegular)
+            Text("to Other", fontFamily = RubikGemstonesRegular)
         }
 
         Button(
             onClick = navigationToDiy,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         ) {
-            Text("to Diy", fontFamily = rubikGemstonesRegular)
+            Text("to Diy", fontFamily = RubikGemstonesRegular)
         }
     }
 }
@@ -68,7 +56,7 @@ fun OtherPageScreen(
     ) {
         Text(
             "OtherPage : $str",
-            fontFamily = rubikGemstonesRegular,
+            fontFamily = RubikGemstonesRegular,
             fontSize = 24.sp,
             color = Color(0xFF4C1B24),
             modifier =
@@ -87,7 +75,7 @@ fun DiyInputScreen(navigationToAuth: () -> Unit) {
     ) {
         Text(
             "DiyInput",
-            fontFamily = rubikGemstonesRegular,
+            fontFamily = RubikGemstonesRegular,
             fontSize = 24.sp,
             color = Color(0xFF002FA7),
             modifier =
@@ -106,7 +94,7 @@ fun AuthLoginScreen(navigationToRegister: () -> Unit) {
     ) {
         Text(
             "AuthLogin",
-            fontFamily = permanentMarkerRegular,
+            fontFamily = PermanentMarkerRegular,
             fontSize = 24.sp,
             color = Color(0xFF002FA7),
             modifier =
@@ -125,7 +113,7 @@ fun AuthRegisterScreen(navigationToHome: () -> Unit) {
     ) {
         Text(
             "AuthRegister",
-            fontFamily = permanentMarkerRegular,
+            fontFamily = PermanentMarkerRegular,
             fontSize = 24.sp,
             color = Color(0xFF002FA7),
             modifier =

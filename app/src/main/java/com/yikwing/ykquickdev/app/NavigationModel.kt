@@ -10,6 +10,9 @@ data object MainScreen : NavKey
 data object PackageInfoScreen : NavKey
 
 @Serializable
+data object TextDebounce : NavKey
+
+@Serializable
 data class Product(
     val id: String,
 ) : NavKey

@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yikwing.ykquickdev.ui.screen.permanentMarkerRegular
+import com.yikwing.ykquickdev.ui.theme.PermanentMarkerRegular
 
 /**
  * <pre>
@@ -91,7 +91,7 @@ fun ShapeButton(
                 TextStyle(
                     color = Color.White,
                     fontSize = 20.sp,
-                    fontFamily = permanentMarkerRegular,
+                    fontFamily = PermanentMarkerRegular,
                     // 移除字体额外 padding，使文字垂直居中更精确
                     platformStyle = PlatformTextStyle(includeFontPadding = false),
                 ),

@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavBackStack
@@ -20,6 +21,7 @@ import com.yikwing.ykquickdev.ui.screen.DiyInputScreen
 import com.yikwing.ykquickdev.ui.screen.MainScreen
 import com.yikwing.ykquickdev.ui.screen.OtherPageScreen
 import com.yikwing.ykquickdev.ui.screen.PackageInfoScreen
+import com.yikwing.ykquickdev.ui.screen.TextDebounceScreen
 import com.yikwing.ykquickdev.ui.utils.navigate
 import com.yikwing.ykquickdev.ui.utils.setRoot
 
@@ -35,7 +37,7 @@ import com.yikwing.ykquickdev.ui.utils.setRoot
  */
 @Composable
 fun AppNavGraph(modifier: Modifier = Modifier) {
-    val backStack: NavBackStack<NavKey> = rememberNavBackStack(PackageInfoScreen)
+    val backStack: NavBackStack<NavKey> = rememberNavBackStack(TextDebounce)
 
     NavDisplay(
         modifier = modifier,
@@ -57,6 +59,15 @@ fun AppNavGraph(modifier: Modifier = Modifier) {
             entryProvider {
                 featureAEntryBuilder(backStack)
                 authNavGraph(backStack)
+
+                entry<TextDebounce> {
+                    TextDebounceScreen(
+                        navigationToPackInfo =
+                            dropUnlessResumed {
+                                backStack.navigate(PackageInfoScreen)
+                            },
+                    )
+                }
             },
     )
 }
