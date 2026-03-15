@@ -9,7 +9,6 @@ import com.yikwing.ykquickdev.db.UserDao
 import com.yikwing.ykquickdev.db.UserDatabase
 import com.yikwing.ykquickdev.userPreferencesStore
 import org.koin.core.annotation.Configuration
-import org.koin.core.annotation.Factory
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
 
@@ -25,10 +24,10 @@ object DataModule {
                 "Users.db",
             ).build()
 
-    @Factory
+    @Singleton
     fun provideUserDao(userDatabase: UserDatabase): UserDao = userDatabase.getUserDao()
 
-    @Factory
+    @Singleton
     fun provideChapterDao(userDatabase: UserDatabase): ChapterDao = userDatabase.getChapterDao()
 
     @Singleton
