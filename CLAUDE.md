@@ -2,7 +2,7 @@
 
 YkQuickDev - Android 快速开发框架库
 
-**技术栈**: Kotlin 2.3.0 | Koin 4.1.1 | Ktor 3.3.3 | Compose BOM 2026.01.00
+**技术栈**: Kotlin 2.3.20-RC3 | Koin 4.2.0-RC2 | Ktor 3.4.1 | Compose BOM 2026.03.00
 
 **版本信息**: 以 `gradle/libs.versions.toml` 为准
 
@@ -155,6 +155,11 @@ keyPassword=your_key_password
 # 测试
 ./gradlew test                 # 单元测试
 ./gradlew :module_name:test    # 指定模块
+
+# 调试
+adb logcat | grep "YkQuickDev"  # 查看应用日志
+adb install -r app/build/outputs/apk/debug/app-debug.apk  # 安装 Debug
+adb uninstall <package_name>    # 卸载应用
 
 # 质量
 ./gradlew lint                 # Lint 检查
