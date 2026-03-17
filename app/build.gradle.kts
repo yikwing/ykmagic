@@ -14,6 +14,7 @@ plugins {
     alias(libs.plugins.wire)
 
     alias(libs.plugins.ksp)
+    alias(libs.plugins.room3)
     alias(libs.plugins.koin.compiler)
     alias(libs.plugins.kotlin.serialization)
 
@@ -155,12 +156,12 @@ android {
     }
 }
 
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-}
-
 koinCompiler {
     userLogs = true
+}
+
+room3 {
+    schemaDirectory("$projectDir/schemas")
 }
 
 wire {

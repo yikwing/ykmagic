@@ -1,7 +1,7 @@
 package com.yikwing.ykquickdev.db
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
+import androidx.room3.Database
+import androidx.room3.RoomDatabase
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 
 @Database(

@@ -2,7 +2,7 @@ package com.yikwing.ykquickdev.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.room.Room
+import androidx.room3.Room
 import com.yikwing.ykquickdev.UserPreferences
 import com.yikwing.ykquickdev.db.ChapterDao
 import com.yikwing.ykquickdev.db.UserDao

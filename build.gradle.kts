@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.wire) apply false
 
     alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.room3) apply false
     alias(libs.plugins.koin.compiler) apply false
 }
 
