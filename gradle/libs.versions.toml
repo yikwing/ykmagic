@@ -30,8 +30,8 @@ kotlinx-coroutines = "1.10.2"
 kotlinx-serialization-json = "1.10.0"
 
 compose-bom = "2026.03.00"
-koin-bom = "4.2.0-RC2"
-koin-plugin = "0.4.0"
+koin-bom = "4.2.0"
+koin-plugin = "0.4.1"
 
 constraintlayout-compose = "1.1.1"
 nav3-core = "1.0.1"
