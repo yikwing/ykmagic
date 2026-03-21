@@ -1,5 +1,11 @@
 # 构建与配置
 
+## 构建架构
+- **Convention Plugins**: 采用 Now in Android 风格的 build-logic 模式
+- **位置**: `build-logic/convention/`
+- **插件**: `ykmagic.android.application` | `ykmagic.android.library` | `ykmagic.kotlin.android` | `ykmagic.android.compose`
+- **文档**: `.claude/docs/build-logic.md`
+
 ## 构建命令
 ```bash
 ./android_build.sh dev      # Debug 构建

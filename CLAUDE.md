@@ -36,6 +36,7 @@ YkQuickDev - Android 快速开发框架库
 | 网络请求 | [network.md](.claude/docs/network.md) | `requestStateFlow()` / `requestResult()` |
 | 依赖注入 | [dependency-injection.md](.claude/docs/dependency-injection.md) | `@KoinViewModel` / `@InjectedParam` |
 | 数据存储 | [datastore.md](.claude/docs/datastore.md) | `DataStore<T>` |
+| 构建逻辑 | [build-logic.md](.claude/docs/build-logic.md) | Convention Plugins |
 | 代码示例 | [code-examples.md](.claude/docs/code-examples.md) | 完整代码 |
 | 构建发布 | [build-publish.md](.claude/docs/build-publish.md) | `./android_build.sh` |
 | 开发模式 | [patterns.md](.claude/docs/patterns.md) | 最佳实践 |
@@ -147,7 +148,8 @@ keyPassword=your_key_password
 | `No Koin context` | 检查 `@KoinApplication` 注解 |
 | 网络请求失败 | 检查 android_env.json 中的 base_url |
 | ViewModel 注入失败 | 添加 `@KoinViewModel` 注解 |
-| module_logger 编译问题 | 核心为 Java 实现（Logger/LoggerPrinter），修改时注意 Java/Kotlin 互操作 |
+| build-logic 修改不生效 | 运行 `./gradlew clean --no-daemon` 清理缓存 |
+| Convention Plugin 编译错误 | 检查 `VersionCatalogsExtension` 访问方式，确保 build-logic/settings.gradle.kts 正确配置 |
 
 ---
 
@@ -158,6 +160,9 @@ keyPassword=your_key_password
 ./android_build.sh dev         # Debug
 ./android_build.sh build       # Release
 ./android_build.sh clean       # 清理
+
+# build-logic 修改后需要清理
+./gradlew clean --no-daemon    # 清理所有模块（包括 build-logic）
 
 # 测试
 ./gradlew test                 # 单元测试
@@ -185,6 +190,8 @@ cat gradle/libs.versions.toml  # 查看版本
 
 **网络层**: Ktor Client | "动词 suspend，名词 Flow" | 拦截器: Header/Retry/Log/Chucker
 
+**构建逻辑**: Convention Plugins (build-logic/) | 配置常量 (ProjectConfig.kt) | 依赖自动管理
+
 **依赖注入**: Koin | `@KoinApplication` `@KoinViewModel` `@InjectedParam` | Kotzilla 监控
 
 **模块初始化**: AppInitializer | 拓扑排序 | 循环检测 | 实现 `InitTask`
@@ -211,9 +218,11 @@ cat gradle/libs.versions.toml  # 查看版本
 
 ## 📚 项目约定
 
-**构建**: 通用配置在根 `build.gradle.kts` | 启用 `-XXLanguage:+ExplicitBackingFields`
+**构建**: Convention Plugins 管理通用配置（见 [build-logic.md](.claude/docs/build-logic.md)） | 启用 `-XXLanguage:+ExplicitBackingFields`
 
 **依赖**: `gradle/libs.versions.toml` 统一管理 | 避免硬编码 | Debug 工具仅 Debug 版本
+
+**自动依赖**: Convention Plugins 自动添加通用依赖（core-ktx, appcompat, coroutines, testBundle）| Compose 插件自动添加 Compose 依赖 | 模块只需声明特定依赖
 
 **代码**: 协程和 Flow | "动词 suspend，名词 Flow" | Explicit Backing Fields | `@Serializable`
 
@@ -235,6 +244,7 @@ cat gradle/libs.versions.toml  # 查看版本
 | [network.md](.claude/docs/network.md) | Ktor 网络详解 |
 | [dependency-injection.md](.claude/docs/dependency-injection.md) | Koin 依赖注入 |
 | [datastore.md](.claude/docs/datastore.md) | Proto DataStore |
+| [build-logic.md](.claude/docs/build-logic.md) | Convention Plugins |
 | [modules.md](.claude/docs/modules.md) | 模块化设计 |
 | [build-publish.md](.claude/docs/build-publish.md) | 构建发布 |
 | [patterns.md](.claude/docs/patterns.md) | 开发模式 |
