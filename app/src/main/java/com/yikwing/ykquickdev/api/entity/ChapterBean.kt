@@ -1,10 +1,12 @@
 package com.yikwing.ykquickdev.api.entity
 
+import androidx.compose.runtime.Immutable
 import androidx.room3.ColumnInfo
 import androidx.room3.Entity
 import androidx.room3.PrimaryKey
 import kotlinx.serialization.Serializable
 
+@Immutable
 @Entity(tableName = "t_chapter")
 @Serializable
 data class ChapterBean(

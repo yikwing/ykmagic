@@ -33,8 +33,7 @@ fun OtherPageScreen(
     id: String,
     viewModel: HttpBinViewModel = koinViewModel(),
 ) {
-    val httpBin by viewModel.headers.collectAsState()
-    val userName by viewModel.userName.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Center {
@@ -44,7 +43,7 @@ fun OtherPageScreen(
                 modifier = Modifier.padding(horizontal = 8.dp),
             ) {
                 Text(
-                    text = "Product ID: $id === User: $userName",
+                    text = "Product ID: $id === User: ${uiState.userName}",
                     modifier =
                         Modifier
                             .background(Color.Green)
@@ -60,7 +59,7 @@ fun OtherPageScreen(
                         ),
                 )
 
-                when (httpBin.repo) {
+                when (uiState.headers) {
                     is RequestState.Loading -> {
                         Column {
                             CircularProgressIndicator()
@@ -71,7 +70,7 @@ fun OtherPageScreen(
                     }
 
                     is RequestState.Success -> {
-                        httpBin.repo.onSuccess {
+                        uiState.headers.onSuccess {
                             Text(
                                 text = it.userAgent,
                                 modifier =
@@ -83,7 +82,7 @@ fun OtherPageScreen(
                     }
 
                     is RequestState.Error -> {
-                        httpBin.repo.onFailure {
+                        uiState.headers.onFailure {
                             Text(text = "${it.message}", color = Color.Red)
                         }
                     }

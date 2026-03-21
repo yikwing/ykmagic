@@ -1,16 +1,19 @@
 package com.yikwing.ykquickdev.api.entity
 
 import android.os.Parcelable
+import androidx.compose.runtime.Immutable
 import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Immutable
 @Serializable
 @Parcelize
 data class HttpBinHeaders(
     val headers: Headers,
 ) : Parcelable
 
+@Immutable
 @Serializable
 @Parcelize
 data class Headers(

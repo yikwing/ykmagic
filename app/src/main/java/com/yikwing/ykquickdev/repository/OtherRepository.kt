@@ -10,17 +10,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.Single
 import kotlin.coroutines.cancellation.CancellationException
 
-@Singleton
-class OtherRepository(
+interface OtherRepository {
+    fun initHttpBinData(): Flow<RequestState<Headers>>
+}
+
+@Single(binds = [OtherRepository::class])
+class OtherRepositoryImpl(
     private val httpBinApi: HttpBinApi,
-) {
+) : OtherRepository {
     /**
      * 获取 HttpBin Headers 数据
      */
-    fun initHttpBinData(): Flow<RequestState<Headers>> =
+    override fun initHttpBinData(): Flow<RequestState<Headers>> =
         flow {
             emit(RequestState.Loading)
             val data = httpBinApi.getHeaders().headers

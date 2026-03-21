@@ -1,5 +1,6 @@
 package com.yikwing.ykquickdev.viewmodel
 
+import androidx.compose.runtime.Immutable
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,10 +11,9 @@ import com.yikwing.ykquickdev.repository.OtherRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.KoinViewModel
 
@@ -24,8 +24,10 @@ import org.koin.core.annotation.KoinViewModel
  * - 请求头测试（headers）
  * - 用户偏好设置（userName）
  */
+@Immutable
 data class HttpBinUiState(
-    val repo: RequestState<Headers> = RequestState.Loading,
+    val headers: RequestState<Headers> = RequestState.Loading,
+    val userName: String = "",
 )
 
 @KoinViewModel
@@ -33,26 +35,31 @@ class HttpBinViewModel(
     private val otherRepository: OtherRepository,
     private val userPreferencesStore: DataStore<UserPreferences>,
 ) : ViewModel() {
-    private val _headers = MutableStateFlow<HttpBinUiState>(HttpBinUiState())
-    val headers = _headers.asStateFlow()
+    private val headersFlow = MutableStateFlow<RequestState<Headers>>(RequestState.Loading)
+
+    val uiState: StateFlow<HttpBinUiState> =
+        combine(
+            headersFlow,
+            userPreferencesStore.data.map { it.name },
+        ) { headers, userName ->
+            HttpBinUiState(
+                headers = headers,
+                userName = userName,
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = HttpBinUiState(),
+        )
 
     fun initHttpBinData() {
         viewModelScope.launch {
             otherRepository.initHttpBinData().collect { result ->
-                _headers.update {
-                    it.copy(repo = result)
-                }
+                headersFlow.value = result
             }
         }
     }
 
-    // 读取
-    val userName: StateFlow<String> =
-        userPreferencesStore.data
-            .map { it.name }
-            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
-
-    // 写入
     fun updateName(name: String) {
         viewModelScope.launch {
             userPreferencesStore.updateData { current ->
