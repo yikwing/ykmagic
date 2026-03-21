@@ -10,9 +10,10 @@
 | module_extension | module_extension/ | Kotlin 扩展函数集合 |
 | module_datastore | module_datastore/ | Proto DataStore 封装 |
 | module_permission | module_permission/ | 运行时权限请求 |
-| module_logger | module_logger/ | 日志组件 |
 | module_proxy | module_proxy/ | BaseActivity、AppInitializer |
 | module_component | module_component/ | 自定义 View 组件 |
+
+注：module_logger 已移除（7617cf7），日志功能由 android.util.Log 直接使用。
 
 ## 模块依赖关系
 ```
@@ -22,7 +23,6 @@ app
  ├── module_extension
  ├── module_datastore
  ├── module_permission
- ├── module_logger
  ├── module_proxy
  └── module_component
 ```

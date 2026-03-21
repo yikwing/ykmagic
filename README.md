@@ -1,56 +1,69 @@
-# Android 开发
+# YkMagic
 
-## 主要用到的技术
+Android 快速开发框架库，提供网络请求、配置管理、权限处理等常用模块的封装。
 
-- 使用 gradle 进行项目构建
-- 使用 kotlin 搭建整个系统
-- 使用 配置文件 按需注入
-- 使用 ksp 等
+## 技术栈
 
-## 目前分为六个模块
+| 类别 | 技术 | 版本 |
+|------|------|------|
+| 语言 | Kotlin | 2.3.20 |
+| 构建 | Gradle + KSP | 9.3.0 |
+| UI | Jetpack Compose | BOM 2026.03.00 |
+| 网络 | Ktor Client | 3.4.1 |
+| DI | Koin | 4.2.0 |
+| 数据库 | Room | 3.0.0-alpha01 |
+| 导航 | Navigation 3 | 1.0.1 |
+| 序列化 | Kotlinx Serialization | 1.10.0 |
 
-- **module_config**：inject json 配置数据, 维护 application context
-- **module_datastore**：datastore 扩展方法
-- **module_extension**：各种扩展方法/工具类
-- **module_logger**：统一日志组件/基于 logger
-- **module_network**：封装统一 network 提供注入拦截器/debug 模式增加网络抓包视图
-- **module_permission**：基于 fragment 封装统一权限请求
-- **module_proxy**：统一 base 组件
+> 以 `gradle/libs.versions.toml` 为准
 
-## 问题：怎么依赖 module？
+## 模块
 
-1. 添加 jitpack 仓库地址
+| 模块 | 功能 |
+|------|------|
+| **module_config** | JSON 配置注入，维护 Application Context |
+| **module_network** | Ktor Client 封装，拦截器注入，Debug 网络抓包 |
+| **module_extension** | Kotlin 扩展函数 / 工具类集合 |
+| **module_datastore** | DataStore 扩展封装 |
+| **module_permission** | 基于 Fragment 的统一权限请求 |
+| **module_proxy** | BaseActivity / BaseFragment / AppInitializer |
+| **module_component** | 自定义 View 组件 |
 
-   ```gradle
-   maven {
-      url = uri("https://jitpack.io")
-   }
+## 使用
+
+1. 添加 JitPack 仓库
+
+   ```kotlin
+   maven { url = uri("https://jitpack.io") }
    ```
 
-2. 按需引入依赖 (以最新版本为主)
+2. 按需引入依赖
 
-   ```gradle
-   val ykmagicVersion = "0.1.2
-   
+   ```kotlin
+   val ykmagicVersion = "latest"
+
    implementation("com.github.yikwing.ykmagic:config:$ykmagicVersion")
-   implementation("com.github.yikwing.ykmagic:datastore:$ykmagicVersion")
    implementation("com.github.yikwing.ykmagic:network:$ykmagicVersion")
-   implementation("com.github.yikwing.ykmagic:proxy:$ykmagicVersion")
    implementation("com.github.yikwing.ykmagic:extension:$ykmagicVersion")
+   implementation("com.github.yikwing.ykmagic:datastore:$ykmagicVersion")
    implementation("com.github.yikwing.ykmagic:permission:$ykmagicVersion")
-   implementation("com.github.yikwing.ykmagic:logger:$ykmagicVersion")
+   implementation("com.github.yikwing.ykmagic:proxy:$ykmagicVersion")
+   implementation("com.github.yikwing.ykmagic:component:$ykmagicVersion")
    ```
+
+## 构建
+
+```bash
+./android_build.sh dev         # Debug 构建
+./android_build.sh build       # Release 构建
+./android_build.sh clean       # 清理
+./gradlew test                 # 单元测试
+```
 
 ## Tips
 
-- 使用 `makefile` 配置编译脚本
-- sh 文件夹配置了 **签名** / **校验签名** 脚本
-
-## TODO
-
-- [x] 统一公共依赖
-- [ ] 抽取 commom 模块,其他模块依赖基础模块
-- [x] 统一第三方依赖版本
+- `sh/` 目录配置了签名 / 校验签名脚本
+- 必需配置文件：`android_env.json`（运行时配置）、`keystore.properties`（Release 签名）
 
 ## 鸣谢
 
@@ -58,5 +71,5 @@
 > IDE，适用于 JVM 平台语言。
 
 特别感谢 [JetBrains](https://www.jetbrains.com/?from=campus)
-为开源项目提供免费的 [IntelliJ IDEA](https://www.jetbrains.com/idea) 等 IDE 的授权  
+为开源项目提供免费的 [IntelliJ IDEA](https://www.jetbrains.com/idea) 等 IDE 的授权
 [<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" width="200"/>](https://www.jetbrains.com)
