@@ -48,6 +48,12 @@ androidx-test-ext-junit = "1.3.0"
 espresso-core = "3.7.0"
 
 [libraries]
+# Gradle Plugins (for build-logic)
+android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+
 #   官方依赖库
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }

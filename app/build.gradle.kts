@@ -5,11 +5,12 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    id("kotlin-parcelize")
+    // Convention Plugins
+    id("ykmagic.android.application")
+    id("ykmagic.kotlin.android")
+    id("ykmagic.android.compose")
 
-    alias(libs.plugins.kotlin.compose)
+    id("kotlin-parcelize")
 
     alias(libs.plugins.wire)
 
