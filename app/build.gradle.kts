@@ -29,14 +29,6 @@ val injectJson = jsonEnvFile.readText()
 val keystorePropertiesPath: String = rootProject.file("keystore.properties").path
 val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 
-// 资源重定向
-fun listSubFile(): List<String> =
-    listOf(
-        "src/main/res/common",
-        "src/main/res/activity",
-        "src/main/res/fragment",
-    )
-
 // 获取当前打包时间
 fun getDateStr(): String {
     val localDate = LocalDateTime.now()
@@ -145,10 +137,6 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
-    }
-
-    sourceSets.getByName("main") {
-        res.setSrcDirs(listSubFile())
     }
 
     lint {
