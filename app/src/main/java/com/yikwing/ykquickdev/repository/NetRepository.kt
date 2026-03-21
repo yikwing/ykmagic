@@ -4,7 +4,8 @@ import com.yikwing.network.ApiException
 import com.yikwing.network.RequestState
 import com.yikwing.network.requestResult
 import com.yikwing.network.requestStateFlow
-import com.yikwing.ykquickdev.api.apiserver.HttpApi
+import com.yikwing.ykquickdev.api.apiserver.HttpBinApi
+import com.yikwing.ykquickdev.api.apiserver.WanAndroidApi
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.db.ChapterDao
@@ -14,7 +15,8 @@ import org.koin.core.annotation.Single
 
 @Single
 class NetRepository(
-    private val httpApi: HttpApi,
+    private val httpBinApi: HttpBinApi,
+    private val wanAndroidApi: WanAndroidApi,
     private val chapterDao: ChapterDao,
 ) {
     /**
@@ -22,8 +24,8 @@ class NetRepository(
      */
     suspend fun initHttpBinData(): RequestState<Headers> =
         try {
-            httpApi.binPost()
-            RequestState.Success(httpApi.binGet().headers)
+            httpBinApi.postData()
+            RequestState.Success(httpBinApi.getHeaders().headers)
         } catch (exception: Exception) {
             RequestState.Error(ApiException.createDefault(exception.message, exception))
         }
@@ -34,7 +36,7 @@ class NetRepository(
      */
     fun initWanAndroidData(): Flow<RequestState<List<ChapterBean>?>> =
         requestStateFlow {
-            httpApi.getChapters()
+            wanAndroidApi.getChapters()
         }
 
     /**
@@ -43,7 +45,7 @@ class NetRepository(
      */
     suspend fun initWanAndroidData2(): Result<List<ChapterBean>?> =
         requestResult {
-            httpApi.getChapters()
+            wanAndroidApi.getChapters()
         }.onSuccess { _data ->
             _data.let { chapterDao.insertChapters(it) }
         }
@@ -68,7 +70,7 @@ class NetRepository(
      * 调用后 Room 数据更新，observeChapters 自动收到新数据
      */
     suspend fun fetchAndCacheChapters() {
-        runCatching { httpApi.getChapters() }.onSuccess { result ->
+        runCatching { wanAndroidApi.getChapters() }.onSuccess { result ->
             result.data.let { chapterDao.insertChapters(it) }
         }
     }

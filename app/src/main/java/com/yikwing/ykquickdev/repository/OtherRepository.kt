@@ -3,7 +3,7 @@ package com.yikwing.ykquickdev.repository
 import android.util.Log
 import com.yikwing.network.ApiException
 import com.yikwing.network.RequestState
-import com.yikwing.ykquickdev.api.apiserver.HttpApi
+import com.yikwing.ykquickdev.api.apiserver.HttpBinApi
 import com.yikwing.ykquickdev.api.entity.Headers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -15,7 +15,7 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @Singleton
 class OtherRepository(
-    private val httpApi: HttpApi,
+    private val httpBinApi: HttpBinApi,
 ) {
     /**
      * 获取 HttpBin Headers 数据
@@ -23,7 +23,7 @@ class OtherRepository(
     fun initHttpBinData(): Flow<RequestState<Headers>> =
         flow {
             emit(RequestState.Loading)
-            val data = httpApi.binGet().headers
+            val data = httpBinApi.getHeaders().headers
             emit(RequestState.Success(data))
         }.flowOn(Dispatchers.IO).catch { exception ->
             if (exception is CancellationException) throw exception

@@ -1,42 +1,39 @@
 package com.yikwing.ykquickdev.api.apiserver
 
-import com.yikwing.network.BaseHttpResult
-import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.api.entity.HttpBinHeaders
+import com.yikwing.ykquickdev.api.entity.HttpBinPostResult
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.request.url
 import io.ktor.http.appendPathSegments
 import io.ktor.http.takeFrom
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class HttpApi(
+class HttpBinApi(
     private val httpClient: HttpClient,
 ) {
-    suspend fun binGet(): HttpBinHeaders =
+    suspend fun getHeaders(token: String = DEFAULT_TOKEN): HttpBinHeaders =
         httpClient
             .get {
                 url {
-                    takeFrom("https://httpbin.org")
+                    takeFrom(BASE_URL)
                     appendPathSegments("get")
-                    parameters.append("token", "abc123")
+                    parameters.append("token", token)
                 }
             }.body()
 
-    suspend fun binPost(): JsonElement =
+    suspend fun postData(token: String = DEFAULT_TOKEN): HttpBinPostResult =
         httpClient
             .post {
                 url {
-                    takeFrom("https://httpbin.org")
+                    takeFrom(BASE_URL)
                     appendPathSegments("post")
-                    parameters.append("token", "abc123")
+                    parameters.append("token", token)
                 }
                 setBody(
                     buildJsonObject {
@@ -45,9 +42,8 @@ class HttpApi(
                 )
             }.body()
 
-    suspend fun getChapters(): BaseHttpResult<List<ChapterBean>> =
-        httpClient
-            .get {
-                url("wxarticle/chapters/json")
-            }.body()
+    private companion object {
+        const val BASE_URL = "https://httpbin.org"
+        const val DEFAULT_TOKEN = "abc123"
+    }
 }
