@@ -10,8 +10,5 @@ class ConfigInjectInitTask : Initializer<Unit> {
         YkConfigManager.setUp(BuildConfig.YK_CONFIG)
     }
 
-    override fun dependencies(): Set<Class<out Initializer<*>>> =
-        setOf(
-            LoggerInitTask::class.java,
-        )
+    override fun dependencies(): Set<Class<out Initializer<*>>> = setOf()
 }

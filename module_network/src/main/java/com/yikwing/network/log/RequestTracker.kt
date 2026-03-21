@@ -1,6 +1,7 @@
 package com.yikwing.network.log
 
 import android.util.Log
+import okhttp3.Headers
 import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
@@ -70,7 +71,7 @@ object RequestTracker {
             responseBody = responseBodyString
         }
 
-        Log.i(TAG, LogFormatter.format(entry))
+        Log.i(TAG, formatEntry(entry))
     }
 
     /**
@@ -85,6 +86,67 @@ object RequestTracker {
             exception = e
         }
 
-        Log.e(TAG, LogFormatter.format(entry))
+        Log.e(TAG, formatEntry(entry))
     }
+
+    private fun formatEntry(entry: LogEntry): String = buildString {
+        val durationInfo = entry.duration?.let { "${it}ms" } ?: "N/A"
+
+        append("---[ OkHttp ID: #${entry.id} | ${statusEmoji(entry.responseCode)} | duration: $durationInfo ]---------------------------------\n")
+
+        // 请求信息
+        append("➡️ Request: ${entry.requestMethod} ${entry.requestUrl}")
+        append("\n₍^. .^₎⟆ \n${entry.requestHeaders}")
+        if (!entry.requestBody.isNullOrBlank()) {
+            append("\nBody:\n").append(entry.requestBody).append("\n")
+        }
+
+        // 响应信息
+        when {
+            entry.responseCode != null -> {
+                append("\n⬅️ Response: ${entry.responseCode} ${entry.responseMessage ?: ""}\n")
+                if (!entry.responseBody.isNullOrBlank() && isJsonResponse(entry.responseHeaders)) {
+                    append(entry.responseBody).append("\n")
+                }
+            }
+            entry.exception != null -> {
+                append("\n❗️ Error: ${entry.exception?.message}\n")
+            }
+            else -> {
+                append("... No network response ...\n")
+            }
+        }
+
+        append("------------------------------------------------------------------\n\n")
+    }
+
+    private fun statusEmoji(code: Int?): String = when (code) {
+        null -> "⏱️"
+        in 200..299 -> "✅"
+        in 300..399 -> "➡️"
+        in 400..499 -> "⚠️"
+        else -> "❌"
+    }
+
+    private fun isJsonResponse(headers: Headers?): Boolean =
+        headers?.get("Content-Type")?.contains("application/json", ignoreCase = true) == true
 }
+
+/**
+ * HTTP 请求日志条目
+ */
+private data class LogEntry(
+    val id: Int,
+    val startTime: Long,
+    var endTime: Long? = null,
+    var duration: Long? = null,
+    val requestMethod: String,
+    val requestUrl: String,
+    val requestHeaders: Headers,
+    val requestBody: String? = null,
+    var responseCode: Int? = null,
+    var responseMessage: String? = null,
+    var responseHeaders: Headers? = null,
+    var responseBody: String? = null,
+    var exception: Throwable? = null,
+)

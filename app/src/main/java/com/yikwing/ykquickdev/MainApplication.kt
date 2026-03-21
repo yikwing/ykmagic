@@ -19,7 +19,6 @@ import com.yikwing.extension.io.copyAssetToCache
 import com.yikwing.network.checkProxy
 import com.yikwing.proxy.startup.AppInitializer
 import com.yikwing.ykquickdev.task.ConfigInjectInitTask
-import com.yikwing.ykquickdev.task.LoggerInitTask
 import com.yikwing.ykquickdev.task.NetworkInitTask
 import com.yikwing.ykquickdev.work.CleanCacheWork
 import org.koin.android.ext.koin.androidContext
@@ -103,7 +102,6 @@ class MainApplication :
                 AppInitializer
                     .getInstance(this)
                     .addTask(ConfigInjectInitTask())
-                    .addTask(LoggerInitTask())
                     .addTask(NetworkInitTask())
                     .build(debug = true)
             }

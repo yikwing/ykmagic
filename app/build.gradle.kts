@@ -198,7 +198,6 @@ dependencies {
         ":module_proxy",
         ":module_extension",
         ":module_permission",
-        ":module_logger",
         ":module_datastore",
         ":module_component",
     ).forEach { dep ->

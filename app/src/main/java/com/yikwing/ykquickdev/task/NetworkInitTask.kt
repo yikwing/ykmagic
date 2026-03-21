@@ -11,7 +11,6 @@ class NetworkInitTask : Initializer<Unit> {
 
     override fun dependencies(): Set<Class<out Initializer<*>>> =
         setOf(
-            LoggerInitTask::class.java,
             ConfigInjectInitTask::class.java,
         )
 }

@@ -1,13 +1,13 @@
 package com.yikwing.ykquickdev.di
 
-import com.yikwing.network.di.NetworkScanModule
+import com.yikwing.network.NetworkModule
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 
 @Module(
     includes = [
         AppFeatureModule::class,
-        NetworkScanModule::class,
+        NetworkModule::class,
     ],
 )
 @Configuration

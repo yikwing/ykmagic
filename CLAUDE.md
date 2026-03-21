@@ -2,7 +2,7 @@
 
 YkQuickDev - Android 快速开发框架库
 
-**技术栈**: Kotlin 2.3.20-RC3 | Koin 4.2.0-RC2 | Ktor 3.4.1 | Compose BOM 2026.03.00
+**技术栈**: Kotlin 2.3.20 | Koin 4.2.0 | Ktor 3.4.1 | Compose BOM 2026.03.00 | Room 3.0.0-alpha01 | Nav3 1.0.1
 
 **版本信息**: 以 `gradle/libs.versions.toml` 为准
 
@@ -18,6 +18,12 @@ YkQuickDev - Android 快速开发框架库
 | 应用配置 | `android_env.json` | 运行时配置（必需） |
 | 签名配置 | `keystore.properties` | Release 构建（必需） |
 | 版本管理 | `gradle/libs.versions.toml` | 依赖版本 |
+| 导航 | `app/.../app/AppNavGraph.kt` | Navigation3 路由 |
+| 数据库 | `app/.../db/UserDatabase.kt` | Room3 (androidx.room3) |
+| DI 模块 | `app/.../di/AppModule.kt` | Koin 模块聚合（Core/Feature/Network/Data） |
+| 初始化任务 | `app/.../task/` | AppInitializer 的 InitTask 实现 |
+| Compose 组件 | `app/.../components/` | 通用组件（Loading/Error/Image/Center） |
+| API 定义 | `app/.../api/apiserver/HttpApi.kt` | Ktor 接口定义 |
 
 **模块**: config(配置) | network(网络) | extension(工具) | proxy(框架) | datastore(存储) | logger(日志) | permission(权限) | component(UI)
 
@@ -141,6 +147,7 @@ keyPassword=your_key_password
 | `No Koin context` | 检查 `@KoinApplication` 注解 |
 | 网络请求失败 | 检查 android_env.json 中的 base_url |
 | ViewModel 注入失败 | 添加 `@KoinViewModel` 注解 |
+| module_logger 编译问题 | 核心为 Java 实现（Logger/LoggerPrinter），修改时注意 Java/Kotlin 互操作 |
 
 ---
 
@@ -198,7 +205,7 @@ cat gradle/libs.versions.toml  # 查看版本
 
 **锁定**: `activity` 和 `kotlinx-coroutines-core` 已强制统一
 
-**兼容性**: Kotlin<2.3.0 不支持 Explicit Backing Fields | AGP<8.13.0 KSP 可能失败 | Koin 4.2.x 暂不升级
+**兼容性**: Kotlin<2.3.0 不支持 Explicit Backing Fields | AGP<8.13.0 KSP 可能失败 | Room 3.0 命名空间为 `androidx.room3`（非 `androidx.room`）
 
 ---
 
