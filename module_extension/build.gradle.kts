@@ -1,7 +1,6 @@
 plugins {
     // Convention Plugins
     id("ykmagic.android.library")
-    id("ykmagic.kotlin.android")
 
     alias(libs.plugins.ksp)
     alias(libs.plugins.koin.compiler)

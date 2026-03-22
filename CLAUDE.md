@@ -163,6 +163,10 @@ keyPassword=your_key_password
 
 # build-logic 修改后需要清理
 ./gradlew clean --no-daemon    # 清理所有模块（包括 build-logic）
+./gradlew :build-logic:convention:build --no-daemon  # 单独验证 build-logic
+
+# 批量修改模块配置
+for file in module_*/build.gradle.kts; do sed -i '' '/pattern/d' "$file"; done
 
 # 测试
 ./gradlew test                 # 单元测试
@@ -192,6 +196,8 @@ cat gradle/libs.versions.toml  # 查看版本
 
 **构建逻辑**: Convention Plugins (build-logic/) | 配置常量 (ProjectConfig.kt) | 依赖自动管理
 
+**BuildConfig 策略**: Application 默认启用 | Library 按需启用 | 避免过度生成
+
 **依赖注入**: Koin | `@KoinApplication` `@KoinViewModel` `@InjectedParam` | Kotzilla 监控
 
 **模块初始化**: AppInitializer | 拓扑排序 | 循环检测 | 实现 `InitTask`
@@ -213,6 +219,8 @@ cat gradle/libs.versions.toml  # 查看版本
 **锁定**: `activity` 和 `kotlinx-coroutines-core` 已强制统一
 
 **兼容性**: Kotlin<2.3.0 不支持 Explicit Backing Fields | AGP<8.13.0 KSP 可能失败 | Room 3.0 命名空间为 `androidx.room3`（非 `androidx.room`）
+
+**Convention Plugins**: `ykmagic.android.application` | `ykmagic.android.library` | `ykmagic.android.compose` | `ykmagic.android.feature`
 
 ---
 
@@ -245,8 +253,12 @@ cat gradle/libs.versions.toml  # 查看版本
 | [dependency-injection.md](.claude/docs/dependency-injection.md) | Koin 依赖注入 |
 | [datastore.md](.claude/docs/datastore.md) | Proto DataStore |
 | [build-logic.md](.claude/docs/build-logic.md) | Convention Plugins |
+| [build-logic/OPTIMIZATION.md](build-logic/OPTIMIZATION.md) | build-logic 优化报告 |
+| [build-logic/REFACTOR.md](build-logic/REFACTOR.md) | build-logic 重构说明 |
 | [modules.md](.claude/docs/modules.md) | 模块化设计 |
 | [build-publish.md](.claude/docs/build-publish.md) | 构建发布 |
 | [patterns.md](.claude/docs/patterns.md) | 开发模式 |
 | [testing.md](.claude/docs/testing.md) | 测试指南 |
 | [android-studio-tips.md](.claude/docs/android-studio-tips.md) | IDE 优化 |
+
+**参考项目**: [CoolMallKotlin](https://github.com/joker-xii/CoolMallKotlin) - build-logic 最佳实践参考

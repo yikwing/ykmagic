@@ -7,7 +7,6 @@ import java.time.format.DateTimeFormatter
 plugins {
     // Convention Plugins
     id("ykmagic.android.application")
-    id("ykmagic.kotlin.android")
     id("ykmagic.android.compose")
 
     id("kotlin-parcelize")

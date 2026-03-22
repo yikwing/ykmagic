@@ -1,14 +1,12 @@
+package com.yikwing.ykmagic
+
 import org.gradle.api.Project
-import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 
 /**
  * 配置 Android 通用依赖
  */
 internal fun Project.configureAndroidDependencies() {
-    val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
     dependencies {
         // AndroidX 核心库
         add("implementation", libs.findLibrary("core-ktx").get())
@@ -24,18 +22,16 @@ internal fun Project.configureAndroidDependencies() {
 }
 
 /**
- * 配置 Compose 依赖
+ * 配置 Compose 依赖（已废弃，使用 configureAndroidCompose）
  */
+@Deprecated("使用 configureAndroidCompose 替代")
 internal fun Project.configureComposeDependencies() {
-    val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
     dependencies {
         val composeBom = libs.findLibrary("compose-bom").get()
         add("implementation", platform(composeBom))
         add("implementation", libs.findLibrary("compose-material3").get())
         add("implementation", libs.findLibrary("ui-tooling-preview").get())
 
-        // Compose 测试
         add("androidTestImplementation", platform(composeBom))
         add("androidTestImplementation", libs.findLibrary("ui-test-junit4").get())
         add("debugImplementation", libs.findLibrary("ui-tooling").get())

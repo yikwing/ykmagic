@@ -34,13 +34,13 @@ gradlePlugin {
             id = "ykmagic.android.library"
             implementationClass = "AndroidLibraryConventionPlugin"
         }
-        register("kotlinAndroid") {
-            id = "ykmagic.kotlin.android"
-            implementationClass = "KotlinAndroidConventionPlugin"
-        }
         register("androidCompose") {
             id = "ykmagic.android.compose"
             implementationClass = "ComposeConventionPlugin"
+        }
+        register("androidFeature") {
+            id = "ykmagic.android.feature"
+            implementationClass = "AndroidFeatureConventionPlugin"
         }
     }
 }
