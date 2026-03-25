@@ -1,8 +1,10 @@
 # CLAUDE.md
 
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 YkQuickDev - Android 快速开发框架库
 
-**技术栈**: Kotlin 2.3.20 | Koin 4.2.0 | Ktor 3.4.1 | Compose BOM 2026.03.00 | Room 3.0.0-alpha01 | Nav3 1.0.1
+**技术栈**: Kotlin 2.3.20 | Koin 4.2.0 | Ktor 3.4.1 | Compose BOM 2026.03.00 | Room 3.0.0-alpha01 | Nav3 1.0.1 | Coil 3.4.0
 
 **版本信息**: 以 `gradle/libs.versions.toml` 为准
 
@@ -23,9 +25,14 @@ YkQuickDev - Android 快速开发框架库
 | DI 模块 | `app/.../di/AppModule.kt` | Koin 模块聚合（Core/Feature/Network/Data） |
 | 初始化任务 | `app/.../task/` | AppInitializer 的 InitTask 实现 |
 | Compose 组件 | `app/.../components/` | 通用组件（Loading/Error/Image/Center） |
+| Compose 屏幕 | `app/.../ui/screen/` | 页面级 Composable |
+| Compose 主题 | `app/.../ui/theme/` | Material3 主题/颜色/字体 |
 | API 定义 | `app/.../api/apiserver/HttpApi.kt` | Ktor 接口定义 |
+| API 实体 | `app/.../api/entity/` | 请求/响应数据类（@Serializable） |
+| Proto 定义 | `app/src/main/protos/` | DataStore Proto 消息定义 |
+| 后台任务 | `app/.../work/` | WorkManager 任务实现 |
 
-**模块**: config(配置) | network(网络) | extension(工具) | proxy(框架) | datastore(存储) | logger(日志) | permission(权限) | component(UI)
+**模块**: config(配置) | network(网络) | extension(工具) | proxy(框架) | datastore(存储) | permission(权限) | component(UI)
 
 ---
 
@@ -52,6 +59,8 @@ YkQuickDev - Android 快速开发框架库
 ViewModel: 需要参数? 是→@InjectedParam 否→构造注入
 Compose动画: 改变视觉? 是→drawBehind/graphicsLayer 否→改变位置?→offset { }
 Compose回调: 参数匹配? 是→函数引用 否→需要缓存?→是→remember+Lambda 否→Lambda
+后台任务: 需要持久化? 是→WorkManager(CoroutineWorker) 否→协程/viewModelScope
+UI组件: 页面级? 是→ui/screen/ 否→通用复用?→是→components/ 否→ui/widget/
 ```
 
 ---
@@ -157,8 +166,10 @@ keyPassword=your_key_password
 
 ```bash
 # 构建
+./android_build.sh all         # 清理、构建并安装 Release APK
 ./android_build.sh dev         # Debug
 ./android_build.sh build       # Release
+./android_build.sh install     # 安装 Release APK
 ./android_build.sh clean       # 清理
 
 # build-logic 修改后需要清理
@@ -174,7 +185,7 @@ for file in module_*/build.gradle.kts; do sed -i '' '/pattern/d' "$file"; done
 
 # 调试
 adb logcat | grep "YkQuickDev"  # 查看应用日志
-adb install -r app/build/outputs/apk/debug/app-debug.apk  # 安装 Debug
+adb install -r app/build/outputs/apk/debug/app-debug.apk  # 安装 Debug APK
 adb uninstall <package_name>    # 卸载应用
 
 # 质量
@@ -206,6 +217,10 @@ cat gradle/libs.versions.toml  # 查看版本
 
 **内存缓存**: CacheManager | LRU(256) + TTL | 线程安全
 
+**图片加载**: Coil 3.0+ | `AsyncImage()` Compose 组件 | 支持缓存/变换
+
+**后台任务**: WorkManager | 实现 `CoroutineWorker` | Koin 注入
+
 **详细文档**: [modules.md](.claude/docs/modules.md)
 
 ---
@@ -230,7 +245,7 @@ cat gradle/libs.versions.toml  # 查看版本
 
 **依赖**: `gradle/libs.versions.toml` 统一管理 | 避免硬编码 | Debug 工具仅 Debug 版本
 
-**自动依赖**: Convention Plugins 自动添加通用依赖（core-ktx, appcompat, coroutines, testBundle）| Compose 插件自动添加 Compose 依赖 | 模块只需声明特定依赖
+**自动依赖**: Convention Plugins 自动添加通用依赖（core-ktx, appcompat, coroutines, testBundle）| Compose 插件自动添加 Compose 依赖 | Feature 插件自动添加 Koin/Nav3/Lifecycle | 模块只需声明特定依赖
 
 **代码**: 协程和 Flow | "动词 suspend，名词 Flow" | Explicit Backing Fields | `@Serializable`
 

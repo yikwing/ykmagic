@@ -11,3 +11,4 @@ local.properties
 .ace-tool/
 .kotlin/
 app/src/main/assets/kotzilla.key
+.hotswan/
