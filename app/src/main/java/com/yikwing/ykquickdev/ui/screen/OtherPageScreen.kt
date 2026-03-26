@@ -20,13 +20,27 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
 import coil3.compose.AsyncImage
 import com.yikwing.network.RequestState
 import com.yikwing.network.onFailure
 import com.yikwing.network.onSuccess
 import com.yikwing.ykquickdev.components.Center
 import com.yikwing.ykquickdev.viewmodel.HttpBinViewModel
+import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
+
+@Serializable
+data class Product(
+    val id: String,
+) : NavKey
+
+fun EntryProviderScope<NavKey>.otherPageEntry() {
+    entry<Product> { product ->
+        OtherPageScreen(product.id)
+    }
+}
 
 @Composable
 fun OtherPageScreen(
@@ -94,6 +108,6 @@ fun OtherPageScreen(
 
 @Composable
 @Preview
-fun OtherPageScreenPreview() {
+private fun OtherPageScreenPreview() {
     OtherPageScreen(id = "preview-product-123")
 }

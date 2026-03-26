@@ -1,5 +1,8 @@
 package com.yikwing.ykquickdev.ui.screen
 
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,6 +41,15 @@ import com.yikwing.ykquickdev.ui.utils.sdp
 import com.yikwing.ykquickdev.ui.widget.SystemBarsStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
+@Serializable
+data object MainScreen : NavKey
+
+fun EntryProviderScope<NavKey>.mainScreenEntry() {
+    entry<MainScreen> {
+        MainScreen()
+    }
+}
 
 @Composable
 fun MainScreen(coroutineScope: CoroutineScope = rememberCoroutineScope()) {

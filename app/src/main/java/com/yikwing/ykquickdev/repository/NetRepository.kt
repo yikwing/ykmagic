@@ -25,7 +25,7 @@ interface NetRepository {
     suspend fun fetchAndCacheChapters()
 }
 
-@Single(binds = [NetRepository::class])
+@Single
 class NetRepositoryImpl(
     private val httpBinApi: HttpBinApi,
     private val wanAndroidApi: WanAndroidApi,

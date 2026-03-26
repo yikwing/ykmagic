@@ -389,4 +389,61 @@ fun copyAssetToCache(context: Context, fileName: String): Result<File> =
 
 ---
 
+## Nav3 Entry 生命周期行为
+
+### Entry 与 Composition 的关系（重要！）
+
+Nav3 导航时 entry **不是**保持在 STARTED，而是**被移出 Composition**，返回时重新进入。
+
+```
+操作              Composition          ViewModel/SavedState
+─────────────────────────────────────────────────────────
+进入 A            A 进入               A VM 创建
+A → B（动画中）   A、B 同时存在        —
+A → B（动画后）   A 移出，B 保留       A VM 存活（在 backStack）
+B → 返回（动画中）A、B 同时存在        —
+B → 返回（动画后）B 移出，A 重新进入   B VM 销毁
+setRoot(C)        A 移出，C 进入       A VM 销毁
+```
+
+### 两个 Decorator 的分工
+
+| Decorator | 保存内容 | 移除时机 |
+|---|---|---|
+| `rememberViewModelStoreNavEntryDecorator` | ViewModel 实例 | entry 从 backStack pop |
+| `rememberSaveableStateHolderNavEntryDecorator` | `rememberSaveable` 值 | entry 从 backStack pop |
+
+### 生命周期 Hook
+
+由于 entry 离开时会被移出 Composition，**用 `DisposableEffect` 即可**，无需 `LifecycleResumeEffect`：
+
+```kotlin
+// 进入/返回时执行，离开时清理
+DisposableEffect(Unit) {
+    val listener = register()
+    onDispose { listener.unregister() }  // 移出 Composition 后（动画结束后）触发
+}
+```
+
+### WebView 在 Nav3 中的处理
+
+由于 entry 移出 Composition 后 WebView 实例销毁，需通过 ViewModel 保存状态：
+
+```kotlin
+class WebViewModel : ViewModel() {
+    val savedState = Bundle()  // 跟随 entry 存活，不随 Composition 销毁
+}
+
+AndroidView(
+    factory = { context ->
+        WebView(context).apply {
+            if (!vm.savedState.isEmpty) restoreState(vm.savedState) else loadUrl(url)
+        }
+    },
+    onRelease = { webView -> webView.saveState(vm.savedState) },
+)
+```
+
+---
+
 ## （待补充更多模式）

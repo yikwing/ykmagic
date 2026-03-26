@@ -17,7 +17,7 @@ interface OtherRepository {
     fun initHttpBinData(): Flow<RequestState<Headers>>
 }
 
-@Single(binds = [OtherRepository::class])
+@Single
 class OtherRepositoryImpl(
     private val httpBinApi: HttpBinApi,
 ) : OtherRepository {

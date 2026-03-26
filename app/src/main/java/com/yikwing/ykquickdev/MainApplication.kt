@@ -110,7 +110,7 @@ class MainApplication :
 
     override fun newImageLoader(context: PlatformContext): ImageLoader =
         ImageLoader
-            .Builder(this)
+            .Builder(context)
             .crossfade(true)
             .logger(
                 object : Logger {
