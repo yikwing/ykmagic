@@ -33,14 +33,6 @@ object ProjectConfig {
      * Kotlin 编译器选项
      */
     object CompilerOptions {
-        /**
-         * 自由编译器参数
-         * - 启用实验性协程 API
-         * - 启用 Explicit Backing Fields
-         */
-        val FREE_COMPILER_ARGS = listOf(
-            "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-            "-XXLanguage:+ExplicitBackingFields"
-        )
+        val FREE_COMPILER_ARGS = emptyList<String>()
     }
 }

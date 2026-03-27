@@ -241,7 +241,7 @@ cat gradle/libs.versions.toml  # 查看版本
 
 ## 📚 项目约定
 
-**构建**: Convention Plugins 管理通用配置（见 [build-logic.md](.claude/docs/build-logic.md)） | 启用 `-XXLanguage:+ExplicitBackingFields`
+**构建**: Convention Plugins 管理通用配置（见 [build-logic.md](.claude/docs/build-logic.md)）
 
 **依赖**: `gradle/libs.versions.toml` 统一管理 | 避免硬编码 | Debug 工具仅 Debug 版本
 
