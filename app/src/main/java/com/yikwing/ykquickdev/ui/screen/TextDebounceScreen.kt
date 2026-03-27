@@ -22,9 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import com.yikwing.ykquickdev.ui.theme.RubikGemstonesRegular
+import com.yikwing.ykquickdev.components.LocalNavigator
 import com.yikwing.ykquickdev.ui.utils.navigate
 import com.yikwing.ykquickdev.ui.utils.rememberDebounceClick
 import com.yikwing.ykquickdev.ui.utils.sdp
@@ -33,10 +33,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object TextDebounce : NavKey
 
-fun EntryProviderScope<NavKey>.textDebounceEntry(backStack: NavBackStack<NavKey>) {
+fun EntryProviderScope<NavKey>.textDebounceEntry() {
     entry<TextDebounce> {
+        val navigator = LocalNavigator.current
         TextDebounceScreen(
-            navigationToPackInfo = dropUnlessResumed { backStack.navigate(PackageInfoScreen) },
+            navigationToPackInfo = dropUnlessResumed { navigator.navigate(PackageInfoScreen) },
         )
     }
 }

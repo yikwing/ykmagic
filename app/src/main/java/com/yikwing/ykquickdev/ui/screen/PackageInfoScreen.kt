@@ -1,8 +1,8 @@
 package com.yikwing.ykquickdev.ui.screen
 
 import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.yikwing.ykquickdev.components.LocalNavigator
 import com.yikwing.ykquickdev.ui.utils.navigate
 import kotlinx.serialization.Serializable
 import androidx.compose.foundation.layout.Column
@@ -19,11 +19,12 @@ import com.yikwing.ykquickdev.ui.theme.RubikGemstonesRegular
 @Serializable
 data object PackageInfoScreen : NavKey
 
-fun EntryProviderScope<NavKey>.packageInfoEntry(backStack: NavBackStack<NavKey>) {
+fun EntryProviderScope<NavKey>.packageInfoEntry() {
     entry<PackageInfoScreen> {
+        val navigator = LocalNavigator.current
         PackageInfoScreen(
-            navigationToPage = { id -> backStack.navigate(Product(id)) },
-            navigationToDiy = { backStack.navigate(DiyInputScreen) },
+            navigationToPage = { id -> navigator.navigate(Product(id)) },
+            navigationToDiy = { navigator.navigate(DiyInputScreen) },
         )
     }
 }

@@ -1,8 +1,8 @@
 package com.yikwing.ykquickdev.ui.screen
 
 import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
+import com.yikwing.ykquickdev.components.LocalNavigator
 import com.yikwing.ykquickdev.ui.utils.setRoot
 import kotlinx.serialization.Serializable
 import androidx.compose.foundation.clickable
@@ -19,10 +19,11 @@ import com.yikwing.ykquickdev.ui.theme.PermanentMarkerRegular
 @Serializable
 data object AuthRegister : NavKey
 
-fun EntryProviderScope<NavKey>.authRegisterEntry(backStack: NavBackStack<NavKey>) {
+fun EntryProviderScope<NavKey>.authRegisterEntry() {
     entry<AuthRegister> {
+        val navigator = LocalNavigator.current
         AuthRegisterScreen(
-            navigationToHome = { backStack.setRoot(MainScreen) },
+            navigationToHome = { navigator.setRoot(MainScreen) },
         )
     }
 }
