@@ -20,21 +20,3 @@ internal fun Project.configureAndroidDependencies() {
         add("androidTestImplementation", libs.findBundle("androidTestBundle").get())
     }
 }
-
-/**
- * 配置 Compose 依赖（已废弃，使用 configureAndroidCompose）
- */
-@Deprecated("使用 configureAndroidCompose 替代")
-internal fun Project.configureComposeDependencies() {
-    dependencies {
-        val composeBom = libs.findLibrary("compose-bom").get()
-        add("implementation", platform(composeBom))
-        add("implementation", libs.findLibrary("compose-material3").get())
-        add("implementation", libs.findLibrary("ui-tooling-preview").get())
-
-        add("androidTestImplementation", platform(composeBom))
-        add("androidTestImplementation", libs.findLibrary("ui-test-junit4").get())
-        add("debugImplementation", libs.findLibrary("ui-tooling").get())
-        add("debugImplementation", libs.findLibrary("ui-test-manifest").get())
-    }
-}

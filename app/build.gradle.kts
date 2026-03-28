@@ -75,10 +75,6 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
-
         manifestPlaceholders.apply {
             put("debug_time", getDateStr())
         }
@@ -125,12 +121,6 @@ android {
                 "proguard-rules.pro",
             )
         }
-    }
-
-    buildFeatures {
-        buildConfig = true
-        viewBinding = true
-        compose = true
     }
 
     packaging {
@@ -230,7 +220,7 @@ dependencies {
     implementation(libs.androidx.navigation3.ui)
 
     implementation(libs.coil.compose)
-    implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.network.ktor3)
 
     // Debug依赖库
     debugImplementation(libs.glance)

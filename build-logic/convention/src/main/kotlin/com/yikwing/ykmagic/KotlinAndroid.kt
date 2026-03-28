@@ -1,10 +1,8 @@
 package com.yikwing.ykmagic
 
 import com.android.build.api.dsl.CommonExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 /**
@@ -20,24 +18,15 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
  * @param enableBuildConfig 是否启用 BuildConfig（默认 false）
  */
 internal fun Project.configureKotlinAndroid(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
+    commonExtension: CommonExtension,
     enableBuildConfig: Boolean = false,
 ) {
     commonExtension.apply {
         compileSdk = ProjectConfig.COMPILE_SDK
 
-        defaultConfig {
-            minSdk = ProjectConfig.MIN_SDK
-        }
-
         // 条件启用 BuildConfig
         if (enableBuildConfig) {
             buildFeatures.buildConfig = true
-        }
-
-        compileOptions {
-            sourceCompatibility = JavaVersion.VERSION_17
-            targetCompatibility = JavaVersion.VERSION_17
         }
     }
 
@@ -57,9 +46,6 @@ private fun Project.configureKotlin() {
         jvmToolchain(17)
 
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-
-            // 使用 ProjectConfig 中的编译器参数
             freeCompilerArgs.addAll(ProjectConfig.CompilerOptions.FREE_COMPILER_ARGS)
         }
     }

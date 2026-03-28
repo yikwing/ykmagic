@@ -10,10 +10,10 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("com.android.application")
-                apply("org.jetbrains.kotlin.android")
             }
 
             extensions.configure<ApplicationExtension> {
+                defaultConfig.minSdk = ProjectConfig.MIN_SDK
                 defaultConfig.targetSdk = ProjectConfig.TARGET_SDK
 
                 // Application 模块默认启用 BuildConfig

@@ -10,10 +10,11 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply("com.android.library")
-                apply("org.jetbrains.kotlin.android")
             }
 
             extensions.configure<LibraryExtension> {
+                defaultConfig.minSdk = ProjectConfig.MIN_SDK
+
                 // Library 模块默认不启用 BuildConfig
                 // 需要的模块在自己的 build.gradle.kts 中显式启用
                 configureKotlinAndroid(this, enableBuildConfig = false)

@@ -12,9 +12,7 @@ import org.gradle.kotlin.dsl.dependencies
  * - 添加 Compose BOM 和核心依赖
  * - 配置调试和测试工具
  */
-internal fun Project.configureAndroidCompose(
-    commonExtension: CommonExtension<*, *, *, *, *, *>,
-) {
+internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
     commonExtension.buildFeatures.compose = true
 
     dependencies {
