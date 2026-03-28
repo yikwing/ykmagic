@@ -8,11 +8,10 @@ class ComposeConventionPlugin : Plugin<Project> {
         with(target) {
             pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
 
-            // 配置 Compose
-            val commonExtension = extensions.findByType(CommonExtension::class.java)
-            commonExtension?.let {
-                configureAndroidCompose(it)
-            }
+            val commonExtension =
+                extensions.findByType(CommonExtension::class.java)
+                    ?: error("ykmagic.android.compose 必须在 Android 插件（application/library）之后应用")
+            configureAndroidCompose(commonExtension)
         }
     }
 }

@@ -1,9 +1,8 @@
 plugins {
     // Convention Plugins
     id("ykmagic.android.library")
+    id("ykmagic.android.koin")
 
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.kotlin.serialization)
 
     id("maven-publish")
@@ -40,10 +39,6 @@ dependencies {
     implementation(libs.bundles.network.ktor)
 
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(platform(libs.koin.bom))
-    implementation(libs.koin.android)
-    implementation(libs.koin.annotations)
 
     testImplementation(libs.bundles.testBundle)
     androidTestImplementation(libs.bundles.androidTestBundle)

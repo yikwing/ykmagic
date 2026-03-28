@@ -1,9 +1,7 @@
 plugins {
     // Convention Plugins
     id("ykmagic.android.library")
-
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.koin.compiler)
+    id("ykmagic.android.koin")
 
     id("maven-publish")
 }
@@ -36,10 +34,6 @@ dependencies {
 
     implementation(libs.okio)
     implementation(libs.lifecycle.runtime.compose)
-
-    implementation(platform(libs.koin.bom))
-    implementation(libs.koin.core)
-    implementation(libs.koin.annotations)
 
     testImplementation(libs.bundles.testBundle)
 }

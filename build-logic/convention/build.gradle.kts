@@ -21,7 +21,9 @@ dependencies {
     compileOnly(libs.android.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
-    compileOnly(libs.ksp.gradlePlugin)
+    compileOnly(libs.room.gradlePlugin)
+    compileOnly(libs.wire.gradlePlugin)
+    compileOnly(libs.koin.compilerGradlePlugin)
 }
 
 gradlePlugin {
@@ -38,9 +40,17 @@ gradlePlugin {
             id = "ykmagic.android.compose"
             implementationClass = "ComposeConventionPlugin"
         }
-        register("androidFeature") {
-            id = "ykmagic.android.feature"
-            implementationClass = "AndroidFeatureConventionPlugin"
+        register("androidRoom") {
+            id = "ykmagic.android.room"
+            implementationClass = "AndroidRoomConventionPlugin"
+        }
+        register("androidKoin") {
+            id = "ykmagic.android.koin"
+            implementationClass = "AndroidKoinConventionPlugin"
+        }
+        register("androidWire") {
+            id = "ykmagic.android.wire"
+            implementationClass = "AndroidWireConventionPlugin"
         }
     }
 }

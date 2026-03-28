@@ -11,11 +11,10 @@ plugins {
 
     id("kotlin-parcelize")
 
-    alias(libs.plugins.wire)
+    id("ykmagic.android.wire")
 
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room3)
-    alias(libs.plugins.koin.compiler)
+    id("ykmagic.android.room")
+    id("ykmagic.android.koin")
     alias(libs.plugins.kotlin.serialization)
 
     id("com.github.ben-manes.versions") version "0.53.0"
@@ -134,31 +133,12 @@ android {
     }
 }
 
-koinCompiler {
-    userLogs = true
-}
-
-room3 {
-    schemaDirectory("$projectDir/schemas")
-}
-
-wire {
-    sourcePath {
-        srcDir("src/main/protos")
-    }
-    kotlin {
-        android = false
-    }
-}
-
 dependencies {
     // 官方依赖库
     implementation(libs.activity.ktx)
     implementation(libs.activity.compose)
     implementation(libs.fragment.ktx)
-    implementation(libs.core.ktx)
     implementation(libs.collection.ktx)
-    implementation(libs.appcompat)
     implementation(libs.datastore.preferences)
     implementation(libs.androidx.work.runtime.ktx)
 
@@ -166,21 +146,8 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.webkit)
 
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
-
     // 三方依赖库
     implementation(libs.bundles.network.ktor)
-
-    implementation(libs.kotlinx.coroutines.android)
-
-//    implementation("com.github.yikwing.ykmagic:config:0.1.0")
-//    implementation("com.github.yikwing.ykmagic:network:0.1.0")
-//    implementation("com.github.yikwing.ykmagic:proxy:0.1.0")
-//    implementation("com.github.yikwing.ykmagic:extension:0.1.0")
-//    implementation("com.github.yikwing.ykmagic:permission:0.1.0")
-//    implementation("com.github.yikwing.ykmagic:logger:0.1.0")
-//    implementation("com.github.yikwing.ykmagic:datastore:0.1.0")
 
     arrayOf(
         ":module_config",
@@ -194,23 +161,8 @@ dependencies {
         implementation(project(dep))
     }
 
-//    // koin
-//    implementation(platform(libs.koin.bom))
-//    implementation(libs.koin.core)
-//    implementation(libs.koin.android)
-//    implementation(libs.koin.core.coroutines)
-//    implementation(libs.koin.androidx.startup)
-//    // Koin Annotations
-//    implementation(libs.koin.annotations)
-//    // Koin Annotations KSP Compiler
-//    ksp(libs.koin.ksp.compiler)
-
-    // compose依赖库
-    implementation(platform(libs.compose.bom))
-    implementation(libs.compose.material3)
+    // compose material-icons-extended
     implementation(libs.material.icons.extended)
-
-    implementation(libs.ui.tooling.preview)
 
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.lifecycle.viewmodel.navigation3)
@@ -229,19 +181,7 @@ dependencies {
     debugImplementation(libs.chuckerteam)
     releaseImplementation(libs.chuckerteam.no.op)
 
-    // 测试依赖库
-    testImplementation(libs.bundles.testBundle)
-    androidTestImplementation(libs.bundles.androidTestBundle)
-
-    androidTestImplementation(platform(libs.compose.bom))
-    androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
-
-    // -------------- hilt 代支持ksp 再合并 ----------------
-    implementation(platform(libs.koin.bom))
-    implementation(libs.koin.android)
-    implementation(libs.koin.annotations)
+    // compose viewmodel 依赖
     implementation(libs.koin.compose.viewmodel)
 
     // https://juejin.cn/post/7079229035254906888
