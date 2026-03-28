@@ -52,7 +52,6 @@ espresso-core = "3.7.0"
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
-ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 room-gradlePlugin = { group = "androidx.room3", name = "room3-gradle-plugin", version.ref = "room3" }
 koin-compilerGradlePlugin = { group = "io.insert-koin", name = "koin-compiler-gradle-plugin", version.ref = "koin-plugin" }
 wire-gradlePlugin = { group = "com.squareup.wire", name = "wire-gradle-plugin", version.ref = "wire" }
