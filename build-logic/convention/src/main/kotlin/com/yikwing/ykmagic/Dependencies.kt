@@ -12,6 +12,9 @@ internal fun Project.configureAndroidDependencies() {
         add("implementation", libs.findLibrary("core-ktx").get())
         add("implementation", libs.findLibrary("appcompat").get())
 
+        // Lifecycle
+        add("implementation", libs.findLibrary("lifecycle-runtime-ktx").get())
+
         // 协程
         add("implementation", libs.findLibrary("kotlinx-coroutines-android").get())
 

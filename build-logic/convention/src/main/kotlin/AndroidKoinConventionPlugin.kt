@@ -16,7 +16,7 @@ class AndroidKoinConventionPlugin : Plugin<Project> {
 
             dependencies {
                 add("implementation", platform(libs.findLibrary("koin-bom").get()))
-                add("implementation", libs.findLibrary("koin-android").get())
+                add("implementation", libs.findLibrary("koin-compose").get())
                 add("implementation", libs.findLibrary("koin-annotations").get())
             }
         }

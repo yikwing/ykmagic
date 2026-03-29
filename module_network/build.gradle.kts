@@ -37,11 +37,7 @@ android {
 
 dependencies {
     implementation(libs.bundles.network.ktor)
-
     implementation(libs.kotlinx.serialization.json)
-
-    testImplementation(libs.bundles.testBundle)
-    androidTestImplementation(libs.bundles.androidTestBundle)
 }
 
 afterEvaluate {

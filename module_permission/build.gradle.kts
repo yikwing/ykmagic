@@ -28,14 +28,6 @@ android {
     }
 }
 
-dependencies {
-    implementation(libs.core.ktx)
-    implementation(libs.appcompat)
-
-    testImplementation(libs.bundles.testBundle)
-    androidTestImplementation(libs.bundles.androidTestBundle)
-}
-
 afterEvaluate {
     publishing {
         publications {

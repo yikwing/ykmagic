@@ -32,14 +32,6 @@ android {
     }
 }
 
-dependencies {
-    implementation(libs.appcompat)
-    implementation(libs.lifecycle.runtime.compose)
-
-    testImplementation(libs.bundles.testBundle)
-    androidTestImplementation(libs.bundles.androidTestBundle)
-}
-
 afterEvaluate {
     publishing {
         publications {

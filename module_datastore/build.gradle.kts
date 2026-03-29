@@ -31,9 +31,6 @@ android {
 dependencies {
     // Preferences DataStore
     implementation(libs.datastore.preferences)
-
-    testImplementation(libs.bundles.testBundle)
-    androidTestImplementation(libs.bundles.androidTestBundle)
 }
 
 afterEvaluate {

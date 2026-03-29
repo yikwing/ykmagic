@@ -33,9 +33,6 @@ dependencies {
     implementation(libs.androidx.exifinterface)
 
     implementation(libs.okio)
-    implementation(libs.lifecycle.runtime.compose)
-
-    testImplementation(libs.bundles.testBundle)
 }
 
 afterEvaluate {
