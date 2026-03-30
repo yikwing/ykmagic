@@ -12,3 +12,8 @@ local.properties
 .kotlin/
 app/src/main/assets/kotzilla.key
 .hotswan/
+
+# AI 协作规划文件
+task_plan.md
+findings.md
+progress.md
