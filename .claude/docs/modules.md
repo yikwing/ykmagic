@@ -14,7 +14,6 @@
 - 提供统一的拦截器机制(HeaderInterceptor、RetryInterceptor、LogInterceptor)
 - 支持 Debug 模式网络抓包视图(Chucker)
 - 集成 kotlinx.serialization 进行 JSON 序列化
-- 支持 IgnoreHttpResult 灵活解析响应
 - 提供两种 API 请求方式:
   * `requestStateFlow` - 流式请求,返回 `Flow<RequestState<T>>`
   * `requestResult` - 单次请求,返回 `Result<T?>`

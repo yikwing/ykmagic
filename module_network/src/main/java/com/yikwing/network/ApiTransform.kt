@@ -13,11 +13,11 @@ import kotlin.coroutines.cancellation.CancellationException
  * 使用 [ApiConfig.errorCodeChecker] 判断错误码是否表示失败
  *
  * @param result HTTP 响应结果
- * @return 成功时返回数据，失败时抛出 ApiException
+ * @return 成功时返回数据（服务端返回 null 时为 null），失败时抛出 ApiException
  * @throws ApiException 当错误码检查器返回 true 时抛出
  */
 @PublishedApi
-internal fun <T> transformHttpResult(result: BaseHttpResult<T>): T =
+internal fun <T> transformHttpResult(result: BaseHttpResult<T>): T? =
     if (ApiConfig.errorCodeChecker(result.errorCode)) {
         throw ApiException(result.errorCode, result.errorMsg)
     } else {
@@ -90,7 +90,7 @@ inline fun <T> requestStateFlow(crossinline block: suspend () -> BaseHttpResult<
  * val data = requestResult { apiService.getData() }.getOrNull()
  * ```
  */
-suspend inline fun <T> requestResult(crossinline block: suspend () -> BaseHttpResult<T>): Result<T> =
+suspend inline fun <T> requestResult(crossinline block: suspend () -> BaseHttpResult<T>): Result<T?> =
     try {
         val result = block()
         // 使用公共函数转换结果，成功返回数据，失败抛出 ApiException

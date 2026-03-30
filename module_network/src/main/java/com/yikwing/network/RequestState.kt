@@ -1,11 +1,6 @@
 package com.yikwing.network
 
-import kotlinx.coroutines.flow.StateFlow
-
-/**
- * 包含 [RequestState] 状态的 StateFlow 类型别名
- */
-typealias RStateFlow<T> = StateFlow<RequestState<T>>
+import kotlinx.coroutines.flow.Flow
 
 /**
  * 请求状态封装
@@ -197,7 +192,7 @@ class ResultBuilder<T> {
  * }
  * ```
  */
-suspend inline fun <T> RStateFlow<T>.collectState(init: ResultBuilder<T>.() -> Unit) {
+suspend inline fun <T> Flow<RequestState<T>>.collectState(init: ResultBuilder<T>.() -> Unit) {
     val result = ResultBuilder.build(init)
 
     collect { state ->
