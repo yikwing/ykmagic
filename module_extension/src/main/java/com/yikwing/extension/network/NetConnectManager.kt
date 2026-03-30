@@ -68,7 +68,7 @@ data class NetworkState(
  * ) : ViewModel()
  *
  * // 在其他类中
- * class MyRepository @Inject constructor(
+ * class MyRepository(
  *     private val netConnectManager: NetConnectManager
  * )
  * ```
@@ -156,10 +156,12 @@ class NetConnectManager(
 
     /** 一次性查询：VPN 是否激活（无论底层网络类型） */
     val isVpnActive: Boolean
-        get() = connectivityManager.activeNetwork?.let {
-            connectivityManager.getNetworkCapabilities(it)
-                ?.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
-        } ?: false
+        get() =
+            connectivityManager.activeNetwork?.let {
+                connectivityManager
+                    .getNetworkCapabilities(it)
+                    ?.hasTransport(NetworkCapabilities.TRANSPORT_VPN)
+            } ?: false
 
     private val networkCallback =
         object : ConnectivityManager.NetworkCallback() {
@@ -168,7 +170,7 @@ class NetConnectManager(
             }
 
             override fun onLost(network: Network) {
-                _networkState.value = NetworkState(isConnected = false, type = NetworkType.NONE)
+                _networkState.value = queryCurrentNetworkState()
             }
 
             override fun onCapabilitiesChanged(
@@ -180,11 +182,8 @@ class NetConnectManager(
         }
 
     init {
-        // 先注册回调，避免查询和注册之间的状态丢失窗口
+        // registerDefaultNetworkCallback 会立即触发一次 onCapabilitiesChanged 回调当前状态
         connectivityManager.registerDefaultNetworkCallback(networkCallback)
-
-        // 再查询当前网络状态
-        _networkState.value = queryCurrentNetworkState()
     }
 
     // ==================== Private ====================
