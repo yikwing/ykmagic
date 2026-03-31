@@ -155,7 +155,7 @@ dependencies {
         ":module_proxy",
         ":module_extension",
         ":module_permission",
-        ":module_component",
+        ":module_compose",
     ).forEach { dep ->
         implementation(project(dep))
     }

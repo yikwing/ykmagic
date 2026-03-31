@@ -5,8 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -16,17 +17,20 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import coil3.compose.AsyncImage
+import com.yikwing.compose.image.ImageSource
+import com.yikwing.compose.image.RoundedImage
 import com.yikwing.network.RequestState
 import com.yikwing.network.onFailure
 import com.yikwing.network.onSuccess
+import com.yikwing.proxy.R
 import com.yikwing.ykquickdev.components.Center
+import com.yikwing.ykquickdev.ui.utils.sdp
 import com.yikwing.ykquickdev.viewmodel.HttpBinViewModel
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
@@ -64,13 +68,12 @@ fun OtherPageScreen(
                             .padding(horizontal = 8.dp, vertical = 4.dp),
                 )
 
-                AsyncImage(
-                    model = "https://images.pexels.com/photos/34353414/pexels-photo-34353414.jpeg",
-                    contentDescription = null,
-                    modifier =
-                        Modifier.clip(
-                            RoundedCornerShape(6),
-                        ),
+                RoundedImage(
+                    source = ImageSource.Network("https://images.pexels.com/photos/34353414/pexels-photo-34353414.jpeg"),
+                    cornerRadius = 6.sdp,
+                    modifier = Modifier
+                        .width(300.sdp)
+                        .height(400.sdp),
                 )
 
                 when (uiState.headers) {

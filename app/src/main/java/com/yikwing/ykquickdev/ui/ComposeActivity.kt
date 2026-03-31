@@ -8,8 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.runtime.CompositionLocalProvider
+import com.yikwing.compose.interaction.NoIndication
 import com.yikwing.ykquickdev.app.AppNavGraph
-import com.yikwing.ykquickdev.components.NoIndication
 import com.yikwing.ykquickdev.ui.utils.ProvideDesignScale
 
 /**

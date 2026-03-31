@@ -26,7 +26,7 @@ import androidx.navigation3.runtime.NavKey
 import com.yikwing.ykquickdev.ui.theme.RubikGemstonesRegular
 import com.yikwing.ykquickdev.components.LocalNavigator
 import com.yikwing.ykquickdev.ui.utils.navigate
-import com.yikwing.ykquickdev.ui.utils.rememberDebounceClick
+import com.yikwing.compose.interaction.rememberDebounceClick
 import com.yikwing.ykquickdev.ui.utils.sdp
 import kotlinx.serialization.Serializable
 

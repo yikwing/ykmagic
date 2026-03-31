@@ -8,7 +8,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.yikwing.ykquickdev.ui.utils.OnEnterEffect
 
 /**
  * 控制系统状态栏和导航栏图标颜色
@@ -32,12 +31,14 @@ fun SystemBarsStyle(
             view.context.findActivity()?.window
         } ?: return
 
-    OnEnterEffect(statusBarDarkIcons, navigationBarDarkIcons) {
+    DisposableEffect(statusBarDarkIcons, navigationBarDarkIcons) {
         val controller = WindowCompat.getInsetsController(currentWindow, view)
 
         // 设置新状态
         controller.isAppearanceLightStatusBars = statusBarDarkIcons
         controller.isAppearanceLightNavigationBars = navigationBarDarkIcons
+
+        onDispose { }
     }
 }
 
