@@ -18,17 +18,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.yikwing.compose.image.CornerRadius
 import com.yikwing.compose.image.ImageSource
 import com.yikwing.compose.image.RoundedImage
 import com.yikwing.network.RequestState
 import com.yikwing.network.onFailure
 import com.yikwing.network.onSuccess
-import com.yikwing.proxy.R
 import com.yikwing.ykquickdev.components.Center
 import com.yikwing.ykquickdev.ui.utils.sdp
 import com.yikwing.ykquickdev.viewmodel.HttpBinViewModel
@@ -70,10 +69,8 @@ fun OtherPageScreen(
 
                 RoundedImage(
                     source = ImageSource.Network("https://images.pexels.com/photos/34353414/pexels-photo-34353414.jpeg"),
-                    cornerRadius = 6.sdp,
-                    modifier = Modifier
-                        .width(300.sdp)
-                        .height(400.sdp),
+                    corner = CornerRadius(8.sdp),
+                    modifier = Modifier.width(300.sdp).height(400.sdp),
                 )
 
                 when (uiState.headers) {

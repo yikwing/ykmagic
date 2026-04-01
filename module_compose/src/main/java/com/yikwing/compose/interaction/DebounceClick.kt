@@ -5,28 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
-
-class LongRef(
-    var initial: Long = 0L,
-) : ReadWriteProperty<Any?, Long> {
-    override fun getValue(
-        thisRef: Any?,
-        property: KProperty<*>,
-    ): Long = initial
-
-    override fun setValue(
-        thisRef: Any?,
-        property: KProperty<*>,
-        value: Long,
-    ) {
-        initial = value
-    }
-}
-
-@Composable
-private fun rememberLongRef(initial: Long = 0L): LongRef = remember { LongRef(initial) }
+import com.yikwing.compose.util.Ref
 
 @Composable
 fun rememberDebounceClick(
@@ -34,13 +13,13 @@ fun rememberDebounceClick(
     onClick: () -> Unit,
 ): () -> Unit {
     val currentOnClick by rememberUpdatedState(onClick)
-    var lastClickTime by rememberLongRef()
+    val lastClickTime = remember { Ref(0L) }
 
-    return remember {
+    return remember(debounceMs) {
         {
             val now = SystemClock.elapsedRealtime()
-            if (now - lastClickTime > debounceMs) {
-                lastClickTime = now
+            if (now - lastClickTime.value > debounceMs) {
+                lastClickTime.value = now
                 currentOnClick()
             }
         }

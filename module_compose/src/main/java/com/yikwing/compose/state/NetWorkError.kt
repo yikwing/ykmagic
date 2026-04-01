@@ -9,16 +9,16 @@ import com.yikwing.compose.layout.Center
 
 @Composable
 fun NetWorkError(
-    throwable: Throwable?,
+    message: String?,
     modifier: Modifier = Modifier,
 ) {
     Center(modifier = modifier) {
-        Text(text = "${throwable?.message}")
+        Text(text = message.orEmpty())
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun NetWorkErrorPreview() {
-    NetWorkError(RuntimeException("Not Found"), modifier = Modifier.fillMaxSize())
+    NetWorkError("Not Found", modifier = Modifier.fillMaxSize())
 }

@@ -8,12 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+
+data class CornerRadius(
+    val topStart: Dp = 0.dp,
+    val topEnd: Dp = topStart,
+    val bottomStart: Dp = topStart,
+    val bottomEnd: Dp = topStart,
+)
 
 sealed class ImageSource {
     data class Local(
@@ -28,9 +34,9 @@ sealed class ImageSource {
 @Composable
 private fun BaseImage(
     source: ImageSource,
-    modifier: Modifier = Modifier,
     contentScale: ContentScale,
-    placeholder: Painter? = null,
+    modifier: Modifier = Modifier,
+    @DrawableRes placeholder: Int? = null,
 ) {
     when (source) {
         is ImageSource.Local -> {
@@ -48,7 +54,7 @@ private fun BaseImage(
                 modifier = modifier,
                 contentDescription = null,
                 contentScale = contentScale,
-                placeholder = placeholder,
+                placeholder = placeholder?.let { painterResource(it) },
             )
         }
     }
@@ -59,23 +65,19 @@ fun RoundedImage(
     source: ImageSource,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    placeholder: Painter? = null,
-    cornerRadius: Dp = 0.dp,
-    topStart: Dp = cornerRadius,
-    topEnd: Dp = cornerRadius,
-    bottomStart: Dp = cornerRadius,
-    bottomEnd: Dp = cornerRadius,
+    @DrawableRes placeholder: Int? = null,
+    corner: CornerRadius = CornerRadius(),
 ) {
     val shape =
-        remember(topStart, topEnd, bottomStart, bottomEnd) {
+        remember(corner) {
             RoundedCornerShape(
-                topStart = topStart,
-                topEnd = topEnd,
-                bottomStart = bottomStart,
-                bottomEnd = bottomEnd,
+                topStart = corner.topStart,
+                topEnd = corner.topEnd,
+                bottomStart = corner.bottomStart,
+                bottomEnd = corner.bottomEnd,
             )
         }
-    BaseImage(source, modifier.clip(shape), contentScale, placeholder)
+    BaseImage(source, contentScale, modifier.clip(shape), placeholder)
 }
 
 @Composable
@@ -83,7 +85,7 @@ fun CircleImage(
     source: ImageSource,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
-    placeholder: Painter? = null,
+    @DrawableRes placeholder: Int? = null,
 ) {
-    BaseImage(source, modifier.clip(CircleShape), contentScale, placeholder)
+    BaseImage(source, contentScale, modifier.clip(CircleShape), placeholder)
 }
