@@ -1,8 +1,5 @@
 package com.yikwing.ykquickdev.ui.screen
 
-import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavKey
-import kotlinx.serialization.Serializable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,13 +31,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import com.yikwing.compose.window.SystemBarsStyle
 import com.yikwing.ykquickdev.components.Center
 import com.yikwing.ykquickdev.ui.BottomNavItems
 import com.yikwing.ykquickdev.ui.CustomBottomBar
 import com.yikwing.ykquickdev.ui.utils.sdp
-import com.yikwing.ykquickdev.ui.widget.SystemBarsStyle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 
 @Serializable
 data object MainScreen : NavKey
@@ -244,6 +244,6 @@ private enum class CartLayoutId {
     showBackground = true,
 )
 @Composable
-fun MainScreenPreview() {
+private fun MainScreenPreview() {
     CartRoute()
 }
