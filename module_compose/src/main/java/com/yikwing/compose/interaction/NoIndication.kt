@@ -6,7 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.node.DelegatableNode
 
 object NoIndication : IndicationNodeFactory {
-    override fun create(interactionSource: InteractionSource): DelegatableNode = object : Modifier.Node(), DelegatableNode {}
+    override fun create(interactionSource: InteractionSource): DelegatableNode = object : Modifier.Node() {}
 
     override fun hashCode(): Int = -1
 
