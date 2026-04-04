@@ -52,6 +52,10 @@ fun OtherPageScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.initHttpBinData()
+    }
+
     Surface(modifier = Modifier.fillMaxSize()) {
         Center {
             Column(
@@ -75,12 +79,7 @@ fun OtherPageScreen(
 
                 when (uiState.headers) {
                     is RequestState.Loading -> {
-                        Column {
-                            CircularProgressIndicator()
-                            LaunchedEffect(Unit) {
-                                viewModel.initHttpBinData()
-                            }
-                        }
+                        CircularProgressIndicator()
                     }
 
                     is RequestState.Success -> {
