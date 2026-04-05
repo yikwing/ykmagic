@@ -17,6 +17,8 @@ plugins {
     id("ykmagic.android.koin")
     alias(libs.plugins.kotlin.serialization)
 
+    alias(libs.plugins.hotswan.compiler)
+
     id("com.github.ben-manes.versions") version "0.53.0"
 }
 

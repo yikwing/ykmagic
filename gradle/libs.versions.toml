@@ -157,6 +157,8 @@ room3 = { id = "androidx.room3", version.ref = "room3" }
 
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 
+hotswan-compiler = { id = "com.github.skydoves.compose.hotswan.compiler", version = "1.2.0" }
+
 [bundles]
 network-okhttp = ["okhttp3", "okhttp3-logging-interceptor", "retrofit2", "retrofit2-kotlinx-serialization", "kotlinx-serialization-json"]
 network-ktor = ["ktor-client-core", "ktor-client-cio", "ktor-client-logging", "ktor-client-content-negotiation", "ktor-serialization-kotlinx-json"]

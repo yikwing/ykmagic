@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.yikwing.ykquickdev.ui.theme.RubikGemstonesRegular
-import com.yikwing.ykquickdev.components.LocalNavigator
-import com.yikwing.ykquickdev.ui.utils.navigate
 import com.yikwing.compose.interaction.rememberDebounceClick
+import com.yikwing.ykquickdev.components.LocalNavigator
+import com.yikwing.ykquickdev.ui.theme.RubikGemstonesRegular
+import com.yikwing.ykquickdev.ui.utils.navigate
 import com.yikwing.ykquickdev.ui.utils.sdp
 import kotlinx.serialization.Serializable
 
@@ -54,7 +54,11 @@ fun TextDebounceScreen(navigationToPackInfo: () -> Unit) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Box(
-            modifier = Modifier.fillMaxWidth().height(100.sdp).background(Color.Cyan),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(100.sdp)
+                    .background(Color.Cyan),
         )
 
         Text(
@@ -62,7 +66,10 @@ fun TextDebounceScreen(navigationToPackInfo: () -> Unit) {
             fontFamily = RubikGemstonesRegular,
             color = Color.Black,
             fontSize = 24.sp,
-            modifier = Modifier.statusBarsPadding().padding(16.sdp),
+            modifier =
+                Modifier
+                    .statusBarsPadding()
+                    .padding(16.sdp),
         )
 
         Column(
