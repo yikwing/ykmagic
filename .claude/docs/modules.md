@@ -10,7 +10,7 @@
 - 提供类型安全的配置访问
 
 ### 2. module_network - 网络请求模块
-- 基于 Ktor Client + OkHttp Engine 封装（已从 Retrofit 迁移）
+- 基于 Ktor Client + CIO Engine 封装（已从 Retrofit 迁移）
 - 提供统一的拦截器机制(HeaderInterceptor、RetryInterceptor、LogInterceptor)
 - 支持 Debug 模式网络抓包视图(Chucker)
 - 集成 kotlinx.serialization 进行 JSON 序列化
@@ -25,27 +25,27 @@
 - 资源扩展函数简化资源获取
 - CacheManager 提供线程安全的内存缓存（LRU + TTL）
 
-### 4. module_datastore - DataStore 封装
-- 基于 Jetpack DataStore Preferences
-- 提供属性委托方式的便捷访问
-- 通过 ContentProvider 自动初始化，无需手动调用
+### 4. module_compose - Compose UI 组件模块
+- 提供可复用的 Compose 组件，避免在 app 层重复定义
+- `layout/Center.kt` — 居中布局容器
+- `state/LoadingWidget.kt` — 加载状态组件（`CircularProgressIndicator`）
+- `state/NetWorkError.kt` — 网络错误状态组件（含重试按钮）
+- `image/ImageWidget.kt` — 图片组件（`RoundedImage` / `CircleImage`，支持本地/网络图片，`ImageSource` 密封类）
+- `window/SystemBarsStyle.kt` — 控制状态栏/导航栏图标颜色
+- `interaction/DebounceClick.kt` — `rememberDebounceClick`，防抖点击
+- `lifecycle/AppLifecycleObserver.kt` — 宿主生命周期监听（前后台切换）
 
 ### 5. module_permission - 权限请求模块
 - 基于 Fragment 封装统一的权限请求流程
 - 简化权限申请逻辑
 
-### 6. module_logger - 日志组件
-- 基于 Logger 库的统一日志组件
-- 支持自定义格式化策略
-
-### 7. module_proxy - 基础组件模块
+### 6. module_proxy - 基础组件模块
 - 提供 BaseActivity、BaseFragment、LazyFragment
 - ActivityHierarchyManager 管理 Activity 栈
 - AppInitializer 支持模块化初始化
 
-### 8. module_component - UI 组件模块
-- RoundedImageView: 支持独立设置各角圆角半径
-- ImBarWrapperView: 使用 WindowInsets 处理状态栏高度
+### 8. module_component - 传统 View 组件模块（空/保留）
+- 目录存在但当前无代码，Compose 组件已迁移至 `module_compose`
 
 ## 初始化架构 (AppInitializer)
 
@@ -56,23 +56,17 @@
 // 在 Application.onCreate() 中
 AppInitializer.getInstance(this)
     .addTask(ConfigInjectInitTask())
-    .addTask(LoggerInitTask())
     .addTask(NetworkInitTask())
     .build(debug = true)
 ```
-
-> **注意**: DataStore 模块已改为 ContentProvider 自动初始化，无需添加 DataStoreInitTask。
 
 **创建初始化任务**:
 ```kotlin
 class ConfigInjectInitTask : Initializer<Unit> {
     override fun create(context: Context) {
-        // 初始化代码
+        YkConfigManager.setUp(BuildConfig.YK_CONFIG)
     }
-
-    override fun dependencies(): Set<Class<out Initializer<*>>> = setOf(
-        LoggerInitTask::class.java  // 声明依赖
-    )
+    override fun dependencies(): Set<Class<out Initializer<*>>> = setOf()
 }
 ```
 

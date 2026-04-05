@@ -17,8 +17,7 @@ class UserViewModel(private val api: ApiService) : ViewModel() {
 
     fun load(userId: String) {
         viewModelScope.launch {
-            api.getUserInfo(userId)
-                .requestStateFlow()
+            requestStateFlow { api.getUserInfo(userId) }
                 .collect { _state.value = it }
         }
     }
@@ -43,7 +42,7 @@ fun UserScreen(vm: UserViewModel = koinViewModel()) {
 // Repository
 class UserRepository(private val api: ApiService) {
     suspend fun sync(userId: String): Result<User?> {
-        return api.getUserInfo(userId).requestResult()
+        return requestResult { api.getUserInfo(userId) }
     }
 }
 
@@ -59,14 +58,15 @@ class SyncViewModel(private val repo: UserRepository) : ViewModel() {
     }
 }
 
-// InitTask 使用
-class DataSyncTask(private val repo: UserRepository) : InitTask {
-    override fun process(app: Application) {
+// Initializer 使用（在 AppInitializer 链中执行的任务）
+class DataSyncTask(private val repo: UserRepository) : Initializer<Unit> {
+    override fun create(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             repo.sync("default_user")
         }
     }
-    override fun dependencies() = listOf(LoggerInitTask::class.java)
+    override fun dependencies(): Set<Class<out Initializer<*>>> =
+        setOf(ConfigInjectInitTask::class.java)
 }
 ```
 
@@ -103,7 +103,7 @@ class ApiServiceImpl(private val client: HttpClient) : ApiService {
 ```kotlin
 // Repository
 class UserRepository(private val api: ApiService) {
-    suspend fun getUser(id: String) = api.getUserInfo(id).requestResult()
+    suspend fun getUser(id: String) = requestResult { api.getUserInfo(id) }
 }
 
 // ViewModel
@@ -133,8 +133,7 @@ class DetailViewModel(
 
     private fun loadUser() {
         viewModelScope.launch {
-            repo.getUser(userId)
-                .requestStateFlow()
+            requestStateFlow { repo.getUser(userId) }
                 .collect { _state.value = it }
         }
     }
@@ -188,7 +187,7 @@ class UserRepository(
     private val api: ApiService,
     private val dataStore: DataStore<UserSettings>
 ) {
-    suspend fun getUser(id: String) = api.getUserInfo(id).requestResult()
+    suspend fun getUser(id: String) = requestResult { api.getUserInfo(id) }
     suspend fun saveSettings(settings: UserSettings) {
         dataStore.updateData { settings }
     }
@@ -243,64 +242,60 @@ class ConfigViewModel : ViewModel() {
 
 ## DataStore 操作
 
-### Proto 文件
+### Proto 文件（Wire 风格）
 
 ```protobuf
-// src/main/proto/user_settings.proto
+// app/src/main/protos/UserPreferences.proto
 syntax = "proto3";
-option java_package = "com.yikwing.datastore";
+option java_package = "com.yikwing.ykquickdev";
 option java_multiple_files = true;
 
-message UserSettings {
-  bool dark_mode = 1;
-  string language = 2;
-  int32 font_size = 3;
-  bool notifications_enabled = 4;
+message UserPreferences {
+    string name = 1;
+    int32 age = 2;
+    bool is_male = 3;
 }
 ```
+
+> Wire 插件将 `.proto` 文件编译为 Kotlin data class，使用 `.copy()` 修改字段（不是 protobuf-java 的 `.toBuilder().build()`）。
 
 ### 使用 DataStore
 
 ```kotlin
-// DataStore 管理类
-class UserPreferences(private val dataStore: DataStore<UserSettings>) {
-    val settings: Flow<UserSettings> = dataStore.data
+// Serializer（Wire 风格）
+object UserPreferencesSerializer : Serializer<UserPreferences> {
+    override val defaultValue = UserPreferences()
 
-    suspend fun updateTheme(isDark: Boolean) {
-        dataStore.updateData { it.toBuilder().setDarkMode(isDark).build() }
-    }
+    override suspend fun readFrom(input: InputStream): UserPreferences =
+        UserPreferences.ADAPTER.decode(input.source().buffer())
 
-    suspend fun updateLanguage(language: String) {
-        dataStore.updateData { it.toBuilder().setLanguage(language).build() }
-    }
-
-    suspend fun updateSettings(
-        darkMode: Boolean? = null,
-        language: String? = null,
-        fontSize: Int? = null
-    ) {
-        dataStore.updateData { settings ->
-            val builder = settings.toBuilder()
-            darkMode?.let { builder.setDarkMode(it) }
-            language?.let { builder.setLanguage(it) }
-            fontSize?.let { builder.setFontSize(it) }
-            builder.build()
-        }
-    }
+    override suspend fun writeTo(t: UserPreferences, output: OutputStream) =
+        t.adapter.encode(output.sink().buffer(), t)
 }
+
+val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
+    fileName = "user_preferences.pb",
+    serializer = UserPreferencesSerializer,
+)
+
+// DataStore 操作（Wire 使用 .copy()）
+dataStore.updateData { current ->
+    current.copy(name = "Alice", age = 25)
+}
+```
 
 // ViewModel
 @KoinViewModel
-class SettingsViewModel(private val prefs: UserPreferences) : ViewModel() {
-    val settings = prefs.settings.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = UserSettings.getDefaultInstance()
-    )
+class SettingsViewModel(
+    private val dataStore: DataStore<UserPreferences>  // Koin 注入
+) : ViewModel() {
+    val name: StateFlow<String> = dataStore.data
+        .map { it.name }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
-    fun toggleDarkMode() {
+    fun updateName(name: String) {
         viewModelScope.launch {
-            prefs.updateTheme(!settings.value.darkMode)
+            dataStore.updateData { it.copy(name = name) }
         }
     }
 }
@@ -308,12 +303,8 @@ class SettingsViewModel(private val prefs: UserPreferences) : ViewModel() {
 // Composable
 @Composable
 fun SettingsScreen(vm: SettingsViewModel = koinViewModel()) {
-    val settings by vm.settings.collectAsStateWithLifecycle()
-
-    Switch(
-        checked = settings.darkMode,
-        onCheckedChange = { vm.toggleDarkMode() }
-    )
+    val name by vm.name.collectAsStateWithLifecycle()
+    Text(name)
 }
 ```
 
@@ -388,37 +379,32 @@ class UserViewModel(private val repo: UserRepository) : ViewModel() {
 
 ## 模块初始化
 
-### 实现 InitTask
+### 实现 Initializer
 
 ```kotlin
-// 基础初始化任务
-class MyInitTask : InitTask {
-    override fun dependencies() = listOf(LoggerInitTask::class.java)
-
-    override fun process(app: Application) {
-        Log.d("Init", "MyInitTask started")
-        ThirdPartySDK.init(app)
-        Log.d("Init", "MyInitTask completed")
+// 实现 Initializer<T> 接口（在 module_proxy 中定义）
+class MyInitTask : Initializer<Unit> {
+    override fun create(context: Context) {
+        ThirdPartySDK.init(context)
     }
+
+    override fun dependencies(): Set<Class<out Initializer<*>>> =
+        setOf(ConfigInjectInitTask::class.java)
 }
 
 // Application 注册
 @KoinApplication
-class MyApplication : Application() {
+class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-
-        startKoin {
-            androidContext(this@MyApplication)
-            modules(/* 模块列表 */)
+        startKoin<MainApplication> {
+            androidContext(this@MainApplication)
         }
-
-        AppInitializer.init(
-            this,
-            LoggerInitTask(),
-            MyInitTask(),
-            NetworkInitTask()
-        )
+        AppInitializer
+            .getInstance(this)
+            .addTask(ConfigInjectInitTask())
+            .addTask(MyInitTask())
+            .build(debug = true)
     }
 }
 ```
@@ -427,33 +413,23 @@ class MyApplication : Application() {
 
 ```kotlin
 // 无依赖
-class LoggerInitTask : InitTask {
-    override fun dependencies() = emptyList()
-    override fun process(app: Application) {
-        Logger.init(app)
+class ConfigInjectInitTask : Initializer<Unit> {
+    override fun create(context: Context) {
+        YkConfigManager.setUp(BuildConfig.YK_CONFIG)
     }
+    override fun dependencies(): Set<Class<out Initializer<*>>> = setOf()
 }
 
-// 依赖日志
-class NetworkInitTask : InitTask {
-    override fun dependencies() = listOf(LoggerInitTask::class.java)
-    override fun process(app: Application) {
-        NetworkManager.init(app)
+// 依赖 Config
+class NetworkInitTask : Initializer<Unit> {
+    override fun create(context: Context) {
+        NetworkManager.init(context)
     }
+    override fun dependencies(): Set<Class<out Initializer<*>>> =
+        setOf(ConfigInjectInitTask::class.java)
 }
 
-// 依赖日志和网络
-class DatabaseInitTask : InitTask {
-    override fun dependencies() = listOf(
-        LoggerInitTask::class.java,
-        NetworkInitTask::class.java
-    )
-    override fun process(app: Application) {
-        DatabaseManager.init(app)
-    }
-}
-
-// 执行顺序: LoggerInitTask → NetworkInitTask → DatabaseInitTask
+// 执行顺序由拓扑排序自动决定: ConfigInjectInitTask → NetworkInitTask
 ```
 
 ---

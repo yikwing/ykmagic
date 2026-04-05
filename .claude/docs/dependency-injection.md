@@ -4,14 +4,14 @@
 
 ## Application 初始化
 
-位置: MainApplication.kt:38-47
+位置: `app/.../MainApplication.kt`
 
 ```kotlin
 @KoinApplication
 class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
-        startKoin {
+        startKoin<MainApplication> {
             androidContext(this@MainApplication)
         }
     }
@@ -74,16 +74,20 @@ object UserManager {
 
 ## Qualifier 支持
 
-区分同类型依赖:
+区分同类型依赖（项目定义了 `@BaseUrl` 和 `@DebugFlag`，位于 `module_network/NetworkQualifiers.kt`）:
 
 ```kotlin
 @Singleton
 @BaseUrl
-fun provideBaseUrl(): String = "https://api.example.com"
+fun provideBaseUrl(): String = YkConfigManager.config.baseUrl
 
 @Singleton
-@ApplicationInterceptors
-fun provideApplicationInterceptors(): List<Interceptor> = ...
+@DebugFlag
+fun provideDebug(): Boolean = BuildConfig.DEBUG
+
+// 注入时使用同名注解
+@Singleton
+fun provideHttpClient(json: Json, @BaseUrl baseUrl: String, @DebugFlag debug: Boolean): HttpClient = ...
 ```
 
 ## KSP 配置

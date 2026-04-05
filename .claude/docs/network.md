@@ -21,13 +21,13 @@
 
 ```toml
 [versions]
-ktor = "3.3.3"
-kotlinx-serialization = "1.7.3"
+ktor = "3.4.2"
+kotlinx-serialization = "1.10.0"
 
 [bundles]
 network-ktor = [
     "ktor-client-core",
-    "ktor-client-okhttp",
+    "ktor-client-cio",
     "ktor-client-content-negotiation",
     "ktor-client-logging",
     "ktor-serialization-kotlinx-json"
@@ -192,31 +192,51 @@ val state by viewModel.uiState.collectAsStateWithLifecycle()
 
 ## Koin 依赖注入
 
-### NetworkModule
+两个模块分层配置：
+
+- `NetworkModule`（`module_network`）：提供 `Json` 配置
+- `AppNetworkModule`（`app`）：注入 `@BaseUrl`/`@DebugFlag`，构建 `HttpClient`
 
 ```kotlin
-@Module
+// module_network/NetworkModule.kt
+@Module @Configuration @ComponentScan("com.yikwing.network")
 object NetworkModule {
     @Singleton
     fun provideJson(): Json = Json {
+        isLenient = true
         ignoreUnknownKeys = true
         coerceInputValues = true
         explicitNulls = false
     }
+}
+
+// app/di/AppNetworkModule.kt
+@Module @Configuration
+object AppNetworkModule {
+    @Singleton @BaseUrl
+    fun provideBaseUrl(): String = YkConfigManager.config.baseUrl
+
+    @Singleton @DebugFlag
+    fun provideDebug(): Boolean = BuildConfig.DEBUG
 
     @Singleton
-    fun provideHttpClient(
-        okHttpClient: OkHttpClient,
-        json: Json,
-        @BaseUrl baseUrl: String,
-    ): HttpClient = HttpClient(OkHttp) {
-        engine { preconfigured = okHttpClient }
-        install(ContentNegotiation) { json(json) }
-        install(DefaultRequest) {
-            url(baseUrl)
-            contentType(ContentType.Application.Json)
+    fun provideHttpClient(json: Json, @BaseUrl baseUrl: String, @DebugFlag debug: Boolean): HttpClient =
+        HttpClient {
+            install(ContentNegotiation) { json(json) }
+            install(DefaultRequest) {
+                url(baseUrl)
+                contentType(ContentType.Application.Json)
+            }
+            install(HttpRequestRetry) {
+                maxRetries = 3
+                retryOnServerErrors()
+                exponentialDelay()
+            }
+            install(Logging) {
+                logger = Logger.ANDROID
+                level = if (debug) LogLevel.ALL else LogLevel.NONE
+            }
         }
-    }
 }
 ```
 

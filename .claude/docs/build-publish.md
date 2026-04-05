@@ -59,8 +59,8 @@ adb install app/build/outputs/apk/release/app-release.apk
 | JDK 版本 | 17 |
 | 编译 SDK | 36 (Android 15) |
 | 最低 SDK | 26 (Android 8.0) |
-| Kotlin 版本 | 2.3.0 |
-| KSP 版本 | 2.3.4 |
+| Kotlin 版本 | 2.3.20 |
+| KSP 版本 | 2.3.6 |
 
 ## 必需配置文件
 

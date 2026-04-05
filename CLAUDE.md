@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 YkQuickDev - Android 快速开发框架库
 
-**技术栈**: Kotlin 2.3.20 | Koin 4.2.0 | Ktor 3.4.1 | Compose BOM 2026.03.00 | Room 3.0.0-alpha01 | Nav3 1.0.1 | Coil 3.4.0
+**技术栈**: Kotlin 2.3.20 | Koin 4.2.0 | Ktor 3.4.2 | Compose BOM 2026.03.01 | Room 3.0.0-alpha01 | Nav3 1.0.1 | Coil 3.4.0
 
 **版本信息**: 以 `gradle/libs.versions.toml` 为准
 
@@ -23,8 +23,8 @@ YkQuickDev - Android 快速开发框架库
 | 导航 | `app/.../app/AppNavGraph.kt` | Navigation3 路由 |
 | 数据库 | `app/.../db/UserDatabase.kt` | Room3 (androidx.room3) |
 | DI 模块 | `app/.../di/AppModule.kt` | Koin 模块聚合（Core/Feature/Network/Data） |
-| 初始化任务 | `app/.../task/` | AppInitializer 的 InitTask 实现 |
-| Compose 组件 | `app/.../components/` | 通用组件（Loading/Error/Image/Center） |
+| 初始化任务 | `app/.../task/` | AppInitializer 的 Initializer<T> 实现 |
+| Compose 组件 | `module_compose/` | 通用组件（Loading/Error/Image/Center/Debounce/SystemBars） |
 | Compose 屏幕 | `app/.../ui/screen/` | 页面级 Composable |
 | Compose 主题 | `app/.../ui/theme/` | Material3 主题/颜色/字体 |
 | API 定义 | `app/.../api/apiserver/HttpApi.kt` | Ktor 接口定义 |
@@ -32,7 +32,7 @@ YkQuickDev - Android 快速开发框架库
 | Proto 定义 | `app/src/main/protos/` | DataStore Proto 消息定义 |
 | 后台任务 | `app/.../work/` | WorkManager 任务实现 |
 
-**模块**: config(配置) | network(网络) | extension(工具) | proxy(框架) | datastore(存储) | permission(权限) | component(UI)
+**模块**: config(配置) | network(网络) | extension(工具) | proxy(框架) | compose(Compose组件) | permission(权限) | component(空/保留)
 
 ---
 
@@ -211,7 +211,7 @@ cat gradle/libs.versions.toml  # 查看版本
 
 **依赖注入**: Koin | `@KoinApplication` `@KoinViewModel` `@InjectedParam` | Kotzilla 监控
 
-**模块初始化**: AppInitializer | 拓扑排序 | 循环检测 | 实现 `InitTask`
+**模块初始化**: AppInitializer | 拓扑排序 | 循环检测 | 实现 `Initializer<T>`
 
 **Activity 管理**: ActivityHierarchyManager | 线程安全 | WeakReference | `getTopActivity()`
 
