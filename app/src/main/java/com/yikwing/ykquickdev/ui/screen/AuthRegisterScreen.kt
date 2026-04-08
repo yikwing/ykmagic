@@ -17,13 +17,13 @@ import com.yikwing.ykquickdev.ui.utils.setRoot
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object AuthRegister : NavKey
+data object AuthRegisterRoute : NavKey
 
 fun EntryProviderScope<NavKey>.authRegisterEntry() {
-    entry<AuthRegister> {
+    entry<AuthRegisterRoute> {
         val navigator = LocalNavigator.current
         AuthRegisterScreen(
-            navigationToHome = { navigator.setRoot(MainScreen) },
+            navigationToHome = { navigator.setRoot(MainRoute) },
         )
     }
 }

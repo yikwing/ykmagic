@@ -31,13 +31,13 @@ import com.yikwing.ykquickdev.ui.utils.sdp
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object TextDebounce : NavKey
+data object TextDebounceRoute : NavKey
 
 fun EntryProviderScope<NavKey>.textDebounceEntry() {
-    entry<TextDebounce> {
+    entry<TextDebounceRoute> {
         val navigator = LocalNavigator.current
         TextDebounceScreen(
-            navigationToPackInfo = dropUnlessResumed { navigator.navigate(PackageInfoScreen) },
+            navigationToPackInfo = dropUnlessResumed { navigator.navigate(PackageInfoRoute) },
         )
     }
 }

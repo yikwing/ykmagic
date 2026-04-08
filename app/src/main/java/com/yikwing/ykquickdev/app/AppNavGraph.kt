@@ -15,7 +15,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.yikwing.ykquickdev.components.LocalNavigator
-import com.yikwing.ykquickdev.ui.screen.TextDebounce
+import com.yikwing.ykquickdev.ui.screen.TextDebounceRoute
 import com.yikwing.ykquickdev.ui.screen.authLoginEntry
 import com.yikwing.ykquickdev.ui.screen.authRegisterEntry
 import com.yikwing.ykquickdev.ui.screen.diyInputEntry
@@ -26,7 +26,7 @@ import com.yikwing.ykquickdev.ui.screen.textDebounceEntry
 
 @Composable
 fun AppNavGraph(modifier: Modifier = Modifier) {
-    val backStack: NavBackStack<NavKey> = rememberNavBackStack(TextDebounce)
+    val backStack: NavBackStack<NavKey> = rememberNavBackStack(TextDebounceRoute)
 
     CompositionLocalProvider(LocalNavigator provides backStack) {
         NavDisplay(

@@ -4,107 +4,188 @@
 
 ---
 
-## 一次性事件处理 (Event Wrapper)
+## 一次性事件处理
 
 ### 问题背景
 
-使用 LiveData 或 StateFlow 传递一次性事件（如 Toast、Snackbar、导航）时，配置变更（如屏幕旋转）会导致事件被重复消费。
+`StateFlow` 有"粘性"——订阅时会立即重放最后一个值，导致一次性事件（Toast、Snackbar、导航）在屏幕旋转后被重复触发。
 
-### 解决方案
+### 三种方案选型
 
-使用 Event 包装类，确保事件只被消费一次：
+| 需求 | 方案 | 原因 |
+|------|------|------|
+| ViewModel → UI 一次性事件（Compose） | `Channel + receiveAsFlow` | 不重放，线程安全 |
+| ViewModel → UI 一次性事件（View 体系） | `Event<T>` 或 `Channel + repeatOnLifecycle` | LiveData 已有生命周期绑定 |
+| 跨组件广播，所有订阅者都收到 | `SharedFlow` | 多播 |
+| 跨组件广播，只消费一次 | `Channel`（竞争消费）或责任链 | 见下文 |
+
+**核心原则**：`StateFlow` 管状态（可重放），`Channel` / `SharedFlow` 管事件（不重放或受控重放）。
+
+---
+
+### Channel 详解
+
+#### 四种容量模式
 
 ```kotlin
-class Event<out T>(private val content: T) {
-    private var hasBeenHandled = false
-
-    fun getContentIfNotHandled(): T? {
-        return if (hasBeenHandled) {
-            null
-        } else {
-            hasBeenHandled = true
-            content
-        }
-    }
-
-    fun peekContent(): T = content
-}
+Channel<T>()                    // RENDEZVOUS：容量=0，send 挂起直到对方 receive
+Channel<T>(Channel.BUFFERED)    // 容量=64，满了才挂起（事件场景首选）
+Channel<T>(Channel.UNLIMITED)   // 无限容量，send 永不挂起，小心 OOM
+Channel<T>(Channel.CONFLATED)   // 容量=1，新值覆盖旧值，只保留最新
 ```
 
-### 使用示例
-
-**ViewModel 层**：
+#### send vs trySend
 
 ```kotlin
+// send：挂起版，需在协程中调用
+viewModelScope.launch { channel.send(event) }
+
+// trySend：非挂起版，立即返回，缓冲区满时失败
+val result = channel.trySend(event)
+if (result.isFailure) { /* 缓冲区满或 Channel 已关闭 */ }
+```
+
+#### receiveAsFlow vs consumeAsFlow
+
+```kotlin
+// receiveAsFlow()：多个收集者共享 Channel，竞争消费（ViewModel 暴露给 UI 用这个）
+val events = _channel.receiveAsFlow()
+
+// consumeAsFlow()：只允许一个收集者，多次 collect 崩溃，慎用
+```
+
+---
+
+### Compose 推荐：`Channel` + `receiveAsFlow()`
+
+**ViewModel**：
+
+```kotlin
+sealed interface UiEvent {
+    data class ShowToast(val message: String) : UiEvent
+    data object NavigateToHome : UiEvent
+}
+
+@KoinViewModel
 class MyViewModel : ViewModel() {
-    private val _toastEvent = MutableLiveData<Event<String>>()
-    val toastEvent: LiveData<Event<String>> = _toastEvent
+    // UI 状态 —— StateFlow（订阅时重放最新值）
+    private val _uiState = MutableStateFlow(MyUiState())
+    val uiState = _uiState.asStateFlow()
 
-    fun onSaveClick() {
-        _toastEvent.value = Event("保存成功")
-    }
-}
-```
-
-**UI 层（View 体系）**：
-
-```kotlin
-viewModel.toastEvent.observe(viewLifecycleOwner) { event ->
-    event.getContentIfNotHandled()?.let { message ->
-        showToast(message)
-    }
-}
-```
-
-**UI 层（Compose）**：
-
-```kotlin
-val toastEvent by viewModel.toastEvent.observeAsState()
-LaunchedEffect(toastEvent) {
-    toastEvent?.getContentIfNotHandled()?.let { message ->
-        // 显示 Toast 或 Snackbar
-    }
-}
-```
-
-### 适用场景
-
-- Toast / Snackbar 提示
-- 导航事件
-- 对话框显示
-- 一次性错误提示
-
-### 替代方案（Compose 推荐）
-
-在纯 Compose 项目中，可使用 `Channel` + `Flow` 实现更优雅的一次性事件：
-
-```kotlin
-class MyViewModel : ViewModel() {
+    // 一次性事件 —— Channel（不重放）
     private val _events = Channel<UiEvent>(Channel.BUFFERED)
     val events = _events.receiveAsFlow()
 
-    fun showToast(message: String) {
+    fun onLoginClick() {
         viewModelScope.launch {
-            _events.send(UiEvent.ShowToast(message))
-        }
-    }
-}
-
-sealed class UiEvent {
-    data class ShowToast(val message: String) : UiEvent()
-    data class Navigate(val route: String) : UiEvent()
-}
-
-// Compose UI
-LaunchedEffect(Unit) {
-    viewModel.events.collect { event ->
-        when (event) {
-            is UiEvent.ShowToast -> { /* 显示 Toast */ }
-            is UiEvent.Navigate -> { /* 导航 */ }
+            _uiState.update { it.copy(isLoading = true) }
+            _events.send(UiEvent.ShowToast("登录成功"))
+            _events.send(UiEvent.NavigateToHome)
         }
     }
 }
 ```
+
+**Compose UI**：
+
+```kotlin
+@Composable
+fun MyScreen(vm: MyViewModel = koinViewModel()) {
+    val uiState by vm.uiState.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {  // Unit 作 key，只启动一次
+        vm.events.collect { event ->
+            when (event) {
+                is UiEvent.ShowToast -> Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                UiEvent.NavigateToHome -> { /* 导航 */ }
+            }
+        }
+    }
+
+    if (uiState.isLoading) CircularProgressIndicator()
+}
+```
+
+**关键点**：
+- `Channel.BUFFERED`：UI 未就绪时事件不丢失
+- `LaunchedEffect(Unit)`：只启动一次，不随重组重复订阅
+- 导航事件优先用回调 lambda 传入，无需放进 `events`
+- ViewModel 销毁时 `viewModelScope` 取消，Channel 自动回收，无需手动 close
+
+---
+
+### View 体系：`Event<T>` 包装类
+
+项目已有实现：`module_extension/src/main/java/com/yikwing/extension/util/Event.kt`
+
+`Event<T>` 是历史遗留方案（2018年 Google I/O，当时 `repeatOnLifecycle` 尚未存在）。新的 View 体系代码可以直接用 `Channel + repeatOnLifecycle`。
+
+```kotlin
+// 老代码维持 Event<T>
+private val _toastEvent = MutableLiveData<Event<String>>()
+val toastEvent: LiveData<Event<String>> = _toastEvent
+
+// Fragment 观察
+viewModel.toastEvent.observe(viewLifecycleOwner) { event ->
+    event.getContentIfNotHandled()?.let { showToast(it) }
+}
+```
+
+---
+
+### 跨组件广播（EventBus 场景）
+
+#### 广播给所有订阅者 → `SharedFlow`
+
+```kotlin
+object AppEventBus {
+    private val _events = MutableSharedFlow<AppEvent>(extraBufferCapacity = 16)
+    val events: SharedFlow<AppEvent> = _events.asSharedFlow()
+
+    fun post(event: AppEvent) { _events.tryEmit(event) }
+}
+
+// 任意组件订阅（需绑定生命周期）
+lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        AppEventBus.events.collect { handleEvent(it) }
+    }
+}
+```
+
+#### 多订阅者但只消费一次
+
+**情况1：同时只有一个活跃（页面栈场景）**
+
+直接用 `Channel`——后台页面协程已停止，事件自然只被前台页面消费。
+
+**情况2：多个都活跃，需指定优先级处理 → 责任链**
+
+```kotlin
+// 参考 Android OnBackPressedDispatcher 设计
+object AppEventBus {
+    private val handlers = ArrayDeque<(AppEvent) -> Boolean>()
+
+    fun register(handler: (AppEvent) -> Boolean) = handlers.addFirst(handler)
+    fun unregister(handler: (AppEvent) -> Boolean) = handlers.remove(handler)
+
+    // 第一个返回 true 的处理，后续跳过
+    fun post(event: AppEvent) = handlers.firstOrNull { it(event) }
+}
+```
+
+---
+
+### 场景速查
+
+| 场景 | 方案 |
+|------|------|
+| ViewModel → 当前页面（Toast/导航） | `Channel` |
+| 多订阅者，同时只有一个活跃 | `Channel` |
+| 多订阅者都活跃，全部收到 | `SharedFlow` |
+| 多订阅者都活跃，优先级处理 | 责任链 |
+| View 体系 LiveData 老代码 | `Event<T>`（维持现状）|
 
 ---
 
@@ -252,6 +333,69 @@ fun copyAssetToCache(context: Context, fileName: String): Result<File> =
         cacheFile
     }
 ```
+
+---
+
+## Nav3 导航命名规范
+
+### 三层职责分离
+
+| 层 | 命名规则 | 后缀 | 职责 |
+|---|---|---|---|
+| Route | `XxxRoute` | `Route` | 路由定义（NavKey），描述"去哪" |
+| Entry | `xxxEntry()` | `Entry` | 注册路由，连接 Route → Screen |
+| Screen | `XxxScreen` | `Screen` | 纯 UI Composable，不关心导航 |
+
+### 文件组织
+
+- 文件名跟随主体 Composable：`XxxScreen.kt`
+- Route、Entry、Screen 放在同一个文件中
+- Route 定义在文件顶部（`@Serializable` 注解之后）
+
+### 示例
+
+```kotlin
+// TextDebounceScreen.kt
+
+@Serializable
+data object TextDebounceRoute : NavKey          // Route: 路由定义
+
+fun EntryProviderScope<NavKey>.textDebounceEntry() {  // Entry: 注册路由
+    entry<TextDebounceRoute> {
+        val navigator = LocalNavigator.current
+        TextDebounceScreen(                     // Screen: 纯 UI
+            navigationToPackInfo = dropUnlessResumed { navigator.navigate(PackageInfoRoute) },
+        )
+    }
+}
+
+@Composable
+fun TextDebounceScreen(                         // Screen: 不感知导航细节
+    navigationToPackInfo: () -> Unit,
+) { /* UI */ }
+```
+
+### 带参数的 Route
+
+```kotlin
+@Serializable
+data class ProductRoute(val id: String) : NavKey
+
+fun EntryProviderScope<NavKey>.otherPageEntry() {
+    entry<ProductRoute> { product ->
+        OtherPageScreen(product.id)
+    }
+}
+```
+
+### 命名对照表
+
+| Route (NavKey) | Entry 函数 | Screen (Composable) | 文件名 |
+|---|---|---|---|
+| `MainRoute` | `mainScreenEntry()` | `MainScreen()` | `MainScreen.kt` |
+| `TextDebounceRoute` | `textDebounceEntry()` | `TextDebounceScreen()` | `TextDebounceScreen.kt` |
+| `ProductRoute` | `otherPageEntry()` | `OtherPageScreen()` | `OtherPageScreen.kt` |
+| `AuthLoginRoute` | `authLoginEntry()` | `AuthLoginScreen()` | `AuthLoginScreen.kt` |
 
 ---
 

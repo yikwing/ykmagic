@@ -43,10 +43,10 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 @Serializable
-data object MainScreen : NavKey
+data object MainRoute : NavKey
 
 fun EntryProviderScope<NavKey>.mainScreenEntry() {
-    entry<MainScreen> {
+    entry<MainRoute> {
         MainScreen()
     }
 }

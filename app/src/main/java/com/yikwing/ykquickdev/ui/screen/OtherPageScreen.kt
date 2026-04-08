@@ -35,12 +35,12 @@ import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
-data class Product(
+data class ProductRoute(
     val id: String,
 ) : NavKey
 
 fun EntryProviderScope<NavKey>.otherPageEntry() {
-    entry<Product> { product ->
+    entry<ProductRoute> { product ->
         OtherPageScreen(product.id)
     }
 }

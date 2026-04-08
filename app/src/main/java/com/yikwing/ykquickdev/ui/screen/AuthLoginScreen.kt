@@ -21,13 +21,13 @@ import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 
 @Serializable
-data object AuthLogin : NavKey
+data object AuthLoginRoute : NavKey
 
 fun EntryProviderScope<NavKey>.authLoginEntry() {
-    entry<AuthLogin> {
+    entry<AuthLoginRoute> {
         val navigator = LocalNavigator.current
         AuthLoginScreen(
-            navigationToRegister = { navigator.navigate(AuthRegister) },
+            navigationToRegister = { navigator.navigate(AuthRegisterRoute) },
         )
     }
 }

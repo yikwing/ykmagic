@@ -1,10 +1,5 @@
 package com.yikwing.ykquickdev.ui.screen
 
-import androidx.navigation3.runtime.EntryProviderScope
-import androidx.navigation3.runtime.NavKey
-import com.yikwing.ykquickdev.components.LocalNavigator
-import com.yikwing.ykquickdev.ui.utils.navigate
-import kotlinx.serialization.Serializable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,17 +9,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import com.yikwing.ykquickdev.components.LocalNavigator
 import com.yikwing.ykquickdev.ui.theme.RubikGemstonesRegular
+import com.yikwing.ykquickdev.ui.utils.navigate
+import kotlinx.serialization.Serializable
 
 @Serializable
-data object PackageInfoScreen : NavKey
+data object PackageInfoRoute : NavKey
 
 fun EntryProviderScope<NavKey>.packageInfoEntry() {
-    entry<PackageInfoScreen> {
+    entry<PackageInfoRoute> {
         val navigator = LocalNavigator.current
         PackageInfoScreen(
-            navigationToPage = { id -> navigator.navigate(Product(id)) },
-            navigationToDiy = { navigator.navigate(DiyInputScreen) },
+            navigationToPage = { id -> navigator.navigate(ProductRoute(id)) },
+            navigationToDiy = { navigator.navigate(DiyInputRoute) },
         )
     }
 }
