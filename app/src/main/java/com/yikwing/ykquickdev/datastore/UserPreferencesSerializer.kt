@@ -1,4 +1,4 @@
-package com.yikwing.ykquickdev
+package com.yikwing.ykquickdev.datastore
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException
@@ -6,6 +6,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
+import com.yikwing.ykquickdev.UserPreferences
 import okio.buffer
 import okio.sink
 import okio.source

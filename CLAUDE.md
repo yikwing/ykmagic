@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 YkQuickDev - Android 快速开发框架库
 
-**技术栈**: Kotlin 2.3.20 | Koin 4.2.0 | Ktor 3.4.2 | Compose BOM 2026.03.01 | Room 3.0.0-alpha01 | Nav3 1.0.1 | Coil 3.4.0
+**技术栈**: Kotlin 2.3.20 | Koin 4.2.0 | Ktor 3.4.2 | Compose BOM 2026.03.01 | Room 3.0.0-alpha03 | Nav3 1.1.0 | Coil 3.4.0
 
 **版本信息**: 以 `gradle/libs.versions.toml` 为准
 
@@ -20,7 +20,7 @@ YkQuickDev - Android 快速开发框架库
 | 应用配置 | `android_env.json` | 运行时配置（必需） |
 | 签名配置 | `keystore.properties` | Release 构建（必需） |
 | 版本管理 | `gradle/libs.versions.toml` | 依赖版本 |
-| 导航 | `app/.../app/AppNavGraph.kt` | Navigation3 路由 |
+| 导航 | `app/.../app/AppNavGraph.kt` | Navigation3 路由（见 [patterns.md](.claude/docs/patterns.md) 三层命名规范） |
 | 数据库 | `app/.../db/UserDatabase.kt` | Room3 (androidx.room3) |
 | DI 模块 | `app/.../di/AppModule.kt` | Koin 模块聚合（Core/Feature/Network/Data） |
 | 初始化任务 | `app/.../task/` | AppInitializer 的 Initializer<T> 实现 |
@@ -30,6 +30,7 @@ YkQuickDev - Android 快速开发框架库
 | API 定义 | `app/.../api/apiserver/HttpApi.kt` | Ktor 接口定义 |
 | API 实体 | `app/.../api/entity/` | 请求/响应数据类（@Serializable） |
 | Proto 定义 | `app/src/main/protos/` | DataStore Proto 消息定义 |
+| DataStore 扩展 | `app/.../DataStoreExtensions.kt` | `getLatest()` / `updateAndGet()` / `select()` |
 | 后台任务 | `app/.../work/` | WorkManager 任务实现 |
 
 **模块**: config(配置) | network(网络) | extension(工具) | proxy(框架) | compose(Compose组件) | permission(权限) | component(空/保留)
@@ -205,7 +206,7 @@ cat gradle/libs.versions.toml  # 查看版本
 
 **网络层**: Ktor Client | "动词 suspend，名词 Flow" | 拦截器: Header/Retry/Log/Chucker
 
-**构建逻辑**: Convention Plugins (build-logic/) | 配置常量 (ProjectConfig.kt) | 依赖自动管理
+**构建逻辑**: Convention Plugins (build-logic/) | 配置常量 (ProjectConfig.kt) | 依赖自动管理 | Hotswan compiler 插件 (Compose 注解处理)
 
 **BuildConfig 策略**: Application 默认启用 | Library 按需启用 | 避免过度生成
 
@@ -218,6 +219,8 @@ cat gradle/libs.versions.toml  # 查看版本
 **内存缓存**: CacheManager | LRU(256) + TTL | 线程安全
 
 **图片加载**: Coil 3.0+ | `AsyncImage()` Compose 组件 | 支持缓存/变换
+
+**数据存储**: Proto DataStore | Wire `.copy()` 修改字段（非 protobuf `.toBuilder()`）| Serializer 用 Okio `.use {}` 自动关闭 buffer
 
 **后台任务**: WorkManager | 实现 `CoroutineWorker` | Koin 注入
 
@@ -250,6 +253,8 @@ cat gradle/libs.versions.toml  # 查看版本
 **代码**: 协程和 Flow | "动词 suspend，名词 Flow" | Explicit Backing Fields | `@Serializable`
 
 **Compose 性能**: 避免组合阶段读取高频状态 | 用 Lambda 延迟状态读取 | `drawBehind` 替代 `background` | `offset { }` 替代 `offset()` | 参数匹配用函数引用 | 参数转换用 Lambda | 复杂逻辑用 `remember` 缓存
+
+**Compose 陷阱**: `LaunchedEffect` 放 Screen 顶层，不能嵌套在 Loading/Empty 等分支内 | `sealed class` 默认 @Stable，无需手动标注
 
 **测试**: Hamcrest 匹配器 | `<ClassName>Test` | 关键逻辑必须覆盖
 

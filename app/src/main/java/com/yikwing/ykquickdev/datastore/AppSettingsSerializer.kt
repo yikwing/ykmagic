@@ -1,4 +1,4 @@
-package com.yikwing.ykquickdev
+package com.yikwing.ykquickdev.datastore
 
 import android.content.Context
 import androidx.datastore.core.CorruptionException
@@ -6,6 +6,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.core.Serializer
 import androidx.datastore.dataStore
+import com.yikwing.ykquickdev.AppSettings
+import com.yikwing.ykquickdev.UserPreferences
 import okio.buffer
 import okio.sink
 import okio.source
@@ -31,13 +33,12 @@ import java.io.OutputStream
  * </pre>
  */
 object AppSettingsSerializer : Serializer<AppSettings> {
-    override val defaultValue: AppSettings
-        get() = AppSettings()
+    override val defaultValue: AppSettings = AppSettings()
 
     override suspend fun readFrom(input: InputStream): AppSettings =
         try {
-            input.source().buffer().use { bufferedSource ->
-                AppSettings.ADAPTER.decode(bufferedSource)
+            input.source().buffer().use { source ->
+                AppSettings.ADAPTER.decode(source)
             }
         } catch (exception: IOException) {
             throw CorruptionException("Cannot read protos.", exception)
@@ -47,9 +48,8 @@ object AppSettingsSerializer : Serializer<AppSettings> {
         t: AppSettings,
         output: OutputStream,
     ) {
-        output.sink().buffer().use { bufferedSink ->
-            t.adapter.encode(bufferedSink, t)
-            bufferedSink.flush()
+        output.sink().buffer().use { sink ->
+            AppSettings.ADAPTER.encode(sink, t)
         }
     }
 }
