@@ -15,7 +15,7 @@ constraintlayout = "2.2.1"
 recyclerview = "1.4.0"
 webkit = "1.15.0"
 lifecycle = "2.10.0"
-room3 = "3.0.0-alpha02"
+room3 = "3.0.0-alpha03"
 collection = "1.6.0"
 work-runtime-ktx = "2.11.2"
 
@@ -34,7 +34,7 @@ koin-bom = "4.2.0"
 koin-plugin = "0.6.2"
 
 constraintlayout-compose = "1.1.1"
-nav3-core = "1.0.1"
+nav3-core = "1.1.0"
 
 glance = "1.1.0"
 leakcanary = "3.0-alpha-8"

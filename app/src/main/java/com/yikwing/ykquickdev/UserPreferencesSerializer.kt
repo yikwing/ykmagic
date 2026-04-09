@@ -13,21 +13,25 @@ import java.io.InputStream
 import java.io.OutputStream
 
 object UserPreferencesSerializer : Serializer<UserPreferences> {
-    override val defaultValue: UserPreferences
-        get() = UserPreferences()
+    override val defaultValue: UserPreferences = UserPreferences()
 
-    override suspend fun readFrom(input: InputStream): UserPreferences {
+    override suspend fun readFrom(input: InputStream): UserPreferences =
         try {
-            return UserPreferences.ADAPTER.decode(input.source().buffer())
+            input.source().buffer().use { source ->
+                UserPreferences.ADAPTER.decode(source)
+            }
         } catch (exception: IOException) {
             throw CorruptionException("Cannot read protos.", exception)
         }
-    }
 
     override suspend fun writeTo(
         t: UserPreferences,
         output: OutputStream,
-    ) = t.adapter.encode(output.sink().buffer(), t)
+    ) {
+        output.sink().buffer().use { sink ->
+            UserPreferences.ADAPTER.encode(sink, t)
+        }
+    }
 }
 
 val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
