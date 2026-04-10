@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 YkQuickDev - Android 快速开发框架库
 
-**技术栈**: Kotlin 2.3.20 | Koin 4.2.0 | Ktor 3.4.2 | Compose BOM 2026.03.01 | Room 3.0.0-alpha03 | Nav3 1.1.0 | Coil 3.4.0
+**技术栈**: Kotlin 2.3.20 | Koin 4.2.1 | Ktor 3.4.2 | Compose BOM 2026.03.01 | Room 3.0.0-alpha03 | Nav3 1.1.0 | Coil 3.4.0
 
 **版本信息**: 以 `gradle/libs.versions.toml` 为准
 
@@ -33,7 +33,7 @@ YkQuickDev - Android 快速开发框架库
 | DataStore 扩展 | `app/.../DataStoreExtensions.kt` | `getLatest()` / `updateAndGet()` / `select()` |
 | 后台任务 | `app/.../work/` | WorkManager 任务实现 |
 
-**模块**: config(配置) | network(网络) | extension(工具) | proxy(框架) | compose(Compose组件) | permission(权限) | component(空/保留)
+**模块**: config(配置) | network(网络) | extension(工具) | proxy(框架) | compose(Compose组件) | permission(权限)
 
 ---
 
@@ -238,7 +238,7 @@ cat gradle/libs.versions.toml  # 查看版本
 
 **兼容性**: Kotlin<2.3.0 不支持 Explicit Backing Fields | AGP<8.13.0 KSP 可能失败 | Room 3.0 命名空间为 `androidx.room3`（非 `androidx.room`）
 
-**Convention Plugins**: `ykmagic.android.application` | `ykmagic.android.library` | `ykmagic.android.compose` | `ykmagic.android.feature`
+**Convention Plugins**: `ykmagic.android.application` | `ykmagic.android.library` | `ykmagic.android.compose` | `ykmagic.android.koin` | `ykmagic.android.room` | `ykmagic.android.wire`
 
 ---
 
@@ -248,7 +248,7 @@ cat gradle/libs.versions.toml  # 查看版本
 
 **依赖**: `gradle/libs.versions.toml` 统一管理 | 避免硬编码 | Debug 工具仅 Debug 版本
 
-**自动依赖**: Convention Plugins 自动添加通用依赖（core-ktx, appcompat, coroutines, testBundle）| Compose 插件自动添加 Compose 依赖 | Feature 插件自动添加 Koin/Nav3/Lifecycle | 模块只需声明特定依赖
+**自动依赖**: Convention Plugins 自动添加通用依赖（core-ktx, appcompat, coroutines, testBundle）| Compose 插件自动添加 Compose 依赖 | Koin 插件自动添加 Koin 依赖 | 模块只需声明特定依赖
 
 **代码**: 协程和 Flow | "动词 suspend，名词 Flow" | Explicit Backing Fields | `@Serializable`
 

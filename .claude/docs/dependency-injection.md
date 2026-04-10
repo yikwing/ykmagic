@@ -43,14 +43,21 @@ object DataModule {
 ```kotlin
 // 定义 ViewModel
 @KoinViewModel
-class MyViewModel @Inject constructor(
+class MyViewModel(
     private val repository: Repository,
     @InjectedParam val name: String  // 运行时参数
 ) : ViewModel()
 
-// 在 Activity/Fragment 中使用
-class MainActivity : BaseActivity() {
-    private val vm: DataStoreViewModel by viewModel()
+// Composable 中使用
+@Composable
+fun MyScreen(vm: MyViewModel = koinViewModel()) {
+    // ...
+}
+
+// Composable 中使用（带参数）
+@Composable
+fun DetailScreen(name: String) {
+    val vm: MyViewModel = koinViewModel { parametersOf(name) }
 }
 ```
 

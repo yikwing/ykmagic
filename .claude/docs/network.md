@@ -22,7 +22,7 @@
 ```toml
 [versions]
 ktor = "3.4.2"
-kotlinx-serialization = "1.10.0"
+kotlinx-serialization = "1.11.0"
 
 [bundles]
 network-ktor = [
@@ -199,7 +199,8 @@ val state by viewModel.uiState.collectAsStateWithLifecycle()
 
 ```kotlin
 // module_network/NetworkModule.kt
-@Module @Configuration @ComponentScan("com.yikwing.network")
+@Module
+@ComponentScan("com.yikwing.network")
 object NetworkModule {
     @Singleton
     fun provideJson(): Json = Json {
@@ -211,12 +212,14 @@ object NetworkModule {
 }
 
 // app/di/AppNetworkModule.kt
-@Module @Configuration
+@Module
 object AppNetworkModule {
-    @Singleton @BaseUrl
+    @Singleton
+    @BaseUrl
     fun provideBaseUrl(): String = YkConfigManager.config.baseUrl
 
-    @Singleton @DebugFlag
+    @Singleton
+    @DebugFlag
     fun provideDebug(): Boolean = BuildConfig.DEBUG
 
     @Singleton

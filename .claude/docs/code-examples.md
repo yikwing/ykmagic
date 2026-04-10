@@ -262,15 +262,19 @@ message UserPreferences {
 ### 使用 DataStore
 
 ```kotlin
-// Serializer（Wire 风格）
+// Serializer（Wire 风格，Okio .use {} 自动关闭 buffer）
 object UserPreferencesSerializer : Serializer<UserPreferences> {
     override val defaultValue = UserPreferences()
 
     override suspend fun readFrom(input: InputStream): UserPreferences =
-        UserPreferences.ADAPTER.decode(input.source().buffer())
+        input.source().buffer().use { bufferedSource ->
+            UserPreferences.ADAPTER.decode(bufferedSource)
+        }
 
     override suspend fun writeTo(t: UserPreferences, output: OutputStream) =
-        t.adapter.encode(output.sink().buffer(), t)
+        output.sink().buffer().use { bufferedSink ->
+            t.adapter.encode(bufferedSink, t)
+        }
 }
 
 val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
@@ -282,7 +286,6 @@ val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(
 dataStore.updateData { current ->
     current.copy(name = "Alice", age = 25)
 }
-```
 
 // ViewModel
 @KoinViewModel

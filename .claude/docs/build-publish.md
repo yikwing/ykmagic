@@ -109,7 +109,7 @@ app 模块的资源文件按功能分类:
 - 根 build.gradle.kts 通过 `resolutionStrategy.force()` 强制统一关键依赖版本
 - 强制版本包括: `activity` 和 `kotlinx-coroutines-core`
 - 所有版本在 `gradle/libs.versions.toml` 中集中管理
-- 支持 Bundle 依赖配置: `network-okhttp`, `network-ktor`, `testBundle`, `androidTestBundle`
+- 支持 Bundle 依赖配置: `network-ktor`, `testBundle`, `androidTestBundle`
 
 ## Debug 工具
 
@@ -124,7 +124,7 @@ app 模块的资源文件按功能分类:
 
 各模块配置了 Maven 发布,可以发布到 JitPack:
 - groupId: com.github.yikwing.ykmagic
-- artifactId: 对应模块名(config、network、proxy、extension、permission、logger、datastore、component)
+- artifactId: 对应模块名(config、network、proxy、extension、permission、compose)
 
 ### 发布配置
 每个模块的 build.gradle.kts:

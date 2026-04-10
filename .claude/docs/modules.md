@@ -44,9 +44,6 @@
 - ActivityHierarchyManager 管理 Activity 栈
 - AppInitializer 支持模块化初始化
 
-### 8. module_component - 传统 View 组件模块（空/保留）
-- 目录存在但当前无代码，Compose 组件已迁移至 `module_compose`
-
 ## 初始化架构 (AppInitializer)
 
 **核心机制**: 基于拓扑排序的模块初始化框架,支持声明依赖关系。

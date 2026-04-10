@@ -13,8 +13,16 @@ build-logic/
     └── src/main/kotlin/
         ├── AndroidApplicationConventionPlugin.kt
         ├── AndroidLibraryConventionPlugin.kt
-        ├── KotlinAndroidConventionPlugin.kt
-        └── ComposeConventionPlugin.kt
+        ├── ComposeConventionPlugin.kt
+        ├── AndroidRoomConventionPlugin.kt
+        ├── AndroidKoinConventionPlugin.kt
+        ├── AndroidWireConventionPlugin.kt
+        ├── ProjectConfig.kt
+        └── com/yikwing/ykmagic/   # 内部辅助函数
+            ├── AndroidCompose.kt
+            ├── Dependencies.kt
+            ├── KotlinAndroid.kt
+            └── ProjectExtensions.kt
 ```
 
 ## 🎯 Convention Plugins
@@ -72,25 +80,7 @@ plugins {
 }
 ```
 
-### 3. `ykmagic.kotlin.android`
-**用途**: 配置 Kotlin Android 编译选项
-
-**自动应用**:
-- `org.jetbrains.kotlin.android` 插件
-
-**配置内容**:
-- JVM Toolchain 17
-- JVM Target 17
-
-**使用示例**:
-```kotlin
-plugins {
-    id("ykmagic.kotlin.android")
-    // ... 其他插件
-}
-```
-
-### 4. `ykmagic.android.compose`
+### 3. `ykmagic.android.compose`
 **用途**: 配置 Jetpack Compose
 
 **自动应用**:
@@ -115,6 +105,70 @@ plugins {
 }
 ```
 
+### 4. `ykmagic.android.koin`
+**用途**: 配置 Koin 依赖注入
+
+**自动应用**:
+- `io.insert-koin.compiler.plugin` 插件（Hotswan 编译时检查）
+
+**配置内容**:
+- 启用 Koin 用户日志
+
+**自动添加依赖**:
+- `koin-bom` (platform)
+- `koin-compose`
+- `koin-annotations`
+
+**使用示例**:
+```kotlin
+plugins {
+    id("ykmagic.android.koin")
+    // ... 其他插件
+}
+```
+
+### 5. `ykmagic.android.room`
+**用途**: 配置 Room 数据库
+
+**自动应用**:
+- `androidx.room3` 插件
+- `com.google.devtools.ksp` 插件
+
+**配置内容**:
+- Schema 导出目录: `$projectDir/schemas`
+
+**自动添加依赖**:
+- `room-ktx` (implementation)
+- `room-compiler` (ksp)
+
+**使用示例**:
+```kotlin
+plugins {
+    id("ykmagic.android.room")
+    // ... 其他插件
+}
+```
+
+### 6. `ykmagic.android.wire`
+**用途**: 配置 Wire Protobuf
+
+**自动应用**:
+- `com.squareup.wire` 插件
+
+**配置内容**:
+- Proto 源文件目录: `src/main/protos`
+- `android = false`（Wire 消息用于 DataStore，不需要 Parcelable）
+
+**使用示例**:
+```kotlin
+plugins {
+    id("ykmagic.android.wire")
+    // ... 其他插件
+}
+```
+
+> **注意**: Kotlin 编译选项（JVM Toolchain 17）由 Application/Library 插件内部通过 `KotlinAndroid.kt` 辅助函数配置，无需单独的 `ykmagic.kotlin.android` 插件。
+
 ## 📝 使用指南
 
 ### App 模块示例
@@ -123,14 +177,13 @@ plugins {
 plugins {
     // Convention Plugins
     id("ykmagic.android.application")
-    id("ykmagic.kotlin.android")
     id("ykmagic.android.compose")
+    id("ykmagic.android.koin")
+    id("ykmagic.android.room")
+    id("ykmagic.android.wire")
 
     // 其他插件
     id("kotlin-parcelize")
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room3)
-    alias(libs.plugins.koin.compiler)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -144,11 +197,9 @@ plugins {
 plugins {
     // Convention Plugins
     id("ykmagic.android.library")
-    id("ykmagic.kotlin.android")
+    id("ykmagic.android.koin")
 
     // 其他插件
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.koin.compiler)
     id("maven-publish")
 }
 
@@ -182,9 +233,6 @@ object ProjectConfig {
     const val COMPILE_SDK = 37  // 修改这里
     const val MIN_SDK = 26
     const val TARGET_SDK = 37   // 修改这里
-
-    val JAVA_VERSION = JavaVersion.VERSION_17
-    val JVM_TARGET = JvmTarget.JVM_17
 }
 ```
 
@@ -192,13 +240,13 @@ object ProjectConfig {
 
 ### 修改 Java 版本
 
-编辑 `ProjectConfig.kt`：
+编辑 `build-logic/convention/src/main/kotlin/com/yikwing/ykmagic/KotlinAndroid.kt`：
 
 ```kotlin
-object ProjectConfig {
-    // ...
-    val JAVA_VERSION = JavaVersion.VERSION_21
-    val JVM_TARGET = JvmTarget.JVM_21
+private fun Project.configureKotlin() {
+    extensions.configure<KotlinAndroidProjectExtension> {
+        jvmToolchain(21)  // 修改这里
+    }
 }
 ```
 
