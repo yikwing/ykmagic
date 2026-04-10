@@ -30,7 +30,7 @@ kotlinx-coroutines = "1.10.2"
 kotlinx-serialization-json = "1.10.0"
 
 compose-bom = "2026.03.01"
-koin-bom = "4.2.0"
+koin-bom = "4.2.1"
 koin-plugin = "0.6.2"
 
 constraintlayout-compose = "1.1.1"
