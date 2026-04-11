@@ -6,17 +6,28 @@
 
 ## 一次性事件处理
 
-### 问题背景
+> 参考：[Android 现代架构不需要事件总线](https://juejin.cn/post/7625074868355973147)
 
-`StateFlow` 有"粘性"——订阅时会立即重放最后一个值，导致一次性事件（Toast、Snackbar、导航）在屏幕旋转后被重复触发。
+### 为什么不需要 EventBus
 
-### 三种方案选型
+| EventBus 缺陷 | 现代替代方案 |
+|--------------|-------------|
+| 无类型安全（`Any` + 字符串 tag） | sealed class / sealed interface，编译期检查 |
+| 不感知生命周期，需手动注册/反注册 | `repeatOnLifecycle` 自动管理，页面不可见时暂停 |
+| 隐式耦合，事件流向不可追踪 | ViewModel 是显式依赖，通过构造注入可见 |
+| `replay=1` 导致屏幕旋转重复触发 | `Channel`（不重放）精确控制交付语义 |
+| 跨层调用，违反架构分层 | 通过 Koin 注入共享 Repository 传递数据 |
+
+**结论**：EventBus 的所有使用场景均可被 `StateFlow` + `Channel` + `SharedFlow` 覆盖，无需引入第三方库。
+
+### 方案选型
 
 | 需求 | 方案 | 原因 |
 |------|------|------|
-| ViewModel → UI 一次性事件（Compose） | `Channel + receiveAsFlow` | 不重放，线程安全 |
-| ViewModel → UI 一次性事件（View 体系） | `Event<T>` 或 `Channel + repeatOnLifecycle` | LiveData 已有生命周期绑定 |
-| 跨组件广播，所有订阅者都收到 | `SharedFlow` | 多播 |
+| ViewModel → UI 状态（可重放） | `StateFlow` | 新订阅者立即获得当前值 |
+| ViewModel → UI 一次性事件（Compose） | `Channel + receiveAsFlow` | 不重放，线程安全，不丢事件 |
+| ViewModel → UI 一次性事件（View 体系） | `Channel + repeatOnLifecycle` | 生命周期安全 |
+| 跨组件广播，所有订阅者都收到 | `SharedFlow(replay=0)` | 多播，无重放 |
 | 跨组件广播，只消费一次 | `Channel`（竞争消费）或责任链 | 见下文 |
 
 **核心原则**：`StateFlow` 管状态（可重放），`Channel` / `SharedFlow` 管事件（不重放或受控重放）。
@@ -115,43 +126,60 @@ fun MyScreen(vm: MyViewModel = koinViewModel()) {
 
 ---
 
-### View 体系：`Event<T>` 包装类
+### 跨组件通信（替代 EventBus 的场景）
 
-项目已有实现：`module_extension/src/main/java/com/yikwing/extension/util/Event.kt`
-
-`Event<T>` 是历史遗留方案（2018年 Google I/O，当时 `repeatOnLifecycle` 尚未存在）。新的 View 体系代码可以直接用 `Channel + repeatOnLifecycle`。
+#### 同一 Activity 的 Fragment 间通信 → `activityViewModels()`
 
 ```kotlin
-// 老代码维持 Event<T>
-private val _toastEvent = MutableLiveData<Event<String>>()
-val toastEvent: LiveData<Event<String>> = _toastEvent
+// 共享 ViewModel（Activity 级别）
+@KoinViewModel
+class SharedViewModel : ViewModel() {
+    private val _event = MutableSharedFlow<AppEvent>(extraBufferCapacity = 16)
+    val event: SharedFlow<AppEvent> = _event.asSharedFlow()
 
-// Fragment 观察
-viewModel.toastEvent.observe(viewLifecycleOwner) { event ->
-    event.getContentIfNotHandled()?.let { showToast(it) }
+    fun send(event: AppEvent) { viewModelScope.launch { _event.emit(event) } }
+}
+
+// FragmentA 发送
+val sharedVm: SharedViewModel by activityViewModels()
+sharedVm.send(AppEvent.UserSelected(userId))
+
+// FragmentB 接收
+viewLifecycleOwner.lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        sharedVm.event.collect { handleEvent(it) }
+    }
 }
 ```
 
----
-
-### 跨组件广播（EventBus 场景）
-
-#### 广播给所有订阅者 → `SharedFlow`
+#### 真正跨页面的全局事件 → Koin 单例 Repository 中的 `SharedFlow`
 
 ```kotlin
-object AppEventBus {
-    private val _events = MutableSharedFlow<AppEvent>(extraBufferCapacity = 16)
-    val events: SharedFlow<AppEvent> = _events.asSharedFlow()
+// 在 Repository 中持有 SharedFlow，通过 Koin 注入
+@Single
+class AppStateRepository {
+    private val _event = MutableSharedFlow<AppEvent>(extraBufferCapacity = 16)
+    val event: SharedFlow<AppEvent> = _event.asSharedFlow()
 
-    fun post(event: AppEvent) { _events.tryEmit(event) }
+    fun send(event: AppEvent) { _event.tryEmit(event) }
 }
 
-// 任意组件订阅（需绑定生命周期）
-lifecycleScope.launch {
-    repeatOnLifecycle(Lifecycle.State.STARTED) {
-        AppEventBus.events.collect { handleEvent(it) }
-    }
+// ViewModel 注入使用，无需全局单例 object
+@KoinViewModel
+class HomeViewModel(private val appState: AppStateRepository) : ViewModel() {
+    val events = appState.event
 }
+```
+
+#### 广播给所有活跃订阅者 → `SharedFlow(replay=0)`
+
+```kotlin
+// replay=0：不重放，无订阅者时丢弃（有时效性的事件）
+private val _events = MutableSharedFlow<AppEvent>(
+    replay = 0,
+    extraBufferCapacity = 16,
+    onBufferOverflow = BufferOverflow.DROP_OLDEST,
+)
 ```
 
 #### 多订阅者但只消费一次
@@ -183,9 +211,10 @@ object AppEventBus {
 |------|------|
 | ViewModel → 当前页面（Toast/导航） | `Channel` |
 | 多订阅者，同时只有一个活跃 | `Channel` |
-| 多订阅者都活跃，全部收到 | `SharedFlow` |
+| 多订阅者都活跃，全部收到 | `SharedFlow(replay=0)` |
 | 多订阅者都活跃，优先级处理 | 责任链 |
-| View 体系 LiveData 老代码 | `Event<T>`（维持现状）|
+| 同一 Activity 下 Fragment 间通信 | `activityViewModels()` 共享 ViewModel |
+| 真正的全局跨页面事件 | Koin 单例 Repository 中的 `SharedFlow` |
 
 ---
 

@@ -35,6 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.yikwing.ykquickdev.ui.utils.sdp
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,13 +53,13 @@ fun MyMaterial3ModalBottomSheetExample() {
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.sdp)
                 .background(Color.LightGray),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
     ) {
         Text("Material 3 底部工作表示例", style = MaterialTheme.typography.titleLarge)
-        Spacer(Modifier.height(32.dp))
+        Spacer(Modifier.height(32.sdp))
         Button(onClick = { showBottomSheet = true }) {
             Text("显示 Bottom Sheet")
         }
@@ -75,8 +76,8 @@ fun MyMaterial3ModalBottomSheetExample() {
             contentColor = MaterialTheme.colorScheme.onSurface, // M3 主题的表面内容色
             shape =
                 RoundedCornerShape(
-                    topStart = 16.0.dp,
-                    topEnd = 16.0.dp,
+                    topStart = 16.sdp,
+                    topEnd = 16.sdp,
                     bottomEnd = 0.0.dp,
                     bottomStart = 0.0.dp,
                 ),
@@ -118,13 +119,13 @@ fun CustomDragHandle(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 10.dp),
+                    .padding(vertical = 10.sdp),
             contentAlignment = Alignment.Center,
         ) {
             Box(
                 modifier =
                     Modifier
-                        .size(40.dp, 4.dp)
+                        .size(40.sdp, 4.sdp)
                         .clip(CircleShape)
                         .background(indicatorColor),
             )
@@ -139,15 +140,15 @@ fun BottomSheetContentM3(onCloseClicked: () -> Unit) {
         modifier =
             Modifier
                 .fillMaxWidth()
-                .heightIn(min = 200.dp, max = 500.dp) // 限定 Bottom Sheet 的最小/最大高度
-                .padding(16.dp),
+                .heightIn(min = 200.sdp, max = 500.sdp) // 限定 Bottom Sheet 的最小/最大高度
+                .padding(16.sdp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.sdp),
     ) {
         Text("🚀 Material 3 底部工作表标题", style = MaterialTheme.typography.titleMedium)
         Text("体验更简洁的 API 和 Material Design 3 风格。")
         Text("您可以使用 LazyColumn 或其他滚动组件来显示长列表。")
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(16.sdp))
         Button(onClick = onCloseClicked) {
             Text("关闭 Bottom Sheet")
         }

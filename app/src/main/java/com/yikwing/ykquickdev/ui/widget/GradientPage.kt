@@ -36,9 +36,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.yikwing.ykquickdev.ui.utils.sdp
 import androidx.compose.ui.window.DialogProperties
 
 @Composable
@@ -51,18 +51,18 @@ fun GradientPage() {
 @Composable
 fun LineGradient() {
     val gradientColors = listOf(Color(0xFF6A11CB), Color(0xFF2575FC)) // 紫色到蓝色渐变
-    val borderRadius = 16.dp
-    val borderWidth = 2.dp
+    val borderRadius = 16.sdp
+    val borderWidth = 2.sdp
     val borderColor = Color.Gray // 边框颜色
     Column(
-        modifier = Modifier.fillMaxSize().padding(20.dp),
+        modifier = Modifier.fillMaxSize().padding(20.sdp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         // 示例 1: 渐变背景 + 圆角 + 纯色边框
         Box(
             modifier =
                 Modifier
-                    .size(150.dp)
+                    .size(150.sdp)
                     // 1. 设置边框 (先边框，边框的形状是 RoundedCornerShape)
                     .border(borderWidth, borderColor, RoundedCornerShape(borderRadius))
                     // 2. 设置渐变背景 (后背景，背景的形状也是 RoundedCornerShape，与边框一致)
@@ -82,12 +82,12 @@ fun LineGradient() {
                 modifier =
                     Modifier
                         .align(Alignment.TopEnd)
-                        .offset(x = 4.dp, y = (-4).dp)
-                        .size(10.dp)
+                        .offset(x = 4.sdp, y = (-4).sdp)
+                        .size(10.sdp)
                         .background(Color.Red, CircleShape),
             )
         }
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(30.sdp))
         // 示例 2: 渐变边框 + 圆角 + 纯色背景 (相对复杂一点点)
         // 这种情况下，你需要使用一个 Box 来充当边框，内部再放置内容。
         // 或者使用 graphics Layer 绘制，但 for beginners, 嵌套 Box 更直观
@@ -95,7 +95,7 @@ fun LineGradient() {
         Box(
             modifier =
                 Modifier
-                    .size(150.dp)
+                    .size(150.sdp)
                     // 1. 外部 Box 作为渐变边框
                     .background(borderGradient, shape = RoundedCornerShape(borderRadius))
                     // 2. 内部 Box 作为实际内容区域，并带有纯色背景和更小的圆角
@@ -112,7 +112,7 @@ fun LineGradient() {
 
         var showDialog by remember { mutableStateOf(false) }
         // 触发弹窗的按钮
-        Button(onClick = { showDialog = true }, modifier = Modifier.padding(16.dp)) {
+        Button(onClick = { showDialog = true }, modifier = Modifier.padding(16.sdp)) {
             Text("显示自定义弹窗")
         }
         // 弹窗逻辑
@@ -127,15 +127,15 @@ fun LineGradient() {
             )
         }
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(30.sdp))
         Box(
             modifier =
                 Modifier
-                    .size(300.dp)
+                    .size(300.sdp)
                     .background(
                         Color.LightGray,
                         shape = CircleShape,
-                    ).padding(100.dp)
+                    ).padding(100.sdp)
                     .background(
                         Color.DarkGray,
                         shape = CircleShape,
@@ -166,9 +166,9 @@ fun MyCustomDialog(
                 Modifier
                     .fillMaxWidth() // 填充宽度，或指定固定宽度
                     .wrapContentHeight() // 高度自适应内容
-                    .clip(RoundedCornerShape(12.dp)) // 圆角背景
+                    .clip(RoundedCornerShape(12.sdp)) // 圆角背景
                     .background(Color.LightGray) // 使用主题的背景色
-                    .padding(24.dp),
+                    .padding(24.sdp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -195,7 +195,7 @@ fun MyCustomDialog(
 //                    tint = Color.Black,
 //                )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.sdp))
             // 弹窗说明内容
             Text(
                 text = "这是我的自定义弹窗内容。你可以在这里放置任何你想要的 Composable，例如图片、输入框、列表等等。",
@@ -203,7 +203,7 @@ fun MyCustomDialog(
                 textAlign = TextAlign.Center,
                 color = Color.Black.copy(alpha = 0.7f),
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.sdp))
             // 底部按钮区域
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -215,7 +215,7 @@ fun MyCustomDialog(
                 ) {
                     Text("取消")
                 }
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(16.sdp))
                 Button(
                     onClick = onConfirm,
                     modifier = Modifier.weight(1f),
@@ -258,16 +258,16 @@ fun MyCustomDialogWithNoScrim(
             modifier =
                 Modifier
                     .wrapContentSize() // 内容自适应大小
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(12.sdp))
                     .background(Color.Yellow.copy(alpha = 0.9f)) // 弹窗内容本身可以有颜色和透明度
-                    .padding(24.dp),
+                    .padding(24.sdp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
             // ... (弹窗内容) ...
-            Text("无蒙层弹窗", Modifier.padding(bottom = 8.dp), fontWeight = FontWeight.Bold)
+            Text("无蒙层弹窗", Modifier.padding(bottom = 8.sdp), fontWeight = FontWeight.Bold)
             Text("这是一个没有背景蒙层的弹窗，可以看到后面的 LightGray 主页面背景。")
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.sdp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround,

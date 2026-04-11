@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.yikwing.ykquickdev.ui.utils.sdp
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
@@ -141,10 +142,10 @@ fun CategoryRoute(paddingValues: PaddingValues) {
             modifier =
                 Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = paddingValues.calculateBottomPadding() + 10.dp)
+                    .padding(bottom = paddingValues.calculateBottomPadding() + 10.sdp)
                     .fillMaxWidth()
-                    .height(100.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .height(100.sdp)
+                    .clip(RoundedCornerShape(16.sdp))
                     .background(Color.White.copy(alpha = 0.3f)),
         ) {
             // Row 内容

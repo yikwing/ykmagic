@@ -20,7 +20,7 @@
 
 ### 3. module_extension - 扩展方法模块
 - 提供各类 Kotlin 扩展函数和工具类
-- 包含协程工具、EventBus、图片压缩、日期处理等
+- 包含协程工具、图片压缩、日期处理等
 - GlobalContextProvider 提供全局 Context 访问
 - 资源扩展函数简化资源获取
 - CacheManager 提供线程安全的内存缓存（LRU + TTL）

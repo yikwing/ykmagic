@@ -59,16 +59,16 @@ fun OtherPageScreen(
     Surface(modifier = Modifier.fillMaxSize()) {
         Center {
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.sdp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(horizontal = 8.dp),
+                modifier = Modifier.padding(horizontal = 8.sdp),
             ) {
                 Text(
                     text = "Product ID: $id === User: ${uiState.userName}",
                     modifier =
                         Modifier
                             .background(Color.Green)
-                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                            .padding(horizontal = 8.sdp, vertical = 4.sdp),
                 )
 
                 RoundedImage(

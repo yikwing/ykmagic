@@ -22,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yikwing.ykquickdev.R
+import com.yikwing.ykquickdev.ui.utils.sdp
 
 @Immutable
 data class BottomNavItem(
@@ -50,10 +51,10 @@ fun CustomBottomBar(
         modifier =
             modifier
                 .navigationBarsPadding()
-                .padding(bottom = 10.dp)
-                .height(60.5.dp)
-                .padding(horizontal = 10.dp)
-                .clip(RoundedCornerShape(30.dp))
+                .padding(bottom = 10.sdp)
+                .height(60.5.sdp)
+                .padding(horizontal = 10.sdp)
+                .clip(RoundedCornerShape(30.sdp))
                 .background(
                     if (currentPageIndex == DARK_BACKGROUND_PAGE_INDEX) {
                         Color(0x33000000)

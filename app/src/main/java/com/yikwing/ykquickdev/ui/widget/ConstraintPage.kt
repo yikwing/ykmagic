@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.yikwing.ykquickdev.ui.utils.sdp
 import androidx.constraintlayout.compose.ConstraintSet
 
 @Composable
@@ -38,8 +39,9 @@ fun ConstraintPage(modifier: Modifier = Modifier) {
                     color = MaterialTheme.colorScheme.surface,
                 ).then(modifier),
     ) {
+        val margin = 8.sdp
         ConstraintLayout(
-            constraintSet = decoupledConstraints(8.dp),
+            constraintSet = decoupledConstraints(margin),
         ) {
             Button(
                 onClick = { /* Do something */ },
@@ -59,13 +61,13 @@ fun ConstraintPage(modifier: Modifier = Modifier) {
         }
 
         Spacer(
-            modifier = Modifier.height(16.dp),
+            modifier = Modifier.height(16.sdp),
         )
 
         TwoTexts(text1 = "Text1", text2 = "Text2")
 
         Spacer(
-            modifier = Modifier.height(16.dp),
+            modifier = Modifier.height(16.sdp),
         )
 
         HelloScreen()
@@ -83,11 +85,11 @@ fun HelloContent(
     name: String,
     onNameChange: (String) -> Unit,
 ) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(16.sdp)) {
         if (name.isNotEmpty()) {
             Text(
                 text = "Hello, $name!",
-                modifier = Modifier.padding(bottom = 8.dp),
+                modifier = Modifier.padding(bottom = 8.sdp),
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
@@ -110,7 +112,7 @@ fun TwoTexts(
             modifier =
                 Modifier
                     .weight(1f)
-                    .padding(start = 4.dp)
+                    .padding(start = 4.sdp)
                     .wrapContentWidth(Alignment.Start),
             text = text1,
         )
@@ -125,7 +127,7 @@ fun TwoTexts(
             modifier =
                 Modifier
                     .weight(1f)
-                    .padding(end = 4.dp)
+                    .padding(end = 4.sdp)
                     .wrapContentWidth(Alignment.End),
             text = text2,
         )
