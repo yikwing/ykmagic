@@ -1,83 +1,96 @@
 # 测试指南
 
-## Hamcrest 匹配器
+## 项目测试约定
 
-项目使用 Hamcrest 进行断言，提供更可读的测试代码。
+- **测试框架**: JUnit 4（`@Test` / `@Before` / `@After`）
+- **Mock 工具**: MockK（Kotlin 生态首选）
+- **断言库**: Hamcrest（`assertThat` + matchers）
+- **测试命名**: Kotlin 反引号方法名描述意图（如 `` `register should add activity to stack` ``）
+- **测试文件**: `<ClassName>Test`，放在与源码对应的 test 包下
 
-### 一般匹配符
+## 测试依赖
+
+Convention Plugin 自动添加测试依赖（`testBundle` + `androidTestBundle`）：
+
+| Bundle | 包含 | 用途 |
+|--------|------|------|
+| testBundle | hamcrest 3.0, hamcrest-library 3.0, junit 4.13.2, mockk 1.14.9 | 本地单元测试 |
+| androidTestBundle | androidx-test-ext-junit 1.3.0, espresso-core 3.7.0 | Android 仪器测试 |
+
+## MockK 使用模式
+
+### Setup / Teardown
 
 ```kotlin
-// allOf：所有条件必须都成立，测试才通过
-assertThat(s, allOf(greaterThan(1), lessThan(3)))
+class ActivityHierarchyManagerTest {
+    @Before
+    fun setup() {
+        // Mock Android 框架类
+        mockkStatic(Log::class)
+        every { Log.d(any(), any()) } returns 0
+        every { Log.e(any(), any()) } returns 0
+    }
 
-// anyOf：只要有一个条件成立，测试就通过
-assertThat(s, anyOf(greaterThan(1), lessThan(1)))
-
-// anything：无论什么条件，测试都通过
-assertThat(s, anything())
-
-// is：变量的值等于指定值时，测试通过
-assertThat(s, `is`(2))
-
-// not：和 is 相反，变量的值不等于指定值时，测试通过
-assertThat(s, not(1))
+    @After
+    fun tearDown() {
+        // 清理所有 mock
+        clearAllMocks()
+        unmockkStatic(Log::class)
+    }
+}
 ```
 
-### 数值匹配符
+### 创建 Mock
 
 ```kotlin
-// closeTo：浮点型变量的值在 3.0±0.5 范围内，测试通过
-assertThat(d, closeTo(3.0, 0.5))
+// Relaxed mock：方法返回默认值，无需逐个配置
+val mockActivity = mockk<Activity>(relaxed = true)
 
-// greaterThan：变量的值大于指定值时，测试通过
-assertThat(d, greaterThan(3.0))
-
-// lessThan：变量的值小于指定值时，测试通过
-assertThat(d, lessThan(3.5))
-
-// greaterThanOrEqualTo：变量的值大于等于指定值时，测试通过
-assertThat(d, greaterThanOrEqualTo(3.3))
-
-// lessThanOrEqualTo：变量的值小于等于指定值时，测试通过
-assertThat(d, lessThanOrEqualTo(3.4))
+// 普通 mock：必须显式配置每个方法
+val mockCallback = mockk<(Result<Data>) -> Unit>()
 ```
 
-### 字符串匹配符
+### 配置行为
 
 ```kotlin
-// containsString：字符串变量中包含指定字符串时，测试通过
-assertThat(n, containsString("ci"))
+// 返回值
+every { mockActivity.isFinishing } returns false
+every { mockActivity.isDestroyed } returns false
 
-// startsWith：字符串变量以指定字符串开头时，测试通过
-assertThat(n, startsWith("Ma"))
+// 抛异常
+every { mockService.getData() } throws IOException("network error")
 
-// endsWith：字符串变量以指定字符串结尾时，测试通过
-assertThat(n, endsWith("i"))
-
-// equalTo：字符串变量等于指定字符串时，测试通过
-assertThat(n, equalTo("Magci"))
-
-// equalToIgnoringCase：忽略大小写比较
-assertThat(n, equalToIgnoringCase("magci"))
-
-// equalToIgnoringWhiteSpace：忽略头尾空格比较
-assertThat(n, equalToIgnoringWhiteSpace(" Magci   "))
+// 多次调用返回不同值（依次返回列表中的值，最后一个无限重复）
+every { mockRepository.fetch() } returnsMany listOf(data1, data2)
 ```
 
-### 集合匹配符
+### 验证调用
 
 ```kotlin
-// hasItem：Iterable 变量中含有指定元素时，测试通过
-assertThat(list, hasItem("Magci"))
+// 验证调用发生
+verify { mockActivity.finish() }
 
-// hasEntry：Map 变量中含有指定键值对时，测试通过
-assertThat(map, hasEntry("key", "value"))
+// 验证调用次数
+verify(exactly = 0) { mockActivity.finish() }  // 未发生
+verify(exactly = 1) { mockActivity.finish() }
+```
 
-// hasKey：Map 变量中含有指定键时，测试通过
-assertThat(map, hasKey("key"))
+## 断言模式
 
-// hasValue：Map 变量中含有指定值时，测试通过
-assertThat(map, hasValue("value"))
+```kotlin
+// 相等
+assertThat(result, `is`(expected))
+
+// Null 检查
+assertThat(result, `is`(nullValue()))
+assertThat(result, notNullValue())
+
+// 集合
+assertThat(list, hasItem("expected"))
+assertThat(list, hasSize(3))
+
+// 组合
+assertThat(result, allOf(notNullValue(), `is`(expected)))
 ```
 
 ## 运行测试
@@ -88,10 +101,17 @@ assertThat(map, hasValue("value"))
 
 # 运行指定模块测试
 ./gradlew :module_config:test
+./gradlew :module_proxy:test
 
 # 运行单个测试类
 ./gradlew test --tests "com.yikwing.config.YkConfigManagerTest"
+./gradlew test --tests "com.yikwing.proxy.util.ActivityHierarchyManagerTest"
 
-# 运行 Instrumented 测试
+# 运行 Android 仪器测试
 ./gradlew connectedDebugAndroidTest
 ```
+
+## 项目测试示例
+
+- `module_config/.../YkConfigManagerTest.kt` — 纯逻辑测试（JSON 解析、初始化状态）
+- `module_proxy/.../ActivityHierarchyManagerTest.kt` — Mock + 行为验证（Activity 栈管理）

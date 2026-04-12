@@ -3,11 +3,13 @@ package com.yikwing.ykquickdev.di
 import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.room3.Room
+import com.yikwing.ykquickdev.AppSettings
 import com.yikwing.ykquickdev.UserPreferences
+import com.yikwing.ykquickdev.datastore.appSettingsStore
+import com.yikwing.ykquickdev.datastore.userPreferencesStore
 import com.yikwing.ykquickdev.db.ChapterDao
 import com.yikwing.ykquickdev.db.UserDao
 import com.yikwing.ykquickdev.db.UserDatabase
-import com.yikwing.ykquickdev.datastore.userPreferencesStore
 import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
@@ -32,4 +34,7 @@ object DataModule {
 
     @Singleton
     fun provideUserPreferencesDataStore(context: Context): DataStore<UserPreferences> = context.userPreferencesStore
+
+    @Singleton
+    fun provideAppSettingsDataStore(context: Context): DataStore<AppSettings> = context.appSettingsStore
 }

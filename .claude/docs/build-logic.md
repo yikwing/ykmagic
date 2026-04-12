@@ -2,7 +2,7 @@
 
 本项目采用 **Now in Android** 风格的 Convention Plugins 模式管理构建配置。
 
-## 📁 目录结构
+## 目录结构
 
 ```
 build-logic/
@@ -25,7 +25,7 @@ build-logic/
             └── ProjectExtensions.kt
 ```
 
-## 🎯 Convention Plugins
+## Convention Plugins
 
 ### 1. `ykmagic.android.application`
 **用途**: 配置 Android Application 模块
@@ -169,7 +169,7 @@ plugins {
 
 > **注意**: Kotlin 编译选项（JVM Toolchain 17）由 Application/Library 插件内部通过 `KotlinAndroid.kt` 辅助函数配置，无需单独的 `ykmagic.kotlin.android` 插件。
 
-## 📝 使用指南
+## 使用指南
 
 ### App 模块示例
 
@@ -213,7 +213,7 @@ android {
 }
 ```
 
-## ✅ 优势
+## 优势
 
 1. **集中管理**: 所有通用配置集中在 build-logic 中
 2. **避免重复**: 不需要在每个模块重复配置 SDK 版本、Java 版本等
@@ -222,7 +222,7 @@ android {
 5. **模块化**: 每个 Convention Plugin 职责单一
 6. **可测试**: Convention Plugins 可以独立测试
 
-## 🔧 修改配置
+## 修改配置
 
 ### 修改 SDK 版本
 
@@ -266,13 +266,13 @@ gradlePlugin {
 }
 ```
 
-## 📚 参考
+## 参考
 
 - [Now in Android - build-logic](https://github.com/android/nowinandroid/tree/main/build-logic)
 - [Gradle Convention Plugins](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
 - [Sharing Build Logic](https://docs.gradle.org/current/userguide/sharing_build_logic_between_subprojects.html)
 
-## ⚠️ 注意事项
+## 注意事项
 
 1. **插件顺序**: Convention Plugins 应该放在 `plugins` 块的最前面
 2. **不要重复应用**: Convention Plugins 已经应用了基础插件（如 `android.application`），不要再次声明

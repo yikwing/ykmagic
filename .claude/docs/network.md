@@ -4,9 +4,9 @@
 
 ## 设计原则: `suspend` vs `Flow`
 
-**核心原则**: 数据层保持 `suspend` 函数,ViewModel 层决定如何处理状态流。
+**核心原则**: 数据层保持 `suspend` 函数，ViewModel 层决定如何处理状态流。
 
-**记忆口诀**: **动词用 `suspend`,名词用 `Flow`**
+**记忆口诀**: **动词用 `suspend`，名词用 `Flow`**
 
 | 特性 | suspend | Flow |
 |------|---------|------|
@@ -22,7 +22,7 @@
 ```toml
 [versions]
 ktor = "3.4.2"
-kotlinx-serialization = "1.11.0"
+kotlinx-serialization-json = "1.11.0"
 
 [bundles]
 network-ktor = [
@@ -47,18 +47,26 @@ dependencies {
 }
 ```
 
-## Repository 定义
+## API 类定义
+
+用 `@Singleton` 注解，Koin Annotations 自动将其注入 Repository：
 
 ```kotlin
-class Repo @Inject constructor(
+// 默认 BaseUrl（来自 DefaultRequest 配置）
+@Singleton
+class WanAndroidApi(
     private val httpClient: HttpClient,
 ) {
-    // GET 请求 - 使用默认 BaseUrl
     suspend fun getChapters(): BaseHttpResult<List<ChapterBean>> =
         httpClient.get { url("wxarticle/chapters/json") }.body()
+}
 
-    // GET 请求 - 覆盖 BaseUrl
-    suspend fun binGet(): HttpBinHeaders =
+// 覆盖 BaseUrl（takeFrom 覆盖 DefaultRequest 设置的 baseUrl）
+@Singleton
+class HttpBinApi(
+    private val httpClient: HttpClient,
+) {
+    suspend fun getHeaders(): HttpBinHeaders =
         httpClient.get {
             url {
                 takeFrom("https://httpbin.org")
@@ -67,11 +75,13 @@ class Repo @Inject constructor(
             }
         }.body()
 
-    // POST 请求
-    suspend fun createUser(user: User): ApiResponse<User> =
+    suspend fun postData(): HttpBinPostResult =
         httpClient.post {
-            url("users")
-            setBody(user)
+            url {
+                takeFrom("https://httpbin.org")
+                appendPathSegments("post")
+            }
+            setBody(buildJsonObject { put("key", "value") })
         }.body()
 }
 ```
@@ -94,40 +104,64 @@ data class HttpBinHeaders(
 ) : Parcelable
 ```
 
-**Moshi 迁移**: `@JsonClass` → `@Serializable`, `@Json` → `@SerialName`
-
 ## 请求封装
 
 ### `requestStateFlow` - UI 交互场景
 
+`RequestState<T>` 是 `sealed interface`，三个子类的字段：
+- `RequestState.Success` → `value: T`
+- `RequestState.Error` → `throwable: ApiException`（含 `code`、`message`）
+- `RequestState.Loading` — 无字段
+
 ```kotlin
-class ChapterViewModel(private val repo: Repo) : ViewModel() {
+@KoinViewModel
+class ChapterViewModel(private val api: WanAndroidApi) : ViewModel() {
     private val _state = MutableStateFlow<RequestState<List<ChapterBean>?>>(RequestState.Loading)
     val state: StateFlow<RequestState<List<ChapterBean>?>> = _state
 
     fun fetch() = viewModelScope.launch {
-        requestStateFlow { repo.getChapters() }.collect { _state.value = it }
+        requestStateFlow { api.getChapters() }.collect { _state.value = it }
     }
 }
 
-// Compose UI
-when (val state = viewModel.state.collectAsState().value) {
+// Compose UI（用 collectAsStateWithLifecycle 替代 collectAsState）
+val state by viewModel.state.collectAsStateWithLifecycle()
+when (state) {
     is RequestState.Loading -> CircularProgressIndicator()
-    is RequestState.Success -> ChapterList(state.data)
-    is RequestState.Error -> ErrorView(state.error)
+    is RequestState.Success -> ChapterList(state.value)      // .value
+    is RequestState.Error -> ErrorView(state.throwable.message) // .throwable
 }
 ```
+
+#### View 体系 DSL（`collectState`）
+
+Fragment/Activity 中可用 `collectState` 代替 `when` 块：
+
+```kotlin
+// Fragment
+viewLifecycleOwner.lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        viewModel.state.collectState {
+            onLoading { showLoading() }
+            onSuccess { data -> showData(data) }
+            onFailure { error -> showError(error.message) }
+        }
+    }
+}
+```
+
+> Compose 中直接用 `collectAsStateWithLifecycle()` + `when`，无需 `collectState`。
 
 ### `requestResult` - 后台操作
 
 ```kotlin
 // 适合上传日志、文件上传等一次性操作
-requestResult { repo.binPost() }
+requestResult { api.postData() }
     .onSuccess { Log.d("Upload", "成功: $it") }
     .onFailure { Log.e("Upload", "失败: ${it.message}") }
 
 // 或使用 fold
-val result = requestResult { repo.binGet() }.fold(
+val result = requestResult { api.getHeaders() }.fold(
     onSuccess = { "Host: ${it.headers.host}" },
     onFailure = { "失败: ${it.message}" }
 )
@@ -138,146 +172,36 @@ val result = requestResult { repo.binGet() }.fold(
 | 列表/详情加载 | `requestStateFlow` | 需要 Loading 状态 |
 | 上传/提交/同步 | `requestResult` | 一次性后台操作 |
 
-## Flow 生命周期收集
+### `ApiConfig` - 全局错误码策略
 
-### `repeatOnLifecycle` 状态选择
+默认 `errorCode != 0` 表示失败。如果业务 API 使用不同的成功码，在 Application 初始化时覆盖：
 
-#### `Lifecycle.State.STARTED`（推荐默认值）
+```kotlin
+// 默认行为（errorCode != 0 视为失败）
+ApiConfig.errorCodeChecker = { it != 0 }
 
-| 属性 | 说明 |
+// 示例：某些 API 用 200 表示成功
+ApiConfig.errorCodeChecker = { it != 200 }
+
+// 示例：0 和 1 都表示成功
+ApiConfig.errorCodeChecker = { it !in setOf(0, 1) }
+```
+
+## Flow 收集约定
+
+| 场景 | 方式 |
 |------|------|
-| 生命周期范围 | `onStart` ↔ `onStop` |
-| 开始条件 | 页面可见时（包括被半透明对话框遮挡、分屏模式） |
-| 停止条件 | 页面完全不可见时（按 Home 键、跳转新页面） |
-| 记忆口诀 | "只要眼睛能看到，就更新；看不到，就暂停" |
+| Compose | `collectAsStateWithLifecycle()`（内部使用 `STARTED`） |
+| Fragment | `repeatOnLifecycle(Lifecycle.State.STARTED)` |
 
-**适用场景**：
-- 收集 `StateFlow` / `SharedFlow` 更新 UI（标准姿势）
-- 解决内存泄漏和后台资源浪费问题
-- 用户回到页面时数据立刻恢复更新
+默认使用 `STARTED`（页面可见即收集）；仅在需要独占资源（相机、麦克风）时使用 `RESUMED`。
 
-**结论**：如果不确定选哪个，闭眼选 `STARTED`。
+## 网络层 DI
 
-#### `Lifecycle.State.RESUMED`（最严格）
-
-| 属性 | 说明 |
-|------|------|
-| 生命周期范围 | `onResume` ↔ `onPause` |
-| 开始条件 | 页面可见 **且** 拥有焦点（用户可交互） |
-| 停止条件 | 失去焦点（系统弹窗、半透明 Activity 覆盖、分屏切换） |
-| 记忆口诀 | "只有当你能实际操作这个页面时，才运行" |
-
-**适用场景**：
-- 独占资源：相机预览、麦克风录音
-- 高频传感器：重力感应游戏
-- 高耗能动画：复杂粒子动画
-
-**结论**：仅在需要"用户必须处于交互状态"时使用。
-
-### 代码示例
-
-```kotlin
-// Fragment 中收集 Flow（推荐 STARTED）
-viewLifecycleOwner.lifecycleScope.launch {
-    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-        viewModel.uiState.collect { state ->
-            updateUI(state)
-        }
-    }
-}
-
-// Compose 中使用 collectAsStateWithLifecycle（内部使用 STARTED）
-val state by viewModel.uiState.collectAsStateWithLifecycle()
-```
-
-## Koin 依赖注入
-
-两个模块分层配置：
-
-- `NetworkModule`（`module_network`）：提供 `Json` 配置
-- `AppNetworkModule`（`app`）：注入 `@BaseUrl`/`@DebugFlag`，构建 `HttpClient`
-
-```kotlin
-// module_network/NetworkModule.kt
-@Module
-@ComponentScan("com.yikwing.network")
-object NetworkModule {
-    @Singleton
-    fun provideJson(): Json = Json {
-        isLenient = true
-        ignoreUnknownKeys = true
-        coerceInputValues = true
-        explicitNulls = false
-    }
-}
-
-// app/di/AppNetworkModule.kt
-@Module
-object AppNetworkModule {
-    @Singleton
-    @BaseUrl
-    fun provideBaseUrl(): String = YkConfigManager.config.baseUrl
-
-    @Singleton
-    @DebugFlag
-    fun provideDebug(): Boolean = BuildConfig.DEBUG
-
-    @Singleton
-    fun provideHttpClient(json: Json, @BaseUrl baseUrl: String, @DebugFlag debug: Boolean): HttpClient =
-        HttpClient {
-            install(ContentNegotiation) { json(json) }
-            install(DefaultRequest) {
-                url(baseUrl)
-                contentType(ContentType.Application.Json)
-            }
-            install(HttpRequestRetry) {
-                maxRetries = 3
-                retryOnServerErrors()
-                exponentialDelay()
-            }
-            install(Logging) {
-                logger = Logger.ANDROID
-                level = if (debug) LogLevel.ALL else LogLevel.NONE
-            }
-        }
-}
-```
-
-## 高级用法
-
-### Bearer Token 认证
-
-```kotlin
-install(Auth) {
-    bearer {
-        loadTokens { BearerTokens(accessToken, refreshToken) }
-        refreshTokens { BearerTokens(newAccess, newRefresh) }
-    }
-}
-```
-
-### 文件下载
-
-```kotlin
-suspend fun downloadFile(url: String, file: File) {
-    client.prepareGet(url).execute { response ->
-        response.bodyAsChannel().copyTo(file.writeChannel())
-    }
-}
-```
-
-### 全局 Header
-
-```kotlin
-install(DefaultRequest) {
-    header("X-Api-Key", "your-api-key")
-    header("Accept-Language", "zh-CN")
-}
-```
+HttpClient 通过 Koin 注入（插件：HttpTimeout / ContentNegotiation / DefaultRequest / HttpRequestRetry / Logging），完整配置参见 [dependency-injection.md](dependency-injection.md) 的"网络层 DI"章节。
 
 ## 注意事项
 
-1. **HttpClient 复用** - 单例使用，不要每次请求都创建
-2. **线程安全** - HttpClient 是线程安全的
-3. **序列化配置** - 必须设置 `ignoreUnknownKeys = true`
-4. **调试** - Debug 版本集成 Chucker 可视化抓包
+1. **HttpClient 复用**: 单例使用，不要每次请求都创建
+2. **线程安全**: HttpClient 是线程安全的
+3. **序列化配置**: 必须设置 `ignoreUnknownKeys = true`

@@ -56,11 +56,17 @@ adb install app/build/outputs/apk/release/app-release.apk
 
 | 配置项 | 值 |
 |--------|-----|
+| AGP 版本 | 9.1.0 |
 | JDK 版本 | 17 |
+| Gradle 版本 | 9.3.0+ |
 | 编译 SDK | 36 (Android 15) |
 | 最低 SDK | 26 (Android 8.0) |
 | Kotlin 版本 | 2.3.20 |
 | KSP 版本 | 2.3.6 |
+
+**Convention Plugins**: 详见 [build-logic.md](build-logic.md)
+
+**兼容性**: Kotlin<2.3.0 不支持 Explicit Backing Fields | AGP<8.13.0 KSP 可能失败 | Room 3.0 命名空间为 `androidx.room3`（非 `androidx.room`）
 
 ## 必需配置文件
 
@@ -83,10 +89,12 @@ storePassword=your_store_password
 
 ## 核心配置文件
 
-- **gradle/libs.versions.toml** - 版本目录,统一管理所有依赖版本和插件
+- **gradle/libs.versions.toml** - 版本目录，统一管理所有依赖版本和插件
 - **settings.gradle.kts** - 项目模块配置
-- **build.gradle.kts (root)** - 根项目构建配置,包含强制依赖版本设置
+- **build.gradle.kts (root)** - 根项目构建配置，包含强制依赖版本设置
 - **android_build.sh** - 便捷构建脚本
+
+Convention Plugins 详解参见 [build-logic.md](build-logic.md)。
 
 ## app/build.gradle.kts 关键配置
 
@@ -173,3 +181,45 @@ dependencies {
 2. 创建模块目录和 build.gradle.kts
 3. 配置模块的包名、依赖等
 4. 如需发布,添加 maven-publish 配置
+
+## 常见问题
+
+| 错误 | 解决 |
+|------|------|
+| `YK_CONFIG 未定义` | 创建 android_env.json |
+| `Keystore not found` | 配置 keystore.properties |
+| KSP 生成失败 | `./android_build.sh clean` |
+| `No Koin context` | 检查 `@KoinApplication` 注解 |
+| 网络请求失败 | 检查 android_env.json 中的 base_url |
+| ViewModel 注入失败 | 添加 `@KoinViewModel` 注解 |
+| build-logic 修改不生效 | 运行 `./gradlew clean --no-daemon` 清理缓存 |
+| Convention Plugin 编译错误 | 检查 `VersionCatalogsExtension` 访问方式，确保 build-logic/settings.gradle.kts 正确配置 |
+| HorizontalPager 无法滑动 | 确保子项使用 `fillMaxSize()` 占满区域 |
+| 依赖版本冲突 | 检查根 build.gradle.kts 中 `resolutionStrategy.force()` 配置 |
+
+## 快速命令参考
+
+```bash
+# 构建
+./android_build.sh all         # 清理、构建并安装 Release APK
+./android_build.sh dev         # Debug
+./android_build.sh build       # Release
+./android_build.sh install     # 安装 Release APK
+./android_build.sh clean       # 清理
+
+# build-logic 修改后需要清理
+./gradlew clean --no-daemon    # 清理所有模块（包括 build-logic）
+./gradlew :build-logic:convention:build --no-daemon  # 单独验证 build-logic
+
+# 调试
+adb logcat | grep "YkQuickDev"  # 查看应用日志
+adb install -r app/build/outputs/apk/debug/app-debug.apk  # 安装 Debug APK
+
+# 质量
+./gradlew lint                 # Lint 检查
+./gradlew lintFix              # 自动修复
+
+# 依赖
+./android_build.sh dependency  # 检查更新
+cat gradle/libs.versions.toml  # 查看版本
+```
