@@ -10,7 +10,7 @@ DataStore 定义在 **app 模块**，包含两个 Store：
 
 ## 初始化
 
-DataStore 通过 Koin 注入（`DataModule.kt`），以 Context 扩展属性暴露：
+DataStore 通过 Koin 注入（`DataModule.kt`），以 Context 扩展属性暴露。DI 整体架构参见 [dependency-injection.md](dependency-injection.md)。
 
 ```kotlin
 val Context.userPreferencesStore: DataStore<UserPreferences> by dataStore(

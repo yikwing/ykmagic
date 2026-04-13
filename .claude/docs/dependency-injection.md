@@ -231,16 +231,9 @@ fun provideBaseUrl(): String = YkConfigManager.config.baseUrl
 fun provideHttpClient(json: Json, @BaseUrl baseUrl: String, @DebugFlag debug: Boolean): HttpClient = ...
 ```
 
-## KSP 配置
+## Koin 编译时检查
 
-位置: app/build.gradle.kts
-
-```kotlin
-ksp {
-    arg("room.schemaLocation", "$projectDir/schemas")
-    arg("KOIN_CONFIG_CHECK", "true")  // 启用编译时依赖检查
-}
-```
+Koin 编译时依赖检查通过 `ykmagic.android.koin` Convention Plugin 自动配置（`AndroidKoinConventionPlugin`），无需手动设置。
 
 ## 核心特性
 

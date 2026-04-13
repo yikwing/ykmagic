@@ -94,8 +94,6 @@ storePassword=your_store_password
 - **build.gradle.kts (root)** - 根项目构建配置，包含强制依赖版本设置
 - **android_build.sh** - 便捷构建脚本
 
-Convention Plugins 详解参见 [build-logic.md](build-logic.md)。
-
 ## app/build.gradle.kts 关键配置
 
 - **版本号生成**: `gitVersionCode()` 通过 Git commit 计数生成(基础值 4645)
@@ -179,7 +177,7 @@ dependencies {
 ### 创建新模块
 1. 在 settings.gradle.kts 添加 `include(":module_name")`
 2. 创建模块目录和 build.gradle.kts
-3. 配置模块的包名、依赖等
+3. 配置模块的包名、依赖等（现有模块参见 [modules.md](modules.md)）
 4. 如需发布,添加 maven-publish 配置
 
 ## 常见问题

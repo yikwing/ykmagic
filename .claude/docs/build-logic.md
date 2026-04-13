@@ -109,10 +109,10 @@ plugins {
 **用途**: 配置 Koin 依赖注入
 
 **自动应用**:
-- `io.insert-koin.compiler.plugin` 插件（Hotswan 编译时检查）
+- `io.insert-koin.compiler.plugin` 插件（Koin 编译时依赖检查）
 
 **配置内容**:
-- 启用 Koin 用户日志
+- 启用 Koin 用户日志（`userLogs.set(true)`）
 
 **自动添加依赖**:
 - `koin-bom` (platform)
