@@ -1,24 +1,26 @@
 # 构建与配置
 
-## 构建架构
-- **Convention Plugins**: 采用 Now in Android 风格的 build-logic 模式
-- **位置**: `build-logic/convention/`
-- **插件**: `ykmagic.android.application` | `ykmagic.android.library` | `ykmagic.kotlin.android` | `ykmagic.android.compose`
-- **文档**: `.claude/docs/build-logic.md`
+## Convention Plugins (build-logic/convention/)
+- `ykmagic.android.application` — Android Application + 通用依赖
+- `ykmagic.android.library` — Android Library + 通用依赖
+- `ykmagic.android.compose` — Compose BOM + Material3 + 工具
+- `ykmagic.android.koin` — Koin BOM + Annotations + 编译时检查
+- `ykmagic.android.room` — Room3 + KSP
+- `ykmagic.android.wire` — Wire Protobuf
+
+通用依赖自动添加：core-ktx, appcompat, lifecycle-runtime-ktx, coroutines, testBundle, androidTestBundle
 
 ## 构建命令
 ```bash
-./android_build.sh dev      # Debug 构建
-./android_build.sh build    # Release 构建
-./android_build.sh all      # 清理+构建+安装
-./gradlew test              # 运行测试
+./android_build.sh dev / build / all / clean / install / dependency
+./gradlew test / lint / signingReport
 ```
 
 ## 必需配置文件
-- `android_env.json` - 应用配置 (base_url 等)
-- `keystore.properties` - 签名配置
+- `android_env.json` — 应用配置 (base_url)
+- `keystore.properties` — 签名配置
 
-## Debug 工具
-- Chucker 4.2.0 - 网络抓包
-- LeakCanary 3.0-alpha-8 - 内存泄漏检测
-- Glance 1.1.0 - 性能监控
+## Debug 工具 (仅 Debug 版本)
+- Chucker 4.3.1 — 网络抓包
+- LeakCanary 3.0-alpha-8 — 内存泄漏检测
+- Glance 1.1.0 — 性能监控

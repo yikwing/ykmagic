@@ -2,27 +2,19 @@
 
 ## 模块列表
 
-| 模块 | 路径 | 功能 |
-|------|------|------|
-| app | app/ | 示例应用，演示框架使用 |
-| module_config | module_config/ | 配置注入 (@YkConfigNode) |
-| module_network | module_network/ | Ktor Client 网络请求封装 |
-| module_extension | module_extension/ | Kotlin 扩展函数集合 |
-| module_datastore | module_datastore/ | Proto DataStore 封装 |
-| module_permission | module_permission/ | 运行时权限请求 |
-| module_proxy | module_proxy/ | BaseActivity、AppInitializer |
-| module_component | module_component/ | 自定义 View 组件 |
+| 模块 | 功能 |
+|------|------|
+| app | 示例应用，演示框架使用 |
+| module_config | 配置注入 (YkConfigManager + kotlinx.serialization) |
+| module_network | Ktor Client 网络封装 (RequestState/ApiTransform/ApiException) |
+| module_extension | Kotlin 扩展函数 (CacheManager/NetConnectManager/SessionManager/InitState) |
+| module_compose | 通用 Compose 组件 (Loading/Error/Image/Center/Debounce/SystemBars/AppLifecycleObserver) |
+| module_permission | 运行时权限请求 (Fragment 封装) |
+| module_proxy | BaseActivity/BaseFragment/AppInitializer/ActivityHierarchyManager |
 
-注：module_logger 已移除（7617cf7），日志功能由 android.util.Log 直接使用。
+已移除模块：module_datastore、module_component、module_logger。DataStore 在 app 模块内管理。
 
-## 模块依赖关系
+## 依赖关系
 ```
-app
- ├── module_config
- ├── module_network
- ├── module_extension
- ├── module_datastore
- ├── module_permission
- ├── module_proxy
- └── module_component
+app → module_config / module_network / module_extension / module_compose / module_permission / module_proxy
 ```
