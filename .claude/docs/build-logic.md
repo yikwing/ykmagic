@@ -42,6 +42,7 @@ build-logic/
 **自动添加依赖**:
 - `core-ktx`
 - `appcompat`
+- `lifecycle-runtime-ktx`
 - `kotlinx-coroutines-android`
 - `testBundle` (测试依赖)
 - `androidTestBundle` (Android 测试依赖)
@@ -68,6 +69,7 @@ plugins {
 **自动添加依赖**:
 - `core-ktx`
 - `appcompat`
+- `lifecycle-runtime-ktx`
 - `kotlinx-coroutines-android`
 - `testBundle` (测试依赖)
 - `androidTestBundle` (Android 测试依赖)
@@ -213,64 +215,13 @@ android {
 }
 ```
 
-## 优势
-
-1. **集中管理**: 所有通用配置集中在 build-logic 中
-2. **避免重复**: 不需要在每个模块重复配置 SDK 版本、Java 版本等
-3. **类型安全**: 使用 Kotlin DSL，编译时检查
-4. **易于维护**: 修改一处，所有模块生效
-5. **模块化**: 每个 Convention Plugin 职责单一
-6. **可测试**: Convention Plugins 可以独立测试
-
 ## 修改配置
 
-### 修改 SDK 版本
-
-编辑 `build-logic/convention/src/main/kotlin/ProjectConfig.kt`:
-
-```kotlin
-object ProjectConfig {
-    const val COMPILE_SDK = 37  // 修改这里
-    const val MIN_SDK = 26
-    const val TARGET_SDK = 37   // 修改这里
-}
-```
-
-所有 Convention Plugins 会自动使用新的配置。
-
-### 修改 Java 版本
-
-编辑 `build-logic/convention/src/main/kotlin/com/yikwing/ykmagic/KotlinAndroid.kt`：
-
-```kotlin
-private fun Project.configureKotlin() {
-    extensions.configure<KotlinAndroidProjectExtension> {
-        jvmToolchain(21)  // 修改这里
-    }
-}
-```
-
-### 添加新的 Convention Plugin
-
-1. 在 `build-logic/convention/src/main/kotlin/` 创建新的插件文件
-2. 在 `build-logic/convention/build.gradle.kts` 注册插件：
-
-```kotlin
-gradlePlugin {
-    plugins {
-        register("yourPlugin") {
-            id = "ykmagic.your.plugin"
-            implementationClass = "YourConventionPlugin"
-        }
-    }
-}
-```
-
-## 参考
-
-- [Now in Android - build-logic](https://github.com/android/nowinandroid/tree/main/build-logic)
-- [Gradle Convention Plugins](https://docs.gradle.org/current/samples/sample_convention_plugins.html)
-- [Sharing Build Logic](https://docs.gradle.org/current/userguide/sharing_build_logic_between_subprojects.html)
+| 修改项 | 文件位置 |
+|--------|---------|
+| SDK 版本 | `build-logic/convention/src/main/kotlin/ProjectConfig.kt` → `COMPILE_SDK` / `MIN_SDK` / `TARGET_SDK` |
+| Java/JVM 版本 | `build-logic/convention/src/main/kotlin/com/yikwing/ykmagic/KotlinAndroid.kt` → `jvmToolchain()` |
+| 添加新插件 | 在 `src/main/kotlin/` 创建插件类 + 在 `build.gradle.kts` 的 `gradlePlugin.plugins` 中注册 |
 
 ## 注意事项
 

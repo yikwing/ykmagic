@@ -34,20 +34,11 @@ adb install app/build/outputs/apk/release/app-release.apk
 ./android_build.sh dependency
 ```
 
-### 测试相关
+### 测试
+
+测试命令详见 [testing.md](testing.md)
+
 ```bash
-# 运行单元测试
-./gradlew test
-
-# 运行指定模块的单元测试
-./gradlew :module_config:test
-
-# 运行 Android 仪器测试
-./gradlew connectedAndroidTest
-
-# 运行单个测试类
-./gradlew test --tests "com.yikwing.config.ReturnsTest"
-
 # 打印证书签名信息
 ./gradlew signingReport
 ```
@@ -56,7 +47,7 @@ adb install app/build/outputs/apk/release/app-release.apk
 
 | 配置项 | 值 |
 |--------|-----|
-| AGP 版本 | 9.1.0 |
+| AGP 版本 | 9.1.1 |
 | JDK 版本 | 17 |
 | Gradle 版本 | 9.3.0+ |
 | 编译 SDK | 36 (Android 15) |
@@ -99,21 +90,11 @@ storePassword=your_store_password
 - **版本号生成**: `gitVersionCode()` 通过 Git commit 计数生成(基础值 4645)
 - **构建时间注入**: `manifestPlaceholders["debug_time"]` 记录打包时间
 - **JSON 配置注入**: `buildConfigField("String", "YK_CONFIG", ...)` 将 android_env.json 注入到 BuildConfig
-- **资源重定向**: `sourceSets.getByName("main") { res.setSrcDirs(...) }` 支持多资源目录
-- **Wire 配置**: Protobuf 支持,proto 文件位于 `src/main/protos`
-- **Room Schema**: KSP 参数配置 Room 数据库 schema 导出位置
-
-## 资源目录结构
-
-app 模块的资源文件按功能分类:
-- `src/main/res/common` - 通用资源
-- `src/main/res/activity` - Activity 相关资源
-- `src/main/res/fragment` - Fragment 相关资源
+- **Wire 配置**: 由 `ykmagic.android.wire` Convention Plugin 管理，proto 文件位于 `src/main/protos`
+- **Room Schema**: 由 `ykmagic.android.room` Convention Plugin 管理，schema 导出到 `$projectDir/schemas`
 
 ## 依赖版本管理
 
-- 根 build.gradle.kts 通过 `resolutionStrategy.force()` 强制统一关键依赖版本
-- 强制版本包括: `activity` 和 `kotlinx-coroutines-core`
 - 所有版本在 `gradle/libs.versions.toml` 中集中管理
 - 支持 Bundle 依赖配置: `network-ktor`, `testBundle`, `androidTestBundle`
 
@@ -207,11 +188,9 @@ dependencies {
 
 # build-logic 修改后需要清理
 ./gradlew clean --no-daemon    # 清理所有模块（包括 build-logic）
-./gradlew :build-logic:convention:build --no-daemon  # 单独验证 build-logic
 
 # 调试
 adb logcat | grep "YkQuickDev"  # 查看应用日志
-adb install -r app/build/outputs/apk/debug/app-debug.apk  # 安装 Debug APK
 
 # 质量
 ./gradlew lint                 # Lint 检查

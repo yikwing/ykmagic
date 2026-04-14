@@ -17,35 +17,7 @@
 
 ## 依赖配置
 
-### libs.versions.toml
-
-```toml
-[versions]
-ktor = "3.4.2"
-kotlinx-serialization-json = "1.11.0"
-
-[bundles]
-network-ktor = [
-    "ktor-client-core",
-    "ktor-client-cio",
-    "ktor-client-content-negotiation",
-    "ktor-client-logging",
-    "ktor-serialization-kotlinx-json"
-]
-```
-
-### build.gradle.kts
-
-```kotlin
-plugins {
-    alias(libs.plugins.kotlin.serialization)
-}
-
-dependencies {
-    implementation(libs.bundles.network.ktor)
-    implementation(libs.kotlinx.serialization.json)
-}
-```
+网络依赖通过 `libs.versions.toml` 的 `network-ktor` bundle 管理，构建配置详见 [build-logic.md](build-logic.md)。序列化需在模块 `build.gradle.kts` 中应用 `kotlin.serialization` 插件。
 
 ## API 类定义
 
@@ -133,24 +105,7 @@ when (state) {
 }
 ```
 
-#### View 体系 DSL（`collectState`）
-
-Fragment/Activity 中可用 `collectState` 代替 `when` 块：
-
-```kotlin
-// Fragment
-viewLifecycleOwner.lifecycleScope.launch {
-    repeatOnLifecycle(Lifecycle.State.STARTED) {
-        viewModel.state.collectState {
-            onLoading { showLoading() }
-            onSuccess { data -> showData(data) }
-            onFailure { error -> showError(error.message) }
-        }
-    }
-}
-```
-
-> Compose 中直接用 `collectAsStateWithLifecycle()` + `when`，无需 `collectState`。
+> View 体系可用 `collectState` DSL（`onLoading` / `onSuccess` / `onFailure`）替代 `when` 块，需配合 `repeatOnLifecycle(STARTED)`。Compose 中直接用 `collectAsStateWithLifecycle()` + `when`。
 
 ### `requestResult` - 后台操作
 

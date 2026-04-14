@@ -139,46 +139,10 @@ class NetworkInitTask : Initializer<Unit> {
 
 位置: `module_proxy/.../util/ActivityHierarchyManager.kt`
 
-### 核心特性
+线程安全（`CopyOnWriteArrayList`）+ 内存安全（`WeakReference`）的 Activity 栈管理器。
+核心 API：`register` / `unregister` / `getTopActivity` / `finishTopActivities` / `finishAllExcept` / `finishAllActivities`。
 
-- **线程安全**: 使用 `CopyOnWriteArrayList` 保证并发安全
-- **内存安全**: 使用 `WeakReference` 避免内存泄漏
-- **自动清理**: 自动过滤已销毁的 Activity 引用
-
-### API
-
-| 方法 | 说明 |
-|------|------|
-| `register(activity)` / `unregister(activity)` | 注册/注销 Activity |
-| `getTopActivity()` | 获取栈顶 Activity |
-| `getActivityCount()` | 获取有效 Activity 数量 |
-| `finishTopActivities(count)` | 从栈顶关闭指定数量 |
-| `finishUntil(activityClass, inclusive)` | 关闭到指定 Activity |
-| `finishAllExcept(activityClass)` | 关闭除指定外的所有 |
-| `finishAllActivities()` | 关闭所有 Activity |
-| `contains(activity/activityClass)` | 检查是否包含指定 Activity |
-| `getActivityStack()` | 获取当前有效 Activity 列表 |
-| `getActivityAt(index)` | 按索引获取 Activity（0 为栈底） |
-
-### 使用示例
-
-```kotlin
-// 注册（在 ActivityLifecycleCallbacks 中）
-class AppActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks by noOpDelegate() {
-    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        ActivityHierarchyManager.register(activity)
-    }
-    override fun onActivityDestroyed(activity: Activity) {
-        ActivityHierarchyManager.unregister(activity)
-    }
-}
-
-// 关闭栈顶 2 个 Activity
-ActivityHierarchyManager.finishTopActivities(2)
-
-// 关闭除了 MainActivity 外的所有 Activity
-ActivityHierarchyManager.finishAllExcept(MainActivity::class.java)
-```
+使用时通过 `ActivityLifecycleCallbacks` 在 `onActivityCreated` / `onActivityDestroyed` 中调用 `register` / `unregister`。
 
 ---
 
@@ -186,29 +150,7 @@ ActivityHierarchyManager.finishAllExcept(MainActivity::class.java)
 
 位置: `module_extension/.../util/CacheManager.kt`
 
-### 核心特性
-
-- LRU 淘汰（默认 256 条上限）
-- TTL 过期（基于单调时钟）
-- 线程安全（synchronized 保护）
-
-### 使用示例
-
-```kotlin
-// 写入（永不过期）
-CacheManager.put("user", userObj)
-
-// 写入（5分钟过期）
-CacheManager.put("token", "abc123", ttlMillis = 5 * 60 * 1000L)
-
-// 读取
-val user: User? = CacheManager.get("user")
-
-// 获取或计算
-val config = CacheManager.getOrPut("config", ttlMillis = 60_000L) {
-    loadConfigFromDisk()
-}
-```
+线程安全的 LRU 缓存（默认 256 条上限），支持 TTL 过期。核心 API：`put(key, value, ttlMillis?)` / `get<T>(key)` / `getOrPut(key, ttlMillis?) { }` / `remove(key)` / `clear()`。
 
 ---
 
@@ -216,37 +158,4 @@ val config = CacheManager.getOrPut("config", ttlMillis = 60_000L) {
 
 位置: `module_extension/.../network/NetConnectManager.kt`
 
-### 核心特性
-
-- 响应式网络状态监听（StateFlow）
-- 支持 VPN 检测（独立于底层网络类型）
-- 实现 Closeable 接口，支持显式资源清理
-- 使用 `NET_CAPABILITY_VALIDATED` 确保真实互联网连接
-
-### 网络类型
-
-| 类型 | 说明 |
-|------|------|
-| `NetworkType.WIFI` | WiFi 网络 |
-| `NetworkType.CELLULAR` | 移动数据网络 |
-| `NetworkType.ETHERNET` | 以太网 |
-| `NetworkType.VPN` | 纯 VPN 网络 |
-| `NetworkType.NONE` | 无网络连接 |
-
-### 使用示例
-
-```kotlin
-// Compose 中使用
-val networkState by netConnectManager.networkState.collectAsState()
-when (networkState.type) {
-    NetworkType.WIFI -> /* WiFi */
-    NetworkType.CELLULAR -> /* 移动网络 */
-    NetworkType.VPN -> /* VPN */
-    NetworkType.ETHERNET -> /* 以太网 */
-    NetworkType.NONE -> /* 无网络 */
-}
-
-// 一次性查询
-if (netConnectManager.isCurrentlyConnected) { /* 已连接 */ }
-if (netConnectManager.isVpnActive) { /* VPN 激活 */ }
-```
+响应式网络状态监听（StateFlow），支持 WIFI / CELLULAR / ETHERNET / VPN / NONE 五种类型和 VPN 检测。实现 `Closeable`。核心 API：`networkState: StateFlow` / `isCurrentlyConnected` / `isVpnActive`。
