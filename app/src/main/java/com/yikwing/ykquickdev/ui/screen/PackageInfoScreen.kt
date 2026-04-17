@@ -25,6 +25,7 @@ fun EntryProviderScope<NavKey>.packageInfoEntry() {
         PackageInfoScreen(
             navigationToPage = { id -> navigator.navigate(ProductRoute(id)) },
             navigationToDiy = { navigator.navigate(DiyInputRoute) },
+            navigationToFoldable = { navigator.navigate(FoldableRoute) },
         )
     }
 }
@@ -33,6 +34,7 @@ fun EntryProviderScope<NavKey>.packageInfoEntry() {
 fun PackageInfoScreen(
     navigationToPage: (str: String) -> Unit,
     navigationToDiy: () -> Unit,
+    navigationToFoldable: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -59,6 +61,16 @@ fun PackageInfoScreen(
                     .padding(horizontal = 16.dp),
         ) {
             Text("to Diy", fontFamily = RubikGemstonesRegular)
+        }
+
+        Button(
+            onClick = navigationToFoldable,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+        ) {
+            Text("to Foldable", fontFamily = RubikGemstonesRegular)
         }
     }
 }

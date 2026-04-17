@@ -19,6 +19,7 @@ import com.yikwing.ykquickdev.ui.screen.TextDebounceRoute
 import com.yikwing.ykquickdev.ui.screen.authLoginEntry
 import com.yikwing.ykquickdev.ui.screen.authRegisterEntry
 import com.yikwing.ykquickdev.ui.screen.diyInputEntry
+import com.yikwing.ykquickdev.ui.screen.foldableEntry
 import com.yikwing.ykquickdev.ui.screen.mainScreenEntry
 import com.yikwing.ykquickdev.ui.screen.otherPageEntry
 import com.yikwing.ykquickdev.ui.screen.packageInfoEntry
@@ -52,6 +53,7 @@ fun AppNavGraph(modifier: Modifier = Modifier) {
                     mainScreenEntry()
                     authLoginEntry()
                     authRegisterEntry()
+                    foldableEntry()
                 },
         )
     }

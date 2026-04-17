@@ -23,6 +23,6 @@ internal fun Project.configureKotlinAndroid(
 
 private fun Project.configureKotlin() {
     extensions.configure<KotlinAndroidProjectExtension> {
-        jvmToolchain(17)
+        jvmToolchain(21)
     }
 }

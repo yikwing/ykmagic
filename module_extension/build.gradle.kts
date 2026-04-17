@@ -31,6 +31,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.exifinterface)
+    api(libs.androidx.window)
 
     implementation(libs.okio)
 }

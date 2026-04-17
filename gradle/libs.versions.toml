@@ -18,6 +18,7 @@ lifecycle = "2.10.0"
 room3 = "3.0.0-alpha03"
 collection = "1.6.0"
 work-runtime-ktx = "2.11.2"
+window = "1.5.1"
 
 okhttp = "5.3.2"
 retrofit = "3.0.0"
@@ -66,6 +67,7 @@ fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
+androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
