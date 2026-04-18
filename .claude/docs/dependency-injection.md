@@ -242,3 +242,9 @@ Koin 编译时依赖检查通过 `ykmagic.android.koin` Convention Plugin 自动
 - 使用 `@InjectedParam` 传递运行时参数（替代 Hilt 的 AssistedInject）
 - 使用 `@Singleton` / `@Factory` 控制依赖作用域
 - 完整支持 ViewModel + Repository + Koin 的依赖链
+
+## 多实例同类型注入（必读）
+
+Koin 依据 `KClass + Qualifier` 索引 bean。JVM 泛型擦除 + R8 默认剥离 `Signature`，导致 `DataStore<UserPreferences>` 与 `DataStore<AppSettings>` 在 release 塌缩为同一 key，注入错乱。
+
+解法：定义自定义 `@Qualifier` 注解（如 `@UserPreferencesStore`），provider 与注入点同时标注。优于 `@Named("xxx")`，字符串易拼错且无编译期校验。

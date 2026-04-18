@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.UserPreferences
 import com.yikwing.ykquickdev.api.entity.Headers
+import com.yikwing.ykquickdev.di.UserPreferencesStore
 import com.yikwing.ykquickdev.repository.OtherRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,7 +34,7 @@ data class HttpBinUiState(
 @KoinViewModel
 class HttpBinViewModel(
     private val otherRepository: OtherRepository,
-    private val userPreferencesStore: DataStore<UserPreferences>,
+    @param:UserPreferencesStore private val userPreferencesStore: DataStore<UserPreferences>,
 ) : ViewModel() {
     private val headersFlow = MutableStateFlow<RequestState<Headers>>(RequestState.Loading)
 

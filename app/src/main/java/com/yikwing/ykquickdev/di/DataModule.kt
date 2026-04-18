@@ -33,8 +33,10 @@ object DataModule {
     fun provideChapterDao(userDatabase: UserDatabase): ChapterDao = userDatabase.getChapterDao()
 
     @Singleton
+    @UserPreferencesStore
     fun provideUserPreferencesDataStore(context: Context): DataStore<UserPreferences> = context.userPreferencesStore
 
     @Singleton
+    @AppSettingsStore
     fun provideAppSettingsDataStore(context: Context): DataStore<AppSettings> = context.appSettingsStore
 }

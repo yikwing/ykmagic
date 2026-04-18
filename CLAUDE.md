@@ -92,6 +92,8 @@ UI组件: 页面级? 是→ui/screen/ 否→通用复用?→是→components/ �
 
 **Compose 陷阱**: `LaunchedEffect` 放 Screen 顶层，不能嵌套在 Loading/Empty 等分支内 | `sealed class` 默认 @Stable，无需手动标注
 
+**DI 陷阱**: 同一原始类型多实例（如多个 `DataStore<T>`、多个 `Flow<T>`）必须用自定义 `@Qualifier` 注解区分；仅靠泛型参数在 R8 release 下会塌缩成同一 key，导致运行时 `ClassCastException`
+
 **测试**: Hamcrest + MockK | `<ClassName>Test` | 关键逻辑必须覆盖
 
 **模块**: `settings.gradle.kts` 注册 | 避免循环依赖 | 公共功能放 `module_extension`
