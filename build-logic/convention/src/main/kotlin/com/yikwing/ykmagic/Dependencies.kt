@@ -9,11 +9,11 @@ import org.gradle.kotlin.dsl.dependencies
 internal fun Project.configureAndroidDependencies() {
     dependencies {
         // AndroidX 核心库
-        add("implementation", libs.findLibrary("core-ktx").get())
-        add("implementation", libs.findLibrary("appcompat").get())
+        add("implementation", libs.findLibrary("androidx-core-ktx").get())
+        add("implementation", libs.findLibrary("androidx-appcompat").get())
 
         // Lifecycle
-        add("implementation", libs.findLibrary("lifecycle-runtime-ktx").get())
+        add("implementation", libs.findLibrary("androidx-lifecycle-runtime-ktx").get())
 
         // 协程
         add("implementation", libs.findLibrary("kotlinx-coroutines-android").get())

@@ -137,16 +137,16 @@ android {
 
 dependencies {
     // 官方依赖库
-    implementation(libs.activity.ktx)
-    implementation(libs.activity.compose)
-    implementation(libs.fragment.ktx)
-    implementation(libs.collection.ktx)
-    implementation(libs.datastore.preferences)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.collection.ktx)
+    implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.work.runtime.ktx)
 
-    implementation(libs.constraintlayout)
-    implementation(libs.recyclerview)
-    implementation(libs.webkit)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.webkit)
 
     // 三方依赖库
     implementation(libs.bundles.network.ktor)
@@ -165,10 +165,10 @@ dependencies {
     // compose material-icons-extended
     implementation(libs.material.icons.extended)
 
-    implementation(libs.lifecycle.runtime.compose)
-    implementation(libs.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
 
-    implementation(libs.constraintlayout.compose)
+    implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
 

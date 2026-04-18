@@ -33,6 +33,7 @@ kotlinx-serialization-json = "1.11.0"
 compose-bom = "2026.03.01"
 koin-bom = "4.2.1"
 koin-plugin = "0.6.2"
+hotswan-compiler = "1.2.2"
 
 constraintlayout-compose = "1.1.1"
 nav3-core = "1.1.0"
@@ -58,27 +59,26 @@ koin-compilerGradlePlugin = { group = "io.insert-koin", name = "koin-compiler-gr
 wire-gradlePlugin = { group = "com.squareup.wire", name = "wire-gradle-plugin", version.ref = "wire" }
 
 #   官方依赖库
-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
-androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "work-runtime-ktx" }
-collection-ktx = { module = "androidx.collection:collection-ktx", version.ref = "collection" }
-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activity" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work-runtime-ktx" }
+androidx-collection-ktx = { group = "androidx.collection", name = "collection-ktx", version.ref = "collection" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragment" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
 androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }
-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 
-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
-#lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
-room-ktx = { group = "androidx.room3", name = "room3-runtime", version.ref = "room3" }
-room-compiler = { group = "androidx.room3", name = "room3-compiler", version.ref = "room3" }
+androidx-room-ktx = { group = "androidx.room3", name = "room3-runtime", version.ref = "room3" }
+androidx-room-compiler = { group = "androidx.room3", name = "room3-compiler", version.ref = "room3" }
 
 #   三方依赖库
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
@@ -113,19 +113,19 @@ ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 
 #   koin
-koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
-koin-compose = { module = "io.insert-koin:koin-compose" }
-koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel" }
+koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koin-bom" }
+koin-compose = { group = "io.insert-koin", name = "koin-compose" }
+koin-compose-viewmodel = { group = "io.insert-koin", name = "koin-compose-viewmodel" }
 
 #   koin annotations
 koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin-bom" }
 
-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
-lifecycle-viewmodel-navigation3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-navigation3 = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
 
-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout-compose" }
-androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "nav3-core" }
-androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "nav3-core" }
+androidx-constraintlayout-compose = { group = "androidx.constraintlayout", name = "constraintlayout-compose", version.ref = "constraintlayout-compose" }
+androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigation3-runtime", version.ref = "nav3-core" }
+androidx-navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "nav3-core" }
 
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-network-ktor3 = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
@@ -159,7 +159,7 @@ room3 = { id = "androidx.room3", version.ref = "room3" }
 
 koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koin-plugin" }
 
-hotswan-compiler = { id = "com.github.skydoves.compose.hotswan.compiler", version = "1.2.1" }
+hotswan-compiler = { id = "com.github.skydoves.compose.hotswan.compiler", version.ref = "hotswan-compiler" }
 
 [bundles]
 network-okhttp = ["okhttp3", "okhttp3-logging-interceptor", "retrofit2", "retrofit2-kotlinx-serialization", "kotlinx-serialization-json"]
