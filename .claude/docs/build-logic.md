@@ -140,8 +140,8 @@ plugins {
 - Schema 导出目录: `$projectDir/schemas`
 
 **自动添加依赖**:
-- `room-ktx` (implementation)
-- `room-compiler` (ksp)
+- `room3-runtime` (implementation)
+- `room3-compiler` (ksp)
 
 **使用示例**:
 ```kotlin

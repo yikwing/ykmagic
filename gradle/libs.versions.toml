@@ -77,8 +77,8 @@ androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "w
 
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 
-androidx-room-ktx = { group = "androidx.room3", name = "room3-runtime", version.ref = "room3" }
-androidx-room-compiler = { group = "androidx.room3", name = "room3-compiler", version.ref = "room3" }
+androidx-room3-runtime = { group = "androidx.room3", name = "room3-runtime", version.ref = "room3" }
+androidx-room3-compiler = { group = "androidx.room3", name = "room3-compiler", version.ref = "room3" }
 
 #   三方依赖库
 okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
