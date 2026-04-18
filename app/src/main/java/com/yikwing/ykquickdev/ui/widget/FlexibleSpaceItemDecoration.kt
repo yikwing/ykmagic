@@ -1,4 +1,4 @@
-package com.yikwing.ykquickdev.work
+package com.yikwing.ykquickdev.ui.widget
 
 import android.graphics.Rect
 import android.view.View
