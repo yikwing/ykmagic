@@ -18,7 +18,7 @@ import java.util.LinkedHashMap
  *
  * ## LRU 刷新行为
  * - `get()` / `getOrPut()` 命中会刷新访问顺序（影响 LRU）。
- * - `contains()` 不刷新访问顺序。
+ * - `contains()` 命中也会刷新访问顺序（视为一次合理访问）。
  *
  * ## 使用示例
  * ```kotlin
@@ -60,21 +60,31 @@ object CacheManager {
 
     private var lastCleanupElapsed: Long = 0L
 
-    private val cache = LinkedHashMap<String, CacheEntry>(
-        /* initialCapacity = */ DEFAULT_MAX_SIZE,
-        /* loadFactor = */ 0.75f,
-        /* accessOrder = */ true,
-    )
+    private val cache =
+        LinkedHashMap<String, CacheEntry>(
+            // initialCapacity =
+            DEFAULT_MAX_SIZE,
+            // loadFactor =
+            0.75f,
+            // accessOrder =
+            true,
+        )
 
     private fun nowElapsed(): Long = SystemClock.elapsedRealtime()
 
-    private fun computeExpiresAtElapsed(nowElapsed: Long, ttlMillis: Long): Long {
+    private fun computeExpiresAtElapsed(
+        nowElapsed: Long,
+        ttlMillis: Long,
+    ): Long {
         if (ttlMillis <= 0L) return NO_EXPIRY_ELAPSED
         val remaining = Long.MAX_VALUE - nowElapsed
         return if (ttlMillis >= remaining) Long.MAX_VALUE else nowElapsed + ttlMillis
     }
 
-    private fun isExpired(entry: CacheEntry, nowElapsed: Long): Boolean {
+    private fun isExpired(
+        entry: CacheEntry,
+        nowElapsed: Long,
+    ): Boolean {
         val expiresAt = entry.expiresAtElapsed
         return expiresAt != NO_EXPIRY_ELAPSED && nowElapsed >= expiresAt
     }
@@ -121,7 +131,11 @@ object CacheManager {
      * @param ttlMillis 过期时间（毫秒）；`0` 表示永不过期。
      * @throws IllegalArgumentException 当 [ttlMillis] 为负数时抛出。
      */
-    fun <T : Any> put(key: String, value: T, ttlMillis: Long = 0) {
+    fun <T : Any> put(
+        key: String,
+        value: T,
+        ttlMillis: Long = 0,
+    ) {
         require(ttlMillis >= 0L) { "ttlMillis must be >= 0" }
         val now = nowElapsed()
         val expiresAt = computeExpiresAtElapsed(now, ttlMillis)
@@ -222,7 +236,9 @@ object CacheManager {
     /**
      * 判断是否存在未过期的缓存条目。
      *
-     * 与 [get] 不同：该方法不会刷新 LRU 访问顺序；若发现条目已过期，会顺便移除并返回 `false`。
+     * **注意**：此方法通过 `cache[key]` 查询，会刷新 LRU 访问顺序。语义上 `contains` 意图
+     * 是"我关心这个 key 是否还有效"，视为一次合理访问。如需严格不影响 LRU，请改用
+     * [size] 观测整体状态后再决策。若发现条目已过期，会顺便移除并返回 `false`。
      *
      * @param key 缓存键。
      * @return 存在且未过期返回 `true`，否则返回 `false`。
@@ -231,21 +247,12 @@ object CacheManager {
         val now = nowElapsed()
         synchronized(lock) {
             maybePruneExpiredLocked(now)
-
-            // 不影响 LRU 顺序：避免 contains() 也算一次访问导致淘汰策略偏移
-            val iterator = cache.entries.iterator()
-            while (iterator.hasNext()) {
-                val mapEntry = iterator.next()
-                if (mapEntry.key != key) continue
-
-                val entry = mapEntry.value
-                if (isExpired(entry, now)) {
-                    iterator.remove()
-                    return false
-                }
-                return true
+            val entry = cache[key] ?: return false
+            if (isExpired(entry, now)) {
+                cache.remove(key)
+                return false
             }
-            return false
+            return true
         }
     }
 

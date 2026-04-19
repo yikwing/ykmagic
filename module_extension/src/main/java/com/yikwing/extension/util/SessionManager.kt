@@ -5,11 +5,14 @@ import kotlin.time.Duration
 import kotlin.time.Instant
 
 /**
- * 会话管理器，记录会话的开始时间并计算已用时长。
+ * App 级会话管理器，记录会话的开始时间并计算已用时长。
  *
  * 以 [Instant.DISTANT_PAST] 作为"未开始"标记，避免引入额外的可空类型。
+ *
+ * 作为 App 全局单例使用：整个进程生命周期内只有一个会话时钟。如需多会话（例如
+ * 按业务流程计时），请自行构建独立的计时器，不要复用此对象。
  */
-class SessionManager {
+object SessionManager {
     // DISTANT_PAST 表示会话未启动；调用 startSession() 后替换为实际时间戳
     private var sessionStart: Instant = Instant.DISTANT_PAST
 

@@ -86,81 +86,100 @@ fun intArgument(
     key: String? = null,
     default: Int = 0,
 ): ReadWriteProperty<Fragment, Int> =
-    object : ReadWriteProperty<Fragment, Int> {
-        override fun getValue(
-            thisRef: Fragment,
-            property: KProperty<*>,
-        ): Int {
-            val k = key ?: property.name
-            return thisRef.arguments?.getInt(k, default) ?: default
-        }
-
-        override fun setValue(
-            thisRef: Fragment,
-            property: KProperty<*>,
-            value: Int,
-        ) {
-            val k = key ?: property.name
-            thisRef.ensureArguments().putInt(k, value)
-        }
-    }
+    argNonNull(
+        key,
+        default,
+        reader = { k, d -> getInt(k, d) },
+        writer = { k, v -> putInt(k, v) },
+    )
 
 fun stringArgument(
     key: String? = null,
     default: String = "",
 ): ReadWriteProperty<Fragment, String> =
-    object : ReadWriteProperty<Fragment, String> {
-        override fun getValue(
-            thisRef: Fragment,
-            property: KProperty<*>,
-        ): String {
-            val k = key ?: property.name
-            return thisRef.arguments?.getString(k, default) ?: default
-        }
-
-        override fun setValue(
-            thisRef: Fragment,
-            property: KProperty<*>,
-            value: String,
-        ) {
-            val k = key ?: property.name
-            thisRef.ensureArguments().putString(k, value)
-        }
-    }
+    argNonNull(
+        key,
+        default,
+        reader = { k, d -> getString(k, d) },
+        writer = { k, v -> putString(k, v) },
+    )
 
 fun booleanArgument(
     key: String? = null,
     default: Boolean = false,
 ): ReadWriteProperty<Fragment, Boolean> =
-    object : ReadWriteProperty<Fragment, Boolean> {
+    argNonNull(
+        key,
+        default,
+        reader = { k, d -> getBoolean(k, d) },
+        writer = { k, v -> putBoolean(k, v) },
+    )
+
+inline fun <reified T : Parcelable> parcelableArgument(key: String? = null): ReadWriteProperty<Fragment, T?> {
+    val clazz = T::class.java
+    return argNullable(
+        key,
+        reader = { k ->
+            classLoader = clazz.classLoader
+            BundleCompat.getParcelable(this, k, clazz)
+        },
+        writer = { k, v -> putParcelable(k, v) },
+    )
+}
+
+inline fun <reified T : Serializable> serializableArgument(key: String? = null): ReadWriteProperty<Fragment, T?> {
+    val clazz = T::class.java
+    return argNullable(
+        key,
+        reader = { k ->
+            classLoader = clazz.classLoader
+            BundleCompat.getSerializable(this, k, clazz)
+        },
+        writer = { k, v -> putSerializable(k, v) },
+    )
+}
+
+// ==================== Fragment arg 委托工厂 ====================
+
+@PublishedApi
+internal fun <T> argNonNull(
+    key: String?,
+    default: T,
+    reader: Bundle.(String, T) -> T,
+    writer: Bundle.(String, T) -> Unit,
+): ReadWriteProperty<Fragment, T> =
+    object : ReadWriteProperty<Fragment, T> {
         override fun getValue(
             thisRef: Fragment,
             property: KProperty<*>,
-        ): Boolean {
+        ): T {
             val k = key ?: property.name
-            return thisRef.arguments?.getBoolean(k, default) ?: default
+            return thisRef.arguments?.reader(k, default) ?: default
         }
 
         override fun setValue(
             thisRef: Fragment,
             property: KProperty<*>,
-            value: Boolean,
+            value: T,
         ) {
             val k = key ?: property.name
-            thisRef.ensureArguments().putBoolean(k, value)
+            thisRef.ensureArguments().writer(k, value)
         }
     }
 
-inline fun <reified T : Parcelable> parcelableArgument(key: String? = null): ReadWriteProperty<Fragment, T?> =
+@PublishedApi
+internal fun <T> argNullable(
+    key: String?,
+    reader: Bundle.(String) -> T?,
+    writer: Bundle.(String, T?) -> Unit,
+): ReadWriteProperty<Fragment, T?> =
     object : ReadWriteProperty<Fragment, T?> {
         override fun getValue(
             thisRef: Fragment,
             property: KProperty<*>,
         ): T? {
             val k = key ?: property.name
-            val args = thisRef.arguments ?: return null
-            args.classLoader = T::class.java.classLoader
-            return BundleCompat.getParcelable(args, k, T::class.java)
+            return thisRef.arguments?.reader(k)
         }
 
         override fun setValue(
@@ -169,29 +188,7 @@ inline fun <reified T : Parcelable> parcelableArgument(key: String? = null): Rea
             value: T?,
         ) {
             val k = key ?: property.name
-            thisRef.ensureArguments().putParcelable(k, value)
-        }
-    }
-
-inline fun <reified T : Serializable> serializableArgument(key: String? = null): ReadWriteProperty<Fragment, T?> =
-    object : ReadWriteProperty<Fragment, T?> {
-        override fun getValue(
-            thisRef: Fragment,
-            property: KProperty<*>,
-        ): T? {
-            val k = key ?: property.name
-            val args = thisRef.arguments ?: return null
-            args.classLoader = T::class.java.classLoader
-            return BundleCompat.getSerializable(args, k, T::class.java)
-        }
-
-        override fun setValue(
-            thisRef: Fragment,
-            property: KProperty<*>,
-            value: T?,
-        ) {
-            val k = key ?: property.name
-            thisRef.ensureArguments().putSerializable(k, value)
+            thisRef.ensureArguments().writer(k, value)
         }
     }
 

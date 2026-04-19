@@ -8,6 +8,7 @@ import androidx.core.view.updateLayoutParams
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.conflate
 
 /**
  * @Author yikwing
@@ -19,6 +20,10 @@ import kotlinx.coroutines.flow.callbackFlow
 
 /**
  * 将点击事件转换为 Flow
+ *
+ * 使用 [conflate] 聚合：下游处理不及时会合并为最新一次点击，避免 `trySend`
+ * 在无接收方时静默丢事件。
+ *
  * @return 点击事件的 Flow，每次点击时发送当前 View
  */
 fun View.clickFlow(): Flow<View> =
@@ -27,7 +32,7 @@ fun View.clickFlow(): Flow<View> =
             trySend(view)
         }
         awaitClose { setOnClickListener(null) }
-    }
+    }.conflate()
 
 // ========== 可见性相关 ==========
 

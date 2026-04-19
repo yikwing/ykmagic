@@ -154,31 +154,3 @@ fun Int.toBoolean(): Boolean {
     require(this in 0..1) { "Int value must be 0 or 1, but was $this" }
     return this == 1
 }
-
-// ========== 逻辑运算 ==========
-
-/**
- * 对多个 Boolean 值执行 AND 运算
- *
- * 使用示例:
- * ```kotlin
- * val allValid = isNameValid.and(isAgeValid, isEmailValid)
- * // 等同于: isNameValid && isAgeValid && isEmailValid
- *
- * val canSubmit = hasPermission.and(isFormValid, isNetworkAvailable)
- * ```
- */
-fun Boolean.and(vararg others: Boolean): Boolean = this && others.all { it }
-
-/**
- * 对多个 Boolean 值执行 OR 运算
- *
- * 使用示例:
- * ```kotlin
- * val hasAnyError = hasNetworkError.or(hasValidationError, hasServerError)
- * // 等同于: hasNetworkError || hasValidationError || hasServerError
- *
- * val canProceed = isAdmin.or(isOwner, hasSpecialPermission)
- * ```
- */
-fun Boolean.or(vararg others: Boolean): Boolean = this || others.any { it }

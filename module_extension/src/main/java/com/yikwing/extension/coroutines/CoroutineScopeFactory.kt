@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.cancel
 
 /**
  * <pre>
@@ -53,13 +53,16 @@ object CoroutineScopeFactory {
     }
 
     /**
-     * 取消指定的 CoroutineScope
+     * 取消指定的 CoroutineScope。
+     *
+     * 调用 [CoroutineScope.cancel] 会级联取消该 scope 下所有子协程，无需单独调用
+     * `cancelChildren()`。
+     *
      * @param scope 需要取消的协程作用域
      */
     fun cancelScope(scope: CoroutineScope) {
         if (scope.coroutineContext[Job]?.isActive == true) {
-            scope.coroutineContext.cancelChildren()
-            scope.coroutineContext[Job]?.cancel()
+            scope.cancel()
             Log.d(TAG, "CoroutineScope cancelled successfully.")
         } else {
             Log.e(TAG, "CoroutineScope is already cancelled.")

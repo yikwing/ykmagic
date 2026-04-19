@@ -1,20 +1,12 @@
 package com.yikwing.extension.util
 
-import android.util.SparseIntArray
 import androidx.core.graphics.toColorInt
-import com.yikwing.extension.collection.getOrPut
-
-/**
- * Alpha 值缓存，避免重复计算
- * Key: 百分比透明度 (0-100)
- * Value: 对应的 0-255 透明度值
- */
-private val alphaValueCache = SparseIntArray()
 
 /**
  * 为颜色字符串添加透明度
  *
- * 将百分比透明度 (0-100) 转换为 Android 颜色值的 Alpha 通道 (0-255)
+ * 将百分比透明度 (0-100) 转换为 Android 颜色值的 Alpha 通道 (0-255)。
+ * 通过位运算直接合成 ARGB，避免字符串拼接再解析的开销。
  *
  * @param alpha 透明度百分比，范围 0-100
  *   - 0: 完全透明
@@ -34,24 +26,8 @@ private val alphaValueCache = SparseIntArray()
  * ```
  */
 fun String.alphaColor(alpha: Int): Int {
-    // 将透明度限制在 0-100 范围内
-    val clampedAlpha = alpha.coerceIn(0, 100)
-
-    // 从缓存获取或计算 Alpha 值 (0-255)
-    // 公式: (百分比 * 255 + 50) / 100
-    // +50 是为了四舍五入，例如: (50 * 255 + 50) / 100 = 128
-    val alphaValue =
-        alphaValueCache.getOrPut(clampedAlpha) {
-            (clampedAlpha * 255 + 50) / 100
-        }
-
-    // 将 Alpha 值转换为两位十六进制字符串 (例如: 128 -> "80")
-    val hexAlpha = alphaValue.toString(16).padStart(2, '0')
-
-    // 构建带透明度的颜色字符串 (格式: #AARRGGBB)
-    // 使用 removePrefix 简化逻辑，统一处理带 # 和不带 # 的情况
-    val colorStringWithAlpha = "#$hexAlpha${this.removePrefix("#")}"
-
-    // 转换为 Android 颜色值
-    return colorStringWithAlpha.toColorInt()
+    // 百分比映射到 0-255；+50 做四舍五入，例如 (50 * 255 + 50) / 100 = 128
+    val alphaValue = (alpha.coerceIn(0, 100) * 255 + 50) / 100
+    val rgb = this.toColorInt() and 0x00FFFFFF
+    return (alphaValue shl 24) or rgb
 }

@@ -12,31 +12,33 @@ import androidx.core.content.res.ResourcesCompat
 
 /**
  * 全局上下文提供者 (Global Context Provider)
- * `GlobalContextProvider.initialize(this)`
+ *
+ * 一般由 [ExtensionInitProvider] 在主线程自动初始化；若手动接入，请在
+ * [android.app.Application.onCreate] 中调用 `GlobalContextProvider.initialize(this)`。
+ *
+ * 使用 `@Volatile` + DCL 保证跨线程访问时不会读到半初始化状态。
  */
 object GlobalContextProvider {
-    private lateinit var _appContext: Context
-    private var isInitialized = false
+    @Volatile
+    private var _appContext: Context? = null
 
     /**
      * 获取 Application Context。
-     * @throws IllegalStateException 如果尚未调用 initialize()。
+     * @throws IllegalStateException 如果尚未调用 [initialize]。
      */
     val appContext: Context
-        get() {
-            check(isInitialized) {
-                "GlobalContextProvider 尚未初始化。请在 Application 的 onCreate() 中调用 initialize(this)。"
-            }
-            return _appContext
-        }
+        get() = _appContext ?: error(
+            "GlobalContextProvider 尚未初始化。请在 Application 的 onCreate() 中调用 initialize(this)。",
+        )
 
     @JvmStatic
     fun initialize(context: Context) {
-        if (!isInitialized) {
-            _appContext = context.applicationContext
-            isInitialized = true
+        if (_appContext != null) return
+        synchronized(this) {
+            if (_appContext == null) {
+                _appContext = context.applicationContext
+            }
         }
-        // 忽略重复初始化，保持单例上下文
     }
 }
 

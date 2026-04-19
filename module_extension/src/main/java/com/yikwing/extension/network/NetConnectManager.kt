@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.koin.core.annotation.Single
-import java.io.Closeable
 
 /**
  * 网络连接类型
@@ -53,9 +52,8 @@ data class NetworkState(
  * - 使用 StateFlow 暴露网络状态，支持 Compose collectAsState
  * - 提供一次性查询 API
  * - 支持 VPN 检测（独立于底层网络类型）
- * - 实现 Closeable 接口，支持显式资源清理
  * - 线程安全（Koin 单例）
- * - 生命周期与 Application 相同
+ * - 生命周期与 Application 相同；如需显式销毁可调用 [release]
  *
  * ## 使用示例
  *
@@ -133,7 +131,7 @@ data class NetworkState(
 @Single
 class NetConnectManager(
     context: Context,
-) : Closeable {
+) {
     private val connectivityManager: ConnectivityManager =
         context.applicationContext.getSystemService(ConnectivityManager::class.java)
 
@@ -215,7 +213,13 @@ class NetConnectManager(
         return NetworkState(isConnected = true, type = type)
     }
 
-    override fun close() {
+    /**
+     * 解注册 [NetworkCallback] 并释放监听资源。
+     *
+     * 作为 Koin `@Single` 通常由容器管理生命周期，无需手动调用；仅当你在运行时
+     * 需要销毁此实例（例如在测试中或自行管理的场景）才需显式调用。
+     */
+    fun release() {
         connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 }
