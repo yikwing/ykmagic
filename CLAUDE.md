@@ -53,6 +53,7 @@ YkQuickDev - Android 快速开发框架库
 | 导航规范 | [nav3-guide.md](.claude/docs/nav3-guide.md) | Route / Entry / Screen |
 | 错误处理 | [result-patterns.md](.claude/docs/result-patterns.md) | Result<T> |
 | 测试 | [testing.md](.claude/docs/testing.md) | MockK / Hamcrest |
+| 位操作 / @IntDef | [intdef-bitflags.md](.claude/docs/intdef-bitflags.md) | `@IntDef` / bit flags |
 
 ---
 
@@ -95,6 +96,8 @@ UI组件: 页面级? 是→ui/screen/ 否→通用复用?→是→components/ �
 **DI 陷阱**: 同一原始类型多实例（如多个 `DataStore<T>`、多个 `Flow<T>`）必须用自定义 `@Qualifier` 注解区分；仅靠泛型参数在 R8 release 下会塌缩成同一 key，导致运行时 `ClassCastException`
 
 **测试**: Hamcrest + MockK | `<ClassName>Test` | 关键逻辑必须覆盖
+
+**测试陷阱**: 禁止 `mockkStatic(LocalDate::class)` 等 `java.time.*`（JDK17+ `java.base` 反射未开放，非 stub 的静态调用也会抛 `IllegalAccessException`）；测相对今天用 `LocalDate.now() ± N`
 
 **模块**: `settings.gradle.kts` 注册 | 避免循环依赖 | 公共功能放 `module_extension`
 

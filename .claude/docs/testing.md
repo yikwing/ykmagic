@@ -115,3 +115,23 @@ assertThat(result, allOf(notNullValue(), `is`(expected)))
 
 - `module_config/.../YkConfigManagerTest.kt` — 纯逻辑测试（JSON 解析、初始化状态）
 - `module_proxy/.../ActivityHierarchyManagerTest.kt` — Mock + 行为验证（Activity 栈管理）
+
+## 陷阱
+
+### 不要 mockkStatic java.time 类
+
+JDK17+ 默认不对 `java.base` 模块开放反射，`mockkStatic(LocalDate::class)` /
+`LocalDateTime::class` 等会让**所有**静态调用抛 `IllegalAccessException`，
+包括未显式 stub 的 `LocalDate.of(...)` / `LocalDateTime.of(...)`。
+
+测"相对今天"的谓词（`isToday` / `isPast` / `isFuture`）用 `LocalDate.now() ± N`
+作基准，而非伪造 `now()`：
+
+```kotlin
+@Test
+fun `isPast should be true for yesterday`() {
+    assertThat(LocalDate.now().minusDays(1).isPast(), `is`(true))
+}
+```
+
+可 mock 的时间源：`android.os.SystemClock`（见 `CacheManagerTest` / `FlowExtensionsTest`）。
