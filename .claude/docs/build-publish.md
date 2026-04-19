@@ -27,6 +27,14 @@ adb install app/build/outputs/apk/release/app-release.apk
 ./android_build.sh help
 ```
 
+### 质量与调试
+```bash
+./gradlew lint                   # Lint 检查
+./gradlew lintFix                # 自动修复
+./gradlew clean --no-daemon      # build-logic 修改后需要完整清理
+adb logcat | grep "YkQuickDev"   # 查看应用日志
+```
+
 ### 依赖管理
 ```bash
 # 检查依赖更新
@@ -176,27 +184,3 @@ dependencies {
 | HorizontalPager 无法滑动 | 确保子项使用 `fillMaxSize()` 占满区域 |
 | 依赖版本冲突 | 检查根 build.gradle.kts 中 `resolutionStrategy.force()` 配置 |
 
-## 快速命令参考
-
-```bash
-# 构建
-./android_build.sh all         # 清理、构建并安装 Release APK
-./android_build.sh dev         # Debug
-./android_build.sh build       # Release
-./android_build.sh install     # 安装 Release APK
-./android_build.sh clean       # 清理
-
-# build-logic 修改后需要清理
-./gradlew clean --no-daemon    # 清理所有模块（包括 build-logic）
-
-# 调试
-adb logcat | grep "YkQuickDev"  # 查看应用日志
-
-# 质量
-./gradlew lint                 # Lint 检查
-./gradlew lintFix              # 自动修复
-
-# 依赖
-./android_build.sh dependency  # 检查更新
-cat gradle/libs.versions.toml  # 查看版本
-```

@@ -54,6 +54,7 @@ YkQuickDev - Android 快速开发框架库
 | 错误处理 | [result-patterns.md](.claude/docs/result-patterns.md) | Result<T> |
 | 测试 | [testing.md](.claude/docs/testing.md) | MockK / Hamcrest |
 | 位操作 / @IntDef | [intdef-bitflags.md](.claude/docs/intdef-bitflags.md) | `@IntDef` / bit flags |
+| 协程回调桥接 | [coroutine-bridge.md](.claude/docs/coroutine-bridge.md) | `suspendCancellableCoroutine` / `callbackFlow` |
 
 ---
 

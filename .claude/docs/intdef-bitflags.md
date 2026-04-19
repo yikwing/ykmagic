@@ -1,8 +1,5 @@
 # `@IntDef` 与位标志模式
 
-两个小技巧在 Kotlin/Android 里常用，原出处是 `module_proxy/src/test/` 下的
-`StringDefDemo.kt` 与 `StatusModel.kt`（已删除，迁至本文档留档）。
-
 ## 1. `@IntDef` — 轻量的类型安全常量
 
 用 `@IntDef` 约束 `Int` 参数必须是一组已知常量之一，比 `enum class` 更省开销，

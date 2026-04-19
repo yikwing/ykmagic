@@ -1,28 +1,15 @@
 # 事件处理模式
 
-> 参考：[Android 现代架构不需要事件总线](https://juejin.cn/post/7625074868355973147)
+## 选型速查
 
-## 为什么不需要 EventBus
-
-| EventBus 缺陷 | 现代替代方案 |
-|--------------|-------------|
-| 无类型安全（`Any` + 字符串 tag） | sealed class / sealed interface，编译期检查 |
-| 不感知生命周期，需手动注册/反注册 | `repeatOnLifecycle` 自动管理，页面不可见时暂停 |
-| 隐式耦合，事件流向不可追踪 | ViewModel 是显式依赖，通过构造注入可见 |
-| `replay=1` 导致屏幕旋转重复触发 | `Channel`（不重放）精确控制交付语义 |
-| 跨层调用，违反架构分层 | 通过 Koin 注入共享 Repository 传递数据 |
-
-**结论**：EventBus 的所有使用场景均可被 `StateFlow` + `Channel` + `SharedFlow` 覆盖，无需引入第三方库。
-
-## 方案选型
-
-| 需求 | 方案 | 原因 |
-|------|------|------|
-| ViewModel → UI 状态（可重放） | `StateFlow` | 新订阅者立即获得当前值 |
-| ViewModel → UI 一次性事件（Compose） | `Channel + receiveAsFlow` | 不重放，线程安全，不丢事件 |
-| ViewModel → UI 一次性事件（View 体系） | `Channel + repeatOnLifecycle` | 生命周期安全 |
-| 跨组件广播，所有订阅者都收到 | `SharedFlow(replay=0)` | 多播，无重放 |
-| 跨组件广播，只消费一次 | `Channel`（竞争消费）或责任链 | 见下文 |
+| 场景 | 方案 |
+|------|------|
+| ViewModel → UI 状态（可重放） | `StateFlow` |
+| ViewModel → UI 一次性事件（Toast/导航） | `Channel(BUFFERED) + receiveAsFlow()` |
+| Fragment 间通信（同一 Activity） | `activityViewModels()` 共享 ViewModel |
+| 全局跨页面事件 | Koin 单例 Repository + `SharedFlow` |
+| 多订阅者都活跃，全部收到 | `SharedFlow(replay=0)` |
+| 多订阅者都活跃，优先级处理 | 责任链（极少见，参考 `OnBackPressedDispatcher`） |
 
 **核心原则**：`StateFlow` 管状态（可重放），`Channel` / `SharedFlow` 管事件（不重放或受控重放）。
 
@@ -190,13 +177,3 @@ private val _events = MutableSharedFlow<AppEvent>(
 
 ---
 
-## 场景速查
-
-| 场景 | 方案 |
-|------|------|
-| ViewModel → 当前页面（Toast/导航） | `Channel` |
-| 多订阅者，同时只有一个活跃 | `Channel` |
-| 多订阅者都活跃，全部收到 | `SharedFlow(replay=0)` |
-| 多订阅者都活跃，优先级处理 | 责任链 |
-| 同一 Activity 下 Fragment 间通信 | `activityViewModels()` 共享 ViewModel |
-| 真正的全局跨页面事件 | Koin 单例 Repository 中的 `SharedFlow` |

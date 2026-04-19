@@ -27,149 +27,16 @@ build-logic/
 
 ## Convention Plugins
 
-### 1. `ykmagic.android.application`
-**用途**: 配置 Android Application 模块
+| 插件 | 用途 | 自动添加依赖 |
+|------|------|------------|
+| `ykmagic.android.application` | App 模块（compileSdk=36, minSdk=26, Java17） | core-ktx, appcompat, lifecycle-runtime-ktx, coroutines, testBundle, androidTestBundle |
+| `ykmagic.android.library` | Library 模块（同 SDK 版本） | 同 application |
+| `ykmagic.android.compose` | Jetpack Compose | compose-bom(platform), material3, ui-tooling-preview, ui-test-junit4, ui-tooling(debug) |
+| `ykmagic.android.koin` | Koin 注入 + 编译期依赖检查（userLogs 开启） | koin-bom(platform), koin-compose, koin-annotations |
+| `ykmagic.android.room` | Room 数据库（schema→`$projectDir/schemas`） | room3-runtime, room3-compiler(ksp) |
+| `ykmagic.android.wire` | Wire Protobuf（proto→`src/main/protos`, `android=false`） | — |
 
-**自动应用**:
-- `com.android.application` 插件
-
-**配置内容**:
-- `compileSdk = 36`
-- `minSdk = 26`
-- `targetSdk = 36`
-- Java 17 兼容性
-
-**自动添加依赖**:
-- `core-ktx`
-- `appcompat`
-- `lifecycle-runtime-ktx`
-- `kotlinx-coroutines-android`
-- `testBundle` (测试依赖)
-- `androidTestBundle` (Android 测试依赖)
-
-**使用示例**:
-```kotlin
-plugins {
-    id("ykmagic.android.application")
-    // ... 其他插件
-}
-```
-
-### 2. `ykmagic.android.library`
-**用途**: 配置 Android Library 模块
-
-**自动应用**:
-- `com.android.library` 插件
-
-**配置内容**:
-- `compileSdk = 36`
-- `minSdk = 26`
-- Java 17 兼容性
-
-**自动添加依赖**:
-- `core-ktx`
-- `appcompat`
-- `lifecycle-runtime-ktx`
-- `kotlinx-coroutines-android`
-- `testBundle` (测试依赖)
-- `androidTestBundle` (Android 测试依赖)
-
-**使用示例**:
-```kotlin
-plugins {
-    id("ykmagic.android.library")
-    // ... 其他插件
-}
-```
-
-### 3. `ykmagic.android.compose`
-**用途**: 配置 Jetpack Compose
-
-**自动应用**:
-- `org.jetbrains.kotlin.plugin.compose` 插件
-
-**配置内容**:
-- 启用 Compose 构建特性
-
-**自动添加依赖**:
-- `compose-bom` (platform)
-- `compose-material3`
-- `ui-tooling-preview`
-- `ui-test-junit4` (androidTest)
-- `ui-tooling` (debug)
-- `ui-test-manifest` (debug)
-
-**使用示例**:
-```kotlin
-plugins {
-    id("ykmagic.android.compose")
-    // ... 其他插件
-}
-```
-
-### 4. `ykmagic.android.koin`
-**用途**: 配置 Koin 依赖注入
-
-**自动应用**:
-- `io.insert-koin.compiler.plugin` 插件（Koin 编译时依赖检查）
-
-**配置内容**:
-- 启用 Koin 用户日志（`userLogs.set(true)`）
-
-**自动添加依赖**:
-- `koin-bom` (platform)
-- `koin-compose`
-- `koin-annotations`
-
-**使用示例**:
-```kotlin
-plugins {
-    id("ykmagic.android.koin")
-    // ... 其他插件
-}
-```
-
-### 5. `ykmagic.android.room`
-**用途**: 配置 Room 数据库
-
-**自动应用**:
-- `androidx.room3` 插件
-- `com.google.devtools.ksp` 插件
-
-**配置内容**:
-- Schema 导出目录: `$projectDir/schemas`
-
-**自动添加依赖**:
-- `room3-runtime` (implementation)
-- `room3-compiler` (ksp)
-
-**使用示例**:
-```kotlin
-plugins {
-    id("ykmagic.android.room")
-    // ... 其他插件
-}
-```
-
-### 6. `ykmagic.android.wire`
-**用途**: 配置 Wire Protobuf
-
-**自动应用**:
-- `com.squareup.wire` 插件
-
-**配置内容**:
-- Proto 源文件目录: `src/main/protos`
-- `android = false`（Wire 消息用于 DataStore，不需要 Parcelable）
-
-**使用示例**:
-```kotlin
-plugins {
-    id("ykmagic.android.wire")
-    // ... 其他插件
-}
-```
-
-> **注意**: Kotlin 编译选项（JVM Toolchain 17）由 Application/Library 插件内部通过 `KotlinAndroid.kt` 辅助函数配置，无需单独的 `ykmagic.kotlin.android` 插件。
+> JVM Toolchain 17 由 Application/Library 插件内部配置，无需额外声明。
 
 ## 使用指南
 
