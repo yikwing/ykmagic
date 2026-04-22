@@ -1,7 +1,5 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 YkQuickDev - Android 快速开发框架库
 
 **技术栈**: Kotlin 2.3.20 | Koin 4.2.1 | Ktor 3.4.2 | Compose BOM 2026.03.01 | Room 3.0.0-alpha03 | Nav3 1.1.0 | Coil 3.4.0
@@ -62,15 +60,24 @@ YkQuickDev - Android 快速开发框架库
 
 ```
 网络请求: 需要UI状态? 是→requestStateFlow() 否→requestResult()
-数据缓存: 临时数据? 是→CacheManager 否→DataStore
+数据缓存: 临时数据? 是→CacheManager(module_network) 否→DataStore
 ViewModel: 需要参数? 是→@InjectedParam 否→构造注入
 Compose动画: 改变视觉? 是→drawBehind/graphicsLayer 否→改变位置?→offset { }
 Compose回调: 参数匹配? 是→函数引用 否→需要缓存?→是→remember+Lambda 否→Lambda
 后台任务: 需要持久化? 是→WorkManager(CoroutineWorker) 否→协程/viewModelScope
-UI组件: 页面级? 是→ui/screen/ 否→通用复用?→是→components/ 否→ui/widget/
+UI组件: 页面级? 是→ui/screen/ 否→通用复用?→是→module_compose/ 否→ui/widget/
 ```
 
 ---
+
+## 常用命令
+
+```bash
+./gradlew :app:assembleDebug          # 构建 Debug
+./gradlew :app:assembleRelease        # 构建 Release（需 keystore.properties）
+./gradlew test                        # 单元测试
+./gradlew :app:connectedAndroidTest   # 仪器测试
+```
 
 ## 环境与构建
 
