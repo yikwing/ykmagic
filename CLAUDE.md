@@ -98,6 +98,8 @@ UI组件: 页面级? 是→ui/screen/ 否→通用复用?→是→module_compose
 
 **代码**: 协程和 Flow | "动词 suspend，名词 Flow" | Explicit Backing Fields | `@Serializable`
 
+**并行子任务**: 复杂任务优先并行拆分只读调研、测试验证、代码审查；主会话负责综合决策和改代码；禁止多个子任务并发修改同一文件
+
 **Compose 性能**: 避免组合阶段读取高频状态 | 用 Lambda 延迟状态读取 | `drawBehind` 替代 `background` | `offset { }` 替代 `offset()` | 参数匹配用函数引用 | 参数转换用 Lambda | 复杂逻辑用 `remember` 缓存
 
 **Compose 陷阱**: `LaunchedEffect` 放 Screen 顶层，不能嵌套在 Loading/Empty 等分支内 | `sealed class` 默认 @Stable，无需手动标注
