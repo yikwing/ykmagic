@@ -7,11 +7,21 @@
 /captures
 .externalNativeBuild
 .cxx
-local.properties
 .ace-tool/
 .kotlin/
-app/src/main/assets/kotzilla.key
 .hotswan/
+.traces/
+.remember/
+
+# 签名与配置
+keystore.properties
+android_env.json
+*.keystore
+*.jks
+app/src/main/assets/kotzilla.key
+
+# 性能分析
+*.hprof
 
 # AI 协作规划文件
 task_plan.md
