@@ -3,8 +3,10 @@ package com.yikwing.ykquickdev.di
 import com.yikwing.config.YkConfigManager
 import com.yikwing.network.BaseUrl
 import com.yikwing.network.DebugFlag
+import com.yikwing.network.ssl.Https
 import com.yikwing.ykquickdev.BuildConfig
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
@@ -52,7 +54,15 @@ object AppNetworkModule {
         @BaseUrl baseUrl: String,
         @DebugFlag debug: Boolean,
     ): HttpClient =
-        HttpClient {
+        HttpClient(CIO) {
+            engine {
+                if (debug) {
+                    https {
+                        trustManager = Https.UnSafeTrustManager
+                    }
+                }
+            }
+
             install(HttpTimeout) {
                 requestTimeoutMillis = TIMEOUT_MS
                 connectTimeoutMillis = CONNECT_TIMEOUT_MS

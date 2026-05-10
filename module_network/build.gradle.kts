@@ -38,6 +38,7 @@ android {
 dependencies {
     implementation(libs.bundles.network.ktor)
     implementation(libs.kotlinx.serialization.json)
+    compileOnly(libs.okhttp3)
 }
 
 afterEvaluate {
