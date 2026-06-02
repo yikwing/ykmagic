@@ -12,6 +12,7 @@
 .hotswan/
 .traces/
 .remember/
+.codegraph/
 
 # 签名与配置
 keystore.properties

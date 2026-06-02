@@ -2,7 +2,7 @@
 
 YkQuickDev - Android 快速开发框架库
 
-**技术栈**: Kotlin 2.3.20 | Koin 4.2.1 | Ktor 3.4.2 | Compose BOM 2026.03.01 | Room 3.0.0-alpha03 | Nav3 1.1.0 | Coil 3.4.0
+**技术栈**: Kotlin 2.3.21 | Koin 4.2.1 | Ktor 3.5.0 | Compose BOM 2026.05.01 | Room 3.0.0-alpha05 | Nav3 1.1.2 | Coil 3.4.0
 
 **版本信息**: 以 `gradle/libs.versions.toml` 为准
 
