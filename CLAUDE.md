@@ -114,3 +114,19 @@ UI组件: 页面级? 是→ui/screen/ 否→通用复用?→是→module_compose
 
 **Git**: `<type>(<scope>): <subject>` | feat/fix/docs/style/refactor/test/chore/build
 
+---
+
+## Agent skills
+
+### Issue tracker
+
+Issues 以本地 markdown 文件形式存储在 `.scratch/<feature>/` 目录下。详见 `docs/agents/issue-tracker.md`。
+
+### Triage labels
+
+使用默认的五角色标签词汇：needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix。详见 `docs/agents/triage-labels.md`。
+
+### Domain docs
+
+单上下文布局：仓库根目录下的 `CONTEXT.md` + `docs/adr/`。详见 `docs/agents/domain.md`。
+
