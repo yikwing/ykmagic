@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
  * 使用示例：
  * ```
  * Box(modifier = Modifier.size(200.sdp, 100.sdp))
+ * Box(modifier = Modifier.height(60.5.sdp))
  * ```
  */
 
@@ -69,5 +70,8 @@ fun ProvideDesignScale(content: @Composable () -> Unit) {
     }
 }
 
-val Number.sdp: Dp
-    @Composable get() = (this.toFloat() * LocalDesignScale.current).dp
+val Int.sdp: Dp
+    @Composable get() = (this * LocalDesignScale.current).dp
+
+val Float.sdp: Dp
+    @Composable get() = (this * LocalDesignScale.current).dp

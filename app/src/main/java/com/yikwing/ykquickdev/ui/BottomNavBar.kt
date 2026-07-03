@@ -52,7 +52,7 @@ fun CustomBottomBar(
             modifier
                 .navigationBarsPadding()
                 .padding(bottom = 10.sdp)
-                .height(60.5.sdp)
+                .height(60.5f.sdp)
                 .padding(horizontal = 10.sdp)
                 .clip(RoundedCornerShape(30.sdp))
                 .background(
