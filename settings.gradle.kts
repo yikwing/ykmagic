@@ -7,6 +7,12 @@ pluginManagement {
     }
 }
 
+plugins {
+    // Version is hardcoded: the settings plugins block is evaluated before the
+    // version catalog below exists, so libs.* accessors are unavailable here.
+    id("io.github.ben-manes.versions.settings") version "0.61.0"
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {

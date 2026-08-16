@@ -18,8 +18,6 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
 
     alias(libs.plugins.hotswan.compiler)
-
-    id("com.github.ben-manes.versions") version "0.58.0"
 }
 
 // 读取config
@@ -38,13 +36,16 @@ fun getDateStr(): String {
 }
 
 // 获取version code
+// Use providers.exec so the git call is a configuration-cache aware build input
+// instead of an unsupported configuration-time external process.
 fun gitVersionCode(): Int {
-    val cmd = "git rev-list HEAD --count"
-    val process = ProcessBuilder(cmd.split(" ")).start()
-    process.inputStream.bufferedReader().use { reader ->
-        val output = reader.readLine()
-        return (output?.trim()?.toInt() ?: 0) + 4645
-    }
+    val output =
+        providers
+            .exec { commandLine("git", "rev-list", "HEAD", "--count") }
+            .standardOutput
+            .asText
+            .get()
+    return (output.trim().toIntOrNull() ?: 0) + 4645
 }
 
 // 获取最近五条git日志
