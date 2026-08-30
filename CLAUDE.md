@@ -2,9 +2,9 @@
 
 YkQuickDev - Android 快速开发框架库
 
-**技术栈**: Kotlin 2.3.21 | Koin 4.2.1 | Ktor 3.5.0 | Compose BOM 2026.05.01 | Room 3.0.0-alpha05 | Nav3 1.1.2 | Coil 3.4.0
+**技术栈**: Kotlin | Koin | Ktor | Compose | Room3 | Navigation3 | Coil
 
-**版本信息**: 以 `gradle/libs.versions.toml` 为准
+**版本信息**: 以 `gradle/libs.versions.toml` 为准（此处不重复版本号，避免与实际脱节）
 
 ---
 
@@ -14,13 +14,13 @@ YkQuickDev - Android 快速开发框架库
 |------|------|------|
 | Application | `app/.../MainApplication.kt` | Koin 初始化 |
 | 配置管理 | `module_config/.../YkConfigManager.kt` | 读取配置 |
-| 网络模块 | `module_network/.../` | Json/RequestState 等基础组件 |
+| 网络模块 | `module_network/.../` | RequestState/ApiException/ApiTransform 等基础组件（不依赖 Koin） |
 | 应用配置 | `android_env.json` | 运行时配置（必需） |
 | 签名配置 | `keystore.properties` | Release 构建（必需） |
 | 版本管理 | `gradle/libs.versions.toml` | 依赖版本 |
 | 导航 | `app/.../app/AppNavGraph.kt` | Navigation3 路由（见 [nav3-guide.md](.claude/docs/nav3-guide.md)） |
 | 数据库 | `app/.../db/UserDatabase.kt` | Room3 (androidx.room3) |
-| DI 模块 | `app/.../di/AppModule.kt` | Koin 聚合（AppFeatureModule + NetworkModule） |
+| DI 模块 | `app/.../di/AppModule.kt` | Koin 聚合根，`includes` 显式组合全部模块，`@KoinApplication` 唯一入口 |
 | 初始化任务 | `app/.../task/` | AppInitializer 的 Initializer<T> 实现 |
 | Compose 组件 | `module_compose/` | 通用组件（Loading/Error/Image/Center/Debounce/SystemBars） |
 | Compose 屏幕 | `app/.../ui/screen/` | 页面级 Composable |
