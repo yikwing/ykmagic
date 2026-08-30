@@ -10,12 +10,10 @@ import com.yikwing.ykquickdev.datastore.userPreferencesStore
 import com.yikwing.ykquickdev.db.ChapterDao
 import com.yikwing.ykquickdev.db.UserDao
 import com.yikwing.ykquickdev.db.UserDatabase
-import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
 
 @Module
-@Configuration
 object DataModule {
     @Singleton
     fun provideDataBase(context: Context): UserDatabase =

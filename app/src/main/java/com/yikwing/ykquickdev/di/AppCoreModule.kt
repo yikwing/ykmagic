@@ -3,7 +3,6 @@ package com.yikwing.ykquickdev.di
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Qualifier
 import org.koin.core.annotation.Singleton
@@ -26,7 +25,6 @@ annotation class ApplicationScope
  * 该模块提供的依赖是应用的基础设施，被其他模块依赖。
  */
 @Module
-@Configuration
 object AppCoreModule {
     /**
      * 提供应用级 CoroutineScope

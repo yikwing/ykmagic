@@ -18,6 +18,7 @@ import com.yikwing.extension.image.compressImageFromUri
 import com.yikwing.extension.io.copyAssetToCache
 import com.yikwing.network.checkProxy
 import com.yikwing.proxy.startup.AppInitializer
+import com.yikwing.ykquickdev.di.AppModule
 import com.yikwing.ykquickdev.task.ConfigInjectInitTask
 import com.yikwing.ykquickdev.task.NetworkInitTask
 import com.yikwing.ykquickdev.work.CleanCacheWork
@@ -28,12 +29,17 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
-@KoinApplication
+@KoinApplication(modules = [AppModule::class])
 class MainApplication :
     Application(),
     SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
+
+        // 必须先于 startKoin：AppNetworkModule.provideBaseUrl() 读取 YkConfigManager.config，
+        // 而后者未初始化时会抛异常。目前 single 是懒加载所以顺序颠倒也不会立即崩，
+        // 但那是隐式契约——一旦模块改为 createdAtStart 或早期解析网络组件就会失败。
+        initSetup()
 
         startKoin<MainApplication> {
             androidContext(this@MainApplication)
@@ -44,8 +50,6 @@ class MainApplication :
         Log.i("checkProxy", checkProxy().toString())
 
         featureTest()
-
-        initSetup()
 
         scheduleCacheCleanup()
     }

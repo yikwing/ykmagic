@@ -1,7 +1,6 @@
 plugins {
     // Convention Plugins
     id("ykmagic.android.library")
-    id("ykmagic.android.koin")
 
     alias(libs.plugins.kotlin.serialization)
 

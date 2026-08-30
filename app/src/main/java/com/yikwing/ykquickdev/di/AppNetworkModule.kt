@@ -1,8 +1,6 @@
 package com.yikwing.ykquickdev.di
 
 import com.yikwing.config.YkConfigManager
-import com.yikwing.network.BaseUrl
-import com.yikwing.network.DebugFlag
 import com.yikwing.network.ssl.Https
 import com.yikwing.ykquickdev.BuildConfig
 import io.ktor.client.HttpClient
@@ -21,24 +19,39 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.koin.core.annotation.Configuration
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
 
 /**
  * 应用网络模块
  *
- * 使用 CIO 引擎，通过 Ktor 原生插件配置网络层：
+ * 提供 Json 序列化配置，并使用 CIO 引擎，通过 Ktor 原生插件组装 HttpClient：
  * - DefaultRequest: 基础 URL、Content-Type、请求头
  * - HttpRequestRetry: 幂等请求自动重试（指数退避）
  * - Logging: 请求/响应日志（Debug 模式输出 ALL）
  */
 @Module
-@Configuration
 object AppNetworkModule {
     private const val TIMEOUT_MS = 30_000L
     private const val CONNECT_TIMEOUT_MS = 15_000L
     private const val READ_WRITE_TIMEOUT_MS = 15_000L
+
+    /**
+     * JSON 序列化配置
+     *
+     * - `isLenient`: 允许非标准 JSON
+     * - `ignoreUnknownKeys`: 忽略未知字段
+     * - `coerceInputValues`: 强制转换不匹配值
+     * - `explicitNulls`: 序列化时省略 null
+     */
+    @Singleton
+    fun provideJson(): Json =
+        Json {
+            isLenient = true
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+            explicitNulls = false
+        }
 
     @Singleton
     @BaseUrl
