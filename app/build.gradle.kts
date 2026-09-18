@@ -1,8 +1,7 @@
 import com.google.gson.GsonBuilder
-import org.jetbrains.kotlin.konan.properties.Properties
-import org.jetbrains.kotlin.konan.properties.loadProperties
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Properties
 
 plugins {
     // Convention Plugins
@@ -25,8 +24,11 @@ val jsonEnvFile: File = rootProject.file("./android_env.json")
 val injectJson = jsonEnvFile.readText()
 
 // 读取签名文件
-val keystorePropertiesPath: String = rootProject.file("keystore.properties").path
-val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
+val keystorePropertiesFile: File = rootProject.file("keystore.properties")
+val keystoreProperties: Properties =
+    Properties().apply {
+        keystorePropertiesFile.inputStream().use { load(it) }
+    }
 
 // 获取当前打包时间
 fun getDateStr(): String {
@@ -41,9 +43,14 @@ fun getDateStr(): String {
 fun gitVersionCode(): Int {
     val output =
         providers
-            .exec { commandLine("git", "rev-list", "HEAD", "--count") }
-            .standardOutput
-            .asText
+            .exec {
+                commandLine(
+                    "git",
+                    "rev-list",
+                    "HEAD",
+                    "--count",
+                )
+            }.standardOutput.asText
             .get()
     return (output.trim().toIntOrNull() ?: 0) + 4645
 }
