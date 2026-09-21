@@ -40,11 +40,18 @@ fun getDateStr(): String {
 // 获取version code
 // Use providers.exec so the git call is a configuration-cache aware build input
 // instead of an unsupported configuration-time external process.
+//
+// Launch git through /usr/bin/env: the JVM resolves a bare executable name against the
+// daemon's own PATH, not the PATH handed to the child process. An IDE-launched daemon
+// inherits the macOS GUI default PATH (no Homebrew), so "git" would resolve to
+// /usr/bin/git — the xcrun shim, which exits 1 when DEVELOPER_DIR points at an Xcode
+// that is not installed. env performs the lookup with the child's PATH instead.
 fun gitVersionCode(): Int {
     val output =
         providers
             .exec {
                 commandLine(
+                    "/usr/bin/env",
                     "git",
                     "rev-list",
                     "HEAD",

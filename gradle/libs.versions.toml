@@ -1,5 +1,5 @@
 [versions]
-agp = "9.4.0"
+agp = "9.4.1"
 kotlin = "2.4.20"
 ksp = "2.3.12"
 
@@ -33,7 +33,7 @@ kotlinx-serialization-json = "1.11.0"
 compose-bom = "2026.09.00"
 koin-bom = "4.2.2"
 koin-plugin = "1.2.1"
-hotswan-compiler = "2.0.1"
+hotswan-compiler = "2.0.2"
 
 constraintlayout-compose = "1.1.2"
 nav3-core = "1.1.7"
