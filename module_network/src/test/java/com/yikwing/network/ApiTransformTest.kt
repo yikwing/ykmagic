@@ -1,9 +1,5 @@
 package com.yikwing.network
 
-import android.util.Log
-import io.mockk.every
-import io.mockk.mockkStatic
-import io.mockk.unmockkStatic
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
@@ -24,23 +20,23 @@ import kotlin.coroutines.cancellation.CancellationException
  * 覆盖 transformHttpResult 错误码分支,以及 requestStateFlow / requestResult 的
  * Success / Error / 异常包装 / CancellationException 重抛路径。
  *
- * `ApiConfig.errorCodeChecker` 是进程级 @Volatile 单例,每个用例后恢复默认避免串扰。
+ * `ApiConfig.errorCodeChecker` 与 `ApiConfig.logger` 是进程级 @Volatile 单例,
+ * 每个用例后恢复默认避免串扰。
  */
 class ApiTransformTest {
     private val defaultChecker = ApiConfig.errorCodeChecker
+    private val defaultLogger = ApiConfig.logger
 
     @Before
     fun setup() {
-        // requestStateFlow / requestResult 异常分支会走 Log.e
-        mockkStatic(Log::class)
-        every { Log.e(any(), any<String>()) } returns 0
-        every { Log.e(any(), any<String>(), any()) } returns 0
+        // 默认 logger 走 android.util.Log,JVM 单测中未 mock 会抛异常,这里替换为空实现
+        ApiConfig.logger = { _, _, _ -> }
     }
 
     @After
     fun teardown() {
         ApiConfig.errorCodeChecker = defaultChecker
-        unmockkStatic(Log::class)
+        ApiConfig.logger = defaultLogger
     }
 
     // ==================== transformHttpResult ====================
@@ -90,7 +86,27 @@ class ApiTransformTest {
         assertThat(thrown?.code, `is`(0))
     }
 
+    // ==================== toApiException ====================
+
+    @Test
+    fun `toApiException should keep original ApiException instance`() {
+        val original = ApiException(code = 11, message = "biz")
+        assertThat(original.toApiException(), sameInstance(original))
+    }
+
+    @Test
+    fun `toApiException should wrap other throwable with default code`() {
+        val cause = IOException("io")
+        val wrapped = cause.toApiException()
+
+        assertThat(wrapped.code, `is`(DEFAULT_ERROR_CODE))
+        assertThat(wrapped.message, `is`("io"))
+        assertThat(wrapped.cause, sameInstance<Throwable>(cause))
+    }
+
     // ==================== requestStateFlow ====================
+
+    // Loading 由最下游的 onStart 发出,因此在 Success 与 Error 路径上都必须是第一个元素。
 
     @Test
     fun `requestStateFlow should emit Loading then Success`() =
@@ -105,10 +121,6 @@ class ApiTransformTest {
             assertThat((states[1] as RequestState.Success).value, `is`("ok"))
         }
 
-    // 说明: 下面三个 Error 路径不断言 states[0] == Loading,因为 `.flowOn(Dispatchers.IO)` 的
-    // ChannelFlow 在 producer 抛异常时可能丢弃 buffered 元素(Kotlin 协程已知行为)。
-    // Loading 的存在性已由上面的 Success 测试覆盖。
-
     @Test
     fun `requestStateFlow should emit Error with ApiException for failure code`() =
         runBlocking {
@@ -116,7 +128,9 @@ class ApiTransformTest {
                 requestStateFlow { BaseHttpResult(data = "x", errorMsg = "boom", errorCode = 7) }
                     .toList()
 
-            val error = states.filterIsInstance<RequestState.Error>().single()
+            assertThat(states.size, `is`(2))
+            assertThat(states[0], `is`(RequestState.Loading))
+            val error = states[1] as RequestState.Error
             assertThat(error.throwable.code, `is`(7))
             assertThat(error.throwable.message, `is`("boom"))
         }
@@ -125,26 +139,44 @@ class ApiTransformTest {
     fun `requestStateFlow should forward thrown ApiException unchanged`() =
         runBlocking {
             val original = ApiException(code = 99, message = "api-layer")
-            val states =
-                requestStateFlow<String> { throw original }.toList()
+            val states = requestStateFlow<String> { throw original }.toList()
 
-            val error = states.filterIsInstance<RequestState.Error>().single()
-            assertThat(error.throwable, sameInstance(original))
+            assertThat(states.size, `is`(2))
+            assertThat(states[0], `is`(RequestState.Loading))
+            assertThat((states[1] as RequestState.Error).throwable, sameInstance(original))
         }
 
     @Test
     fun `requestStateFlow should wrap non-ApiException into default ApiException`() =
         runBlocking {
             val cause = IOException("network")
-            val states =
-                requestStateFlow<String> { throw cause }.toList()
+            val states = requestStateFlow<String> { throw cause }.toList()
 
-            val error = states.filterIsInstance<RequestState.Error>().single()
+            assertThat(states.size, `is`(2))
+            assertThat(states[0], `is`(RequestState.Loading))
+            val error = states[1] as RequestState.Error
             assertThat(error.throwable.code, `is`(DEFAULT_ERROR_CODE))
             assertThat(error.throwable.message, `is`("network"))
             // 注: coroutines stack-trace recovery 可能 clone IOException,所以用类型+message,不用 sameInstance
             assertThat(error.throwable.cause, instanceOf(IOException::class.java))
             assertThat(error.throwable.cause?.message, `is`("network"))
+        }
+
+    @Test
+    fun `requestStateFlow should rethrow CancellationException`() =
+        runBlocking {
+            val marker = CancellationException("user-cancel")
+            val caught =
+                try {
+                    requestStateFlow<Int> { throw marker }.toList()
+                    null
+                } catch (e: CancellationException) {
+                    e
+                }
+
+            // 必须重抛到收集方,否则 RequestState.Error 会吞掉协程取消信号
+            assertThat(caught, notNullValue())
+            assertThat(caught!!.message, `is`("user-cancel"))
         }
 
     // ==================== requestResult ====================

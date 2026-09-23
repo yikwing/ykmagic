@@ -1,10 +1,11 @@
 package com.yikwing.network
 
-import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 import kotlin.coroutines.cancellation.CancellationException
 
 /**
@@ -16,7 +17,6 @@ import kotlin.coroutines.cancellation.CancellationException
  * @return 成功时返回数据（服务端返回 null 时为 null），失败时抛出 ApiException
  * @throws ApiException 当错误码检查器返回 true 时抛出
  */
-@PublishedApi
 internal fun <T> transformHttpResult(result: BaseHttpResult<T>): T? =
     if (ApiConfig.errorCodeChecker(result.errorCode)) {
         throw ApiException(result.errorCode, result.errorMsg)
@@ -25,12 +25,20 @@ internal fun <T> transformHttpResult(result: BaseHttpResult<T>): T? =
     }
 
 /**
+ * 归一化为 [ApiException]：已是 ApiException 的原样返回，其余包装为默认错误码
+ */
+internal fun Throwable.toApiException(): ApiException = this as? ApiException ?: ApiException.createDefault(message, this)
+
+/**
  * 流式 API 请求转换
  *
  * 将 API 调用转换为带状态的 Flow，自动处理 Loading、Success、Error 状态
  *
+ * [RequestState.Loading] 由最下游的 `onStart` 发出，因此它始终是第一个元素，
+ * 且不受上游 `flowOn` 通道缓冲与异常传播的影响
+ *
  * @param block API 调用的 suspend 函数
- * @return Flow<RequestState<T>> 包含完整请求状态的流
+ * @return Flow<RequestState<T?>> 包含完整请求状态的流；服务端返回 null 时 Success.value 为 null
  *
  * 使用示例：
  * ```
@@ -44,25 +52,19 @@ internal fun <T> transformHttpResult(result: BaseHttpResult<T>): T? =
  *     }
  * ```
  */
-inline fun <T> requestStateFlow(crossinline block: suspend () -> BaseHttpResult<T>) =
-    flow {
-        emit(RequestState.Loading)
-        val result = block()
-        // 使用公共函数转换结果，失败时会抛出 ApiException
-        val data = transformHttpResult(result)
-        emit(RequestState.Success(data))
-    }.flowOn(Dispatchers.IO).catch { exception ->
-        // 检查是否是取消异常，如果是，则重新抛出
-        if (exception is CancellationException) {
-            throw exception
-        }
-        // 所有异常都在这里被捕捉
-        Log.e("requestStateFlow", "Error: ${exception.message}", exception)
-        // ApiException 直接使用，其他异常转换为默认 ApiException
-        val apiException =
-            exception as? ApiException ?: ApiException.createDefault(exception.message, exception)
-        emit(RequestState.Error(apiException))
-    }
+fun <T> requestStateFlow(block: suspend () -> BaseHttpResult<T>): Flow<RequestState<T?>> =
+    flow<RequestState<T?>> {
+        // 转换结果，错误码校验失败时抛出 ApiException，交由下游 catch 处理
+        emit(RequestState.Success(transformHttpResult(block())))
+    }.flowOn(Dispatchers.IO)
+        .catch { exception ->
+            // 取消异常必须重抛，否则会吞掉协程取消信号
+            if (exception is CancellationException) {
+                throw exception
+            }
+            ApiConfig.logger("requestStateFlow", "Error: ${exception.message}", exception)
+            emit(RequestState.Error(exception.toApiException()))
+        }.onStart { emit(RequestState.Loading) }
 
 /**
  * 单次 API 请求转换
@@ -71,7 +73,8 @@ inline fun <T> requestStateFlow(crossinline block: suspend () -> BaseHttpResult<
  * 使用 Kotlin 标准库的 Result 类型，无 Loading 状态
  *
  * @param block API 调用的 suspend 函数
- * @return Result<T?> 包装的结果（Success 或 Failure）
+ * @return Result<T?> 包装的结果，失败时 exception 恒为 [ApiException]
+ * @throws CancellationException 协程被取消时原样重抛，不会包装进 Result
  *
  * 使用示例：
  * ```
@@ -90,18 +93,14 @@ inline fun <T> requestStateFlow(crossinline block: suspend () -> BaseHttpResult<
  * val data = requestResult { apiService.getData() }.getOrNull()
  * ```
  */
-suspend inline fun <T> requestResult(crossinline block: suspend () -> BaseHttpResult<T>): Result<T?> =
+suspend fun <T> requestResult(block: suspend () -> BaseHttpResult<T>): Result<T?> =
     try {
-        val result = block()
-        // 使用公共函数转换结果，成功返回数据，失败抛出 ApiException
-        Result.success(transformHttpResult(result))
+        // 转换结果，成功返回数据，错误码校验失败时抛出 ApiException
+        Result.success(transformHttpResult(block()))
     } catch (exception: CancellationException) {
-        // 取消异常需要重新抛出，不捕获
+        // 取消异常需要重抛，不捕获
         throw exception
     } catch (exception: Exception) {
-        Log.e("requestResult", "Error: ${exception.message}", exception)
-        // ApiException 直接使用，其他异常转换为默认 ApiException
-        val apiException =
-            exception as? ApiException ?: ApiException.createDefault(exception.message, exception)
-        Result.failure(apiException)
+        ApiConfig.logger("requestResult", "Error: ${exception.message}", exception)
+        Result.failure(exception.toApiException())
     }
