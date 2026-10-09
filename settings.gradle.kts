@@ -10,7 +10,7 @@ pluginManagement {
 plugins {
     // Version is hardcoded: the settings plugins block is evaluated before the
     // version catalog below exists, so libs.* accessors are unavailable here.
-    id("io.github.ben-manes.versions.settings") version "0.64.0"
+    id("io.github.ben-manes.versions.settings") version "0.65.0"
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
