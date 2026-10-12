@@ -2,10 +2,10 @@ package com.yikwing.ykquickdev.ui.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -33,45 +33,46 @@ val LocalDesignScale = staticCompositionLocalOf { 1f }
 
 private const val DESIGN_WIDTH_DP = 375f
 
+// Upper bound so tablets / landscape phones don't blow UI up proportionally
+private const val MAX_DESIGN_SCALE = 1.4f
+
+// Respect the system font size for accessibility, but cap it so fixed-size layouts don't break
+private const val MAX_FONT_SCALE = 1.3f
+
 /**
  * 提供设计稿缩放上下文
- * 在根布局使用，子组件可通过 designDp() 获取缩放后的尺寸
+ * 在根布局使用，子组件可通过 sdp 获取缩放后的尺寸
  */
 @Composable
 fun ProvideDesignScale(content: @Composable () -> Unit) {
-    val configuration = LocalConfiguration.current
-    val screenWidthDp = configuration.screenWidthDp
-    val density = LocalDensity.current
-
-    val designScale =
-        remember(screenWidthDp) {
-            // 这里的逻辑可以根据你的项目需求灵活调整
-            if (screenWidthDp > 600) {
-                // 平板模式下：限制最大缩放比例，避免 UI 元素过大
-                (screenWidthDp / DESIGN_WIDTH_DP).coerceAtMost(1.4f)
-            } else {
-                screenWidthDp / DESIGN_WIDTH_DP
-            }
-        }
-
-    // 关键点：创建一个新的 Density 实例，强制将 fontScale 设为固定值（如 1.0）
-    val fixedDensity =
-        Density(
-            density = density.density,
-            // 强制字体缩放为 1.0
-            fontScale = 1f,
-        )
+    // containerDpSize is the real window size; Configuration.screenWidthDp is rounded and
+    // its inset handling varies with targetSdk
+    val windowWidthDp = LocalWindowInfo.current.containerDpSize.width.value
+    val designScale = calculateDesignScale(windowWidthDp)
 
     CompositionLocalProvider(
         LocalDesignScale provides designScale,
-        LocalDensity provides fixedDensity,
+        LocalDensity provides capFontScale(LocalDensity.current),
     ) {
         content()
     }
 }
 
 val Int.sdp: Dp
-    @Composable get() = (this * LocalDesignScale.current).dp
+    @Composable @ReadOnlyComposable get() = (this * LocalDesignScale.current).dp
 
 val Float.sdp: Dp
-    @Composable get() = (this * LocalDesignScale.current).dp
+    @Composable @ReadOnlyComposable get() = (this * LocalDesignScale.current).dp
+
+internal fun calculateDesignScale(widthDp: Float): Float = (widthDp / DESIGN_WIDTH_DP).coerceAtMost(MAX_DESIGN_SCALE)
+
+/**
+ * Returns [density] untouched when its fontScale is within [MAX_FONT_SCALE], so the platform's
+ * non-linear font scaling (API 34+) is preserved; otherwise a linear Density capped at the max.
+ */
+internal fun capFontScale(density: Density): Density =
+    if (density.fontScale <= MAX_FONT_SCALE) {
+        density
+    } else {
+        Density(density = density.density, fontScale = MAX_FONT_SCALE)
+    }

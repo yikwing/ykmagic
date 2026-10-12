@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,16 +29,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.yikwing.ykquickdev.ui.utils.sdp
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.yikwing.compose.window.SystemBarsStyle
 import com.yikwing.ykquickdev.components.Center
-import com.yikwing.ykquickdev.ui.BottomNavItems
 import com.yikwing.ykquickdev.ui.CustomBottomBar
+import com.yikwing.ykquickdev.ui.MainTab
+import com.yikwing.ykquickdev.ui.utils.ProvideDesignScale
 import com.yikwing.ykquickdev.ui.utils.sdp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -56,8 +56,10 @@ fun EntryProviderScope<NavKey>.mainScreenEntry() {
 fun MainScreen(coroutineScope: CoroutineScope = rememberCoroutineScope()) {
     val pagerState =
         rememberPagerState {
-            BottomNavItems.size
+            MainTab.entries.size
         }
+
+    MainSystemBarsStyle(pagerState)
 
     Scaffold(
         contentWindowInsets = ScaffoldDefaults.contentWindowInsets.exclude(WindowInsets.statusBars),
@@ -73,31 +75,39 @@ fun MainScreen(coroutineScope: CoroutineScope = rememberCoroutineScope()) {
     }
 }
 
+// Driven by the current page rather than by each page's composition, so the result
+// stays correct even when multiple pages are composed at once.
+// Reads currentPage in its own restart scope so page changes don't recompose MainScreen.
+@Composable
+private fun MainSystemBarsStyle(pagerState: PagerState) {
+    SystemBarsStyle(statusBarDarkIcons = MainTab.entries[pagerState.currentPage].isLightPage)
+}
+
 @Composable
 fun MainScreenContentView(
-    pageState: PagerState,
+    pagerState: PagerState,
     // bottomBar 的padding
     paddingValues: PaddingValues,
 ) {
     HorizontalPager(
-        state = pageState,
+        state = pagerState,
         userScrollEnabled = false, // 禁止手势滑动
         modifier = Modifier.fillMaxSize(), // 忽略 paddingValues，占满全屏
     ) { page: Int ->
-        when (page) {
-            0 -> {
+        when (MainTab.entries[page]) {
+            MainTab.Home -> {
                 HomeRoute()
             }
 
-            1 -> {
+            MainTab.Category -> {
                 CategoryRoute(paddingValues)
             }
 
-            2 -> {
+            MainTab.Cart -> {
                 CartRoute()
             }
 
-            3 -> {
+            MainTab.Me -> {
                 MeRoute()
             }
         }
@@ -112,12 +122,8 @@ private val BordeauxRed = Color(0xFF6D2C41)
 
 @Composable
 fun HomeRoute() {
-    SystemBarsStyle(statusBarDarkIcons = false)
     Center(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(KleinBlue),
+        modifier = Modifier.fillMaxSize().background(KleinBlue),
     ) {
         Text("Home", color = Color.White)
     }
@@ -126,10 +132,7 @@ fun HomeRoute() {
 @Composable
 fun CategoryRoute(paddingValues: PaddingValues) {
     Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(BordeauxRed),
+        modifier = Modifier.fillMaxSize().background(BordeauxRed),
     ) {
         // 主内容居中
         Text(
@@ -155,20 +158,12 @@ fun CategoryRoute(paddingValues: PaddingValues) {
 
 @Composable
 fun CartRoute() {
-    SystemBarsStyle(statusBarDarkIcons = true)
     Box(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(Color.White),
+        modifier = Modifier.fillMaxSize().background(Color.White),
     ) {
         ConstraintLayout(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(100.sdp)
-                    .align(Alignment.Center),
-            constraintSet = decoupledConstraints(),
+            modifier = Modifier.fillMaxWidth().height(100.sdp).align(Alignment.Center),
+            constraintSet = remember { decoupledConstraints() },
         ) {
             Spacer(
                 modifier =
@@ -222,12 +217,8 @@ private fun decoupledConstraints(): ConstraintSet =
 
 @Composable
 fun MeRoute() {
-    SystemBarsStyle(statusBarDarkIcons = false)
     Center(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(Color.Black),
+        modifier = Modifier.fillMaxSize().background(Color.Black),
     ) {
         Text("Me", color = Color.White)
     }
@@ -245,6 +236,8 @@ private enum class CartLayoutId {
     showBackground = true,
 )
 @Composable
-private fun MainScreenPreview() {
-    CartRoute()
+private fun CartRoutePreview() {
+    ProvideDesignScale {
+        CartRoute()
+    }
 }
