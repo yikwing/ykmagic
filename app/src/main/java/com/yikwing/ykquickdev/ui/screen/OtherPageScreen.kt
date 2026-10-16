@@ -12,14 +12,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.yikwing.compose.image.CornerRadius
@@ -28,8 +27,8 @@ import com.yikwing.compose.image.RoundedImage
 import com.yikwing.network.RequestState
 import com.yikwing.network.onFailure
 import com.yikwing.network.onSuccess
-import com.yikwing.ykquickdev.components.Center
-import com.yikwing.ykquickdev.ui.utils.sdp
+import com.yikwing.compose.layout.Center
+import com.yikwing.compose.layout.sdp
 import com.yikwing.ykquickdev.viewmodel.HttpBinViewModel
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
@@ -50,11 +49,7 @@ fun OtherPageScreen(
     id: String,
     viewModel: HttpBinViewModel = koinViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.initHttpBinData()
-    }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Surface(modifier = Modifier.fillMaxSize()) {
         Center {

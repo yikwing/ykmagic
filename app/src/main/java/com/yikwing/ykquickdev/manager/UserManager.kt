@@ -3,7 +3,7 @@ package com.yikwing.ykquickdev.manager
 import android.util.Log
 import com.yikwing.ykquickdev.UserInfo
 import kotlinx.serialization.json.Json
-import org.koin.java.KoinJavaComponent.inject
+import org.koin.core.annotation.Singleton
 
 /**
  * <pre>
@@ -23,11 +23,10 @@ import org.koin.java.KoinJavaComponent.inject
  *     desc  :
  * </pre>
  */
-object UserManager {
-    private const val TAG = "UserManager"
-
-    private val json: Json by inject(Json::class.java)
-
+@Singleton
+class UserManager(
+    private val json: Json,
+) {
     fun printUserIsMan() {
         val jsonWithBooleanId =
             """
@@ -41,5 +40,9 @@ object UserManager {
         val u = json.decodeFromString<UserInfo>(jsonWithBooleanId)
 
         Log.i(TAG, u.isMan.toString())
+    }
+
+    private companion object {
+        const val TAG = "UserManager"
     }
 }

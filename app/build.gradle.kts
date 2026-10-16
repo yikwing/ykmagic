@@ -168,6 +168,7 @@ dependencies {
 
     // 三方依赖库
     implementation(libs.bundles.network.ktor)
+    testImplementation(libs.ktor.client.mock)
 
     arrayOf(
         ":module_config",

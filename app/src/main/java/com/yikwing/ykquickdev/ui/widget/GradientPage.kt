@@ -38,7 +38,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.yikwing.ykquickdev.ui.utils.sdp
+import com.yikwing.compose.layout.sdp
 import androidx.compose.ui.window.DialogProperties
 
 @Composable

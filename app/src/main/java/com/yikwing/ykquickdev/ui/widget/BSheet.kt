@@ -35,7 +35,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.yikwing.ykquickdev.ui.utils.sdp
+import com.yikwing.compose.layout.sdp
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

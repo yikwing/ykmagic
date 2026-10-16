@@ -34,11 +34,11 @@ import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.yikwing.compose.window.SystemBarsStyle
-import com.yikwing.ykquickdev.components.Center
+import com.yikwing.compose.layout.Center
 import com.yikwing.ykquickdev.ui.CustomBottomBar
 import com.yikwing.ykquickdev.ui.MainTab
-import com.yikwing.ykquickdev.ui.utils.ProvideDesignScale
-import com.yikwing.ykquickdev.ui.utils.sdp
+import com.yikwing.compose.layout.ProvideDesignScale
+import com.yikwing.compose.layout.sdp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable

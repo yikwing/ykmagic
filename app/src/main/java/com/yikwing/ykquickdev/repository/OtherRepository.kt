@@ -1,42 +1,22 @@
 package com.yikwing.ykquickdev.repository
 
-import android.util.Log
-import com.yikwing.network.ApiException
-import com.yikwing.network.RequestState
+import com.yikwing.network.requestRawResult
 import com.yikwing.ykquickdev.api.apiserver.HttpBinApi
 import com.yikwing.ykquickdev.api.entity.Headers
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import org.koin.core.annotation.Single
-import kotlin.coroutines.cancellation.CancellationException
+import org.koin.core.annotation.Singleton
 
 interface OtherRepository {
-    fun initHttpBinData(): Flow<RequestState<Headers>>
+    suspend fun initHttpBinData(): Result<Headers>
 }
 
-@Single
+@Singleton
 class OtherRepositoryImpl(
     private val httpBinApi: HttpBinApi,
 ) : OtherRepository {
     /**
      * 获取 HttpBin Headers 数据
+     *
+     * @return 失败时为 [com.yikwing.network.ApiException]，CancellationException 会重抛
      */
-    override fun initHttpBinData(): Flow<RequestState<Headers>> =
-        flow {
-            emit(RequestState.Loading)
-            val data = httpBinApi.getHeaders().headers
-            emit(RequestState.Success(data))
-        }.flowOn(Dispatchers.IO).catch { exception ->
-            if (exception is CancellationException) throw exception
-            Log.e("initHttpBinData", "Error: ${exception.message}", exception)
-            val apiException =
-                exception as? ApiException ?: ApiException.createDefault(
-                    exception.message,
-                    exception,
-                )
-            emit(RequestState.Error(apiException))
-        }
+    override suspend fun initHttpBinData(): Result<Headers> = requestRawResult { httpBinApi.getHeaders().headers }
 }

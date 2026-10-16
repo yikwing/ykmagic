@@ -23,11 +23,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
-import com.yikwing.compose.interaction.rememberDebounceClick
+import com.yikwing.compose.interaction.rememberThrottleClick
 import com.yikwing.ykquickdev.components.LocalNavigator
 import com.yikwing.ykquickdev.ui.theme.RubikGemstonesRegular
 import com.yikwing.ykquickdev.ui.utils.navigate
-import com.yikwing.ykquickdev.ui.utils.sdp
+import com.yikwing.compose.layout.sdp
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -79,7 +79,7 @@ fun TextDebounceScreen(navigationToPackInfo: () -> Unit) {
                     Alignment.Center,
                 ),
         ) {
-            Button(onClick = rememberDebounceClick { count++ }) {
+            Button(onClick = rememberThrottleClick { count++ }) {
                 Text("Plus")
             }
 
@@ -90,7 +90,7 @@ fun TextDebounceScreen(navigationToPackInfo: () -> Unit) {
                 fontSize = 24.sp,
             )
 
-            Button(onClick = rememberDebounceClick { count-- }) {
+            Button(onClick = rememberThrottleClick { count-- }) {
                 Text("Minus")
             }
         }

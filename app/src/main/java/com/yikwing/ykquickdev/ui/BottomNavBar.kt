@@ -20,7 +20,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.yikwing.ykquickdev.R
-import com.yikwing.ykquickdev.ui.utils.sdp
+import com.yikwing.compose.layout.sdp
 
 // Declaration order is the pager page order
 enum class MainTab(

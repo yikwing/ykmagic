@@ -1,89 +1,40 @@
 package com.yikwing.ykquickdev.repository
 
 import com.yikwing.network.ApiException
-import com.yikwing.network.RequestState
 import com.yikwing.network.requestResult
-import com.yikwing.network.requestStateFlow
-import com.yikwing.ykquickdev.api.apiserver.HttpBinApi
 import com.yikwing.ykquickdev.api.apiserver.WanAndroidApi
 import com.yikwing.ykquickdev.api.entity.ChapterBean
-import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.db.ChapterDao
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import org.koin.core.annotation.Single
+import org.koin.core.annotation.Singleton
 
 interface NetRepository {
-    suspend fun initHttpBinData(): RequestState<Headers>
+    fun observeChapters(): Flow<List<ChapterBean>>
 
-    fun initWanAndroidData(): Flow<RequestState<List<ChapterBean>?>>
-
-    suspend fun initWanAndroidData2(): Result<List<ChapterBean>?>
-
-    fun observeChapters(): Flow<RequestState<List<ChapterBean>>>
-
-    suspend fun fetchAndCacheChapters()
+    suspend fun fetchAndCacheChapters(): Result<Unit>
 }
 
-@Single
+@Singleton
 class NetRepositoryImpl(
-    private val httpBinApi: HttpBinApi,
     private val wanAndroidApi: WanAndroidApi,
     private val chapterDao: ChapterDao,
 ) : NetRepository {
-    /**
-     * 获取 HttpBin Headers 数据
-     */
-    override suspend fun initHttpBinData(): RequestState<Headers> =
-        try {
-            httpBinApi.postData()
-            RequestState.Success(httpBinApi.getHeaders().headers)
-        } catch (exception: Exception) {
-            RequestState.Error(ApiException.createDefault(exception.message, exception))
-        }
-
-    /**
-     * 获取玩安卓章节数据
-     * 使用 requestStateFlow 解析 BaseHttpResult 包装的响应
-     */
-    override fun initWanAndroidData(): Flow<RequestState<List<ChapterBean>?>> =
-        requestStateFlow {
-            wanAndroidApi.getChapters()
-        }
-
-    /**
-     * 获取玩安卓章节数据 (单次请求)
-     * 使用 requestResult 返回 Result 类型
-     */
-    override suspend fun initWanAndroidData2(): Result<List<ChapterBean>?> =
-        requestResult {
-            wanAndroidApi.getChapters()
-        }.onSuccess { _data ->
-            _data?.let { chapterDao.insertChapters(it) }
-        }
-
     // ==================== Chapters SSOT（读写分离）====================
 
     /**
      * 读取：观察 Room 数据（SSOT）
-     * 返回 RequestState 包装，Room 数据变化时自动更新
+     * 返回原始缓存列表，Room 数据变化时自动更新；空列表的含义（加载中/失败/无数据）
+     * 需结合 [fetchAndCacheChapters] 的结果判断，由调用方组合
      */
-    override fun observeChapters(): Flow<RequestState<List<ChapterBean>>> =
-        chapterDao.observeAllChapters().map { _data ->
-            if (_data.isEmpty()) {
-                RequestState.Error(ApiException.createDefault("数据为空"))
-            } else {
-                RequestState.Success(_data)
-            }
-        }
+    override fun observeChapters(): Flow<List<ChapterBean>> = chapterDao.observeAllChapters()
 
     /**
      * 写入：从网络获取数据并缓存到 Room
      * 调用后 Room 数据更新，observeChapters 自动收到新数据
+     *
+     * @return 失败时为 [ApiException]，CancellationException 会重抛
      */
-    override suspend fun fetchAndCacheChapters() {
-        runCatching { wanAndroidApi.getChapters() }.onSuccess { result ->
-            result.data?.let { chapterDao.insertChapters(it) }
-        }
-    }
+    override suspend fun fetchAndCacheChapters(): Result<Unit> =
+        requestResult { wanAndroidApi.getChapters() }
+            .map { data -> if (data != null) chapterDao.insertChapters(data) }
 }

@@ -9,8 +9,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
+import com.yikwing.compose.lifecycle.dropUnlessResumed
 import com.yikwing.ykquickdev.components.LocalNavigator
 import com.yikwing.ykquickdev.ui.theme.RubikGemstonesRegular
 import com.yikwing.ykquickdev.ui.utils.navigate
@@ -23,9 +25,9 @@ fun EntryProviderScope<NavKey>.packageInfoEntry() {
     entry<PackageInfoRoute> {
         val navigator = LocalNavigator.current
         PackageInfoScreen(
-            navigationToPage = { id -> navigator.navigate(ProductRoute(id)) },
-            navigationToDiy = { navigator.navigate(DiyInputRoute) },
-            navigationToFoldable = { navigator.navigate(FoldableRoute) },
+            navigationToPage = dropUnlessResumed { id -> navigator.navigate(ProductRoute(id)) },
+            navigationToDiy = dropUnlessResumed { navigator.navigate(DiyInputRoute) },
+            navigationToFoldable = dropUnlessResumed { navigator.navigate(FoldableRoute) },
         )
     }
 }

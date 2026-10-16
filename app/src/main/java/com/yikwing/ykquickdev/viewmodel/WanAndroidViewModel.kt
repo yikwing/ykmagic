@@ -4,30 +4,27 @@ import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.yikwing.network.ApiException
 import com.yikwing.network.RequestState
 import com.yikwing.ykquickdev.api.entity.ChapterBean
-import com.yikwing.ykquickdev.api.entity.Headers
 import com.yikwing.ykquickdev.repository.NetRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.KoinViewModel
 
 /**
  * WanAndroid 数据视图模型
  *
- * 负责管理 WanAndroid API 的数据加载和状态：
- * - 章节列表数据（chapters）
- * - HttpBin 请求头测试（headers）
+ * 负责管理 WanAndroid 章节列表（chapters）：Room 缓存为 SSOT，网络拉取只负责写入缓存
  */
 @Immutable
 data class WanAndroidUiState(
-    val headers: RequestState<Headers> = RequestState.Loading,
-    val wanAndroidList: RequestState<List<ChapterBean>?> = RequestState.Loading,
     val chapters: RequestState<List<ChapterBean>> = RequestState.Loading,
 )
 
@@ -36,61 +33,63 @@ class WanAndroidViewModel(
     private val netRepository: NetRepository,
     @InjectedParam private val name: String,
 ) : ViewModel() {
-    private val headersFlow = MutableStateFlow<RequestState<Headers>>(RequestState.Loading)
-    private val wanAndroidListFlow =
-        MutableStateFlow<RequestState<List<ChapterBean>?>>(RequestState.Loading)
+    // Lazy loading like HttpBinViewModel: the fetch starts when the UI subscribes, not at construction.
+    // null = fetch still in progress; emitted first so combine can show cached chapters meanwhile.
+    private val chaptersFetchResult: Flow<Result<Unit>?> =
+        flow<Result<Unit>?> {
+            Log.d("==== initWanAndroidData", "assistedInject $name")
+            emit(netRepository.fetchAndCacheChapters())
+        }.onStart { emit(null) }
 
     val uiState: StateFlow<WanAndroidUiState> =
         combine(
-            headersFlow,
-            wanAndroidListFlow,
             netRepository.observeChapters(),
-        ) { headers, wanAndroidList, chapters ->
+            chaptersFetchResult,
+        ) { cachedChapters, fetchResult ->
             WanAndroidUiState(
-                headers = headers,
-                wanAndroidList = wanAndroidList,
-                chapters = chapters,
+                chapters = chaptersState(cachedChapters, fetchResult),
             )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = WanAndroidUiState(),
         )
+}
 
-    private fun initHttpBinData() {
-        viewModelScope.launch {
-            headersFlow.value = netRepository.initHttpBinData()
+/**
+ * Derives the chapters UI state from the Room cache (SSOT) and the latest fetch result.
+ *
+ * Cached data always wins (offline-first: a failed refresh keeps showing the cache).
+ * An empty cache is only reported as "数据为空" after the fetch has succeeded, so the
+ * UI shows Loading instead of flashing an error while the first fetch is in flight.
+ *
+ * @param fetchResult null while the fetch is in progress
+ */
+internal fun chaptersState(
+    cachedChapters: List<ChapterBean>,
+    fetchResult: Result<Unit>?,
+): RequestState<List<ChapterBean>> {
+    val fetchError = fetchResult?.exceptionOrNull()
+    return when {
+        cachedChapters.isNotEmpty() -> {
+            RequestState.Success(cachedChapters)
         }
-    }
 
-    private fun initWanAndroidData() {
-        Log.d("==== initWanAndroidData", "assistedInject $name")
-
-        viewModelScope.launch {
-            netRepository.initWanAndroidData().collect { result ->
-                wanAndroidListFlow.value = result
-            }
+        fetchResult == null -> {
+            RequestState.Loading
         }
 
-        viewModelScope.launch {
-            netRepository.fetchAndCacheChapters()
+        fetchError != null -> {
+            RequestState.Error(
+                fetchError as? ApiException ?: ApiException.createDefault(
+                    fetchError.message,
+                    fetchError,
+                ),
+            )
         }
-    }
 
-    fun removeItem(
-        position: Int,
-        list: List<ChapterBean>,
-    ) {
-        if (position in list.indices) {
-            val newData = list.toMutableList()
-            newData.removeAt(position)
-            wanAndroidListFlow.value = RequestState.Success(newData)
+        else -> {
+            RequestState.Error(ApiException.createDefault("数据为空"))
         }
-    }
-
-    // 初始化代码应该在最后面
-    init {
-        initHttpBinData()
-        initWanAndroidData()
     }
 }

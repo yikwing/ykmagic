@@ -27,3 +27,8 @@ annotation class BaseUrl
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class DebugFlag
+
+/** 应用级 CoroutineScope */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ApplicationScope

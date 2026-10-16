@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.yikwing.ykquickdev.components.LocalNavigator
@@ -23,7 +24,7 @@ fun EntryProviderScope<NavKey>.diyInputEntry() {
     entry<DiyInputRoute> {
         val navigator = LocalNavigator.current
         DiyInputScreen(
-            navigationToAuth = { navigator.navigate(AuthLoginRoute) },
+            navigationToAuth = dropUnlessResumed { navigator.navigate(AuthLoginRoute) },
         )
     }
 }

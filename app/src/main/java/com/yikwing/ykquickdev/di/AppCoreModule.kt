@@ -4,15 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.annotation.Module
-import org.koin.core.annotation.Qualifier
 import org.koin.core.annotation.Singleton
-
-/**
- * 用于标记应用级 CoroutineScope
- */
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class ApplicationScope
 
 /**
  * 应用核心模块

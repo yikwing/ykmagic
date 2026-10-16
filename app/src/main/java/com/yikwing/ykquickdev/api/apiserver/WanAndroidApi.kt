@@ -10,10 +10,11 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class WanAndroidApi(
-    private val httpClient: HttpClient,
+    // Lazy defers CIO engine + TLS setup from DI resolution (main thread, on screen open) to the first request.
+    private val httpClient: Lazy<HttpClient>,
 ) {
     suspend fun getChapters(): BaseHttpResult<List<ChapterBean>> =
-        httpClient
+        httpClient.value
             .get {
                 url("wxarticle/chapters/json")
             }.body()

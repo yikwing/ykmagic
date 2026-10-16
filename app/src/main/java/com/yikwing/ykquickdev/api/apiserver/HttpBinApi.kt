@@ -15,10 +15,11 @@ import org.koin.core.annotation.Singleton
 
 @Singleton
 class HttpBinApi(
-    private val httpClient: HttpClient,
+    // Lazy defers CIO engine + TLS setup from DI resolution (main thread, on screen open) to the first request.
+    private val httpClient: Lazy<HttpClient>,
 ) {
     suspend fun getHeaders(token: String = DEFAULT_TOKEN): HttpBinHeaders =
-        httpClient
+        httpClient.value
             .get {
                 url {
                     takeFrom(BASE_URL)
@@ -28,7 +29,7 @@ class HttpBinApi(
             }.body()
 
     suspend fun postData(token: String = DEFAULT_TOKEN): HttpBinPostResult =
-        httpClient
+        httpClient.value
             .post {
                 url {
                     takeFrom(BASE_URL)

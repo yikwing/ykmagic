@@ -27,7 +27,7 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.yikwing.ykquickdev.ui.utils.sdp
+import com.yikwing.compose.layout.sdp
 import androidx.constraintlayout.compose.ConstraintSet
 
 @Composable

@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.dropUnlessResumed
 import androidx.navigation3.runtime.EntryProviderScope
 import androidx.navigation3.runtime.NavKey
 import com.yikwing.ykquickdev.components.LocalNavigator
@@ -27,7 +28,7 @@ fun EntryProviderScope<NavKey>.authLoginEntry() {
     entry<AuthLoginRoute> {
         val navigator = LocalNavigator.current
         AuthLoginScreen(
-            navigationToRegister = { navigator.navigate(AuthRegisterRoute) },
+            navigationToRegister = dropUnlessResumed { navigator.navigate(AuthRegisterRoute) },
         )
     }
 }
