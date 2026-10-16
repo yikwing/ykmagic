@@ -104,3 +104,23 @@ suspend fun <T> requestResult(block: suspend () -> BaseHttpResult<T>): Result<T?
         ApiConfig.logger("requestResult", "Error: ${exception.message}", exception)
         Result.failure(exception.toApiException())
     }
+
+/**
+ * 单次 API 请求转换（非 [BaseHttpResult] 包装的响应）
+ *
+ * 与 [requestResult] 相同的异常语义，但不做错误码校验，适用于直接返回业务实体的接口
+ * （如 httpbin.org）。单独命名而非重载 [requestResult]，避免 lambda 返回值类型推断歧义。
+ *
+ * @param block API 调用的 suspend 函数
+ * @return Result<T> 包装的结果，失败时 exception 恒为 [ApiException]
+ * @throws CancellationException 协程被取消时原样重抛，不会包装进 Result
+ */
+suspend fun <T> requestRawResult(block: suspend () -> T): Result<T> =
+    try {
+        Result.success(block())
+    } catch (exception: CancellationException) {
+        throw exception
+    } catch (exception: Exception) {
+        ApiConfig.logger("requestRawResult", "Error: ${exception.message}", exception)
+        Result.failure(exception.toApiException())
+    }

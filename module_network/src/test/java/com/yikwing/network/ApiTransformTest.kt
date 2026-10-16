@@ -238,4 +238,50 @@ class ApiTransformTest {
             assertThat(caught, notNullValue())
             assertThat(caught!!.message, `is`("user-cancel"))
         }
+
+    // ==================== requestRawResult ====================
+
+    @Test
+    fun `requestRawResult should return success with raw value`() =
+        runBlocking {
+            val result = requestRawResult { "payload" }
+
+            assertThat(result.getOrNull(), `is`("payload"))
+        }
+
+    @Test
+    fun `requestRawResult should forward thrown ApiException unchanged`() =
+        runBlocking {
+            val original = ApiException(code = 77, message = "biz")
+            val result = requestRawResult<Int> { throw original }
+
+            assertThat(result.exceptionOrNull(), sameInstance<Throwable>(original))
+        }
+
+    @Test
+    fun `requestRawResult should wrap non-ApiException into default ApiException`() =
+        runBlocking {
+            val cause = IOException("io")
+            val result = requestRawResult<Int> { throw cause }
+
+            val wrapped = result.exceptionOrNull() as ApiException
+            assertThat(wrapped.code, `is`(DEFAULT_ERROR_CODE))
+            assertThat(wrapped.cause, sameInstance<Throwable>(cause))
+        }
+
+    @Test
+    fun `requestRawResult should rethrow CancellationException`() =
+        runBlocking {
+            val marker = CancellationException("user-cancel")
+            val caught =
+                try {
+                    requestRawResult<Int> { throw marker }
+                    null
+                } catch (e: CancellationException) {
+                    e
+                }
+
+            assertThat(caught, notNullValue())
+            assertThat(caught!!.message, `is`("user-cancel"))
+        }
 }
