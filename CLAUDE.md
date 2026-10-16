@@ -47,7 +47,7 @@ YkQuickDev - Android 快速开发框架库
 | 数据存储 | [datastore.md](.claude/docs/datastore.md) | `DataStore<T>` |
 | 构建逻辑 | [build-logic.md](.claude/docs/build-logic.md) | Convention Plugins |
 | 构建发布 | [build-publish.md](.claude/docs/build-publish.md) | `./android_build.sh` |
-| 事件处理 | [event-patterns.md](.claude/docs/event-patterns.md) | Channel / SharedFlow / StateFlow |
+| 事件处理 | [event-patterns.md](.claude/docs/event-patterns.md) | 事件→UI State / `dropUnlessResumed` / SSOT `stateIn` |
 | Flow 收集 | [flow-collect-best-practices.md](.claude/docs/flow-collect-best-practices.md) | `repeatOnLifecycle` / `launchWhenStarted` |
 | 导航规范 | [nav3-guide.md](.claude/docs/nav3-guide.md) | Route / Entry / Screen |
 | 错误处理 | [result-patterns.md](.claude/docs/result-patterns.md) | Result<T> |

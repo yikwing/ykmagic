@@ -11,9 +11,8 @@
 
 ### 2. module_network - 网络请求模块
 - 基于 Ktor Client + CIO Engine 封装
-- 提供 `Json` 序列化配置（`NetworkModule`）
-- 提供 `RequestState` / `ApiException` / `ApiTransform` 等基础组件
-- HttpClient 在 app 层 `AppNetworkModule` 中构建
+- 提供 `RequestState` / `ApiException` / `ApiTransform` 等基础组件（不依赖 Koin）
+- `Json` 与 HttpClient 均在 app 层 `AppNetworkModule` 中提供
 - 详见 [network.md](network.md)
 
 ### 3. module_extension - 扩展方法模块
@@ -28,14 +27,58 @@
 ### 4. module_compose - Compose UI 组件模块
 - 提供可复用的 Compose 组件，避免在 app 层重复定义
 - `layout/Center.kt` — 居中布局容器
-- `state/LoadingWidget.kt` — 加载状态组件
-- `state/NetWorkError.kt` — 网络错误状态组件（含重试按钮）
+- `layout/DesignScale.kt` — 设计稿尺寸缩放（`ProvideDesignScale` / `sdp`）
+- `state/LoadingPane.kt` — 居中加载容器，支持 `content` 插槽替换
+- `state/ErrorPane.kt` — 居中错误容器，支持 `content` 插槽替换
+- `state/StatePage.kt` — `PageState` / `StatePage`，统一加载、空数据、错误和内容状态，支持自定义插槽
+- `state/StatePageDefaults.kt` — 共用默认内容（`LoadingContent` / `EmptyContent` / `ErrorContent`），含中英文文案与可选重试按钮
 - `image/ImageWidget.kt` — 图片组件（`RoundedImage` / `CircleImage`）
 - `window/SystemBarsStyle.kt` — 控制状态栏/导航栏图标颜色
-- `interaction/DebounceClick.kt` — `rememberDebounceClick`，防抖点击
+- `interaction/ThrottleClick.kt` — `rememberThrottleClick`，点击节流
 - `interaction/NoIndication.kt` — `NoIndication`，去除点击涟漪效果
-- `lifecycle/AppLifecycleObserver.kt` — 宿主生命周期监听（前后台切换）
 - `util/Ref.kt` — Compose 中可变引用持有器（`remember { Ref<T>() }`）
+- `lifecycle/DropUnlessResumed.kt` — 带参数的 `dropUnlessResumed`，用于 `(T) -> Unit` 导航回调
+
+#### 状态页（StatePage）
+
+| 名称 | 职责 |
+|------|------|
+| `PageState` | 展示状态：`Loading` / `Empty` / `Error(message)` / `Content` |
+| `StatePage` | 填满可用区域，按 `PageState` 切换插槽，默认居中 |
+| `LoadingPane` / `ErrorPane` | 不需要状态切换时单独使用的居中容器 |
+| `StatePageDefaults.*Content` | 默认内容，均支持 `modifier`，可在自定义插槽中复用 |
+
+使用约定：
+- `StatePage` 只负责展示，不依赖 module_network；调用方自行把 UI 状态映射为 `PageState`
+- 请求等副作用放在 `StatePage` 外。切换状态时原插槽会退出组合，放在插槽里的副作用会重复触发
+- `onRetry` 只作用于默认错误界面，传 `null` 时隐藏重试按钮；`message` 为空或空白时显示默认文案
+- 局部使用时先约束区域（如 `Modifier.fillMaxWidth().height(160.dp)`），各状态占用相同空间；
+  错误文案可用 `StatePageDefaults.ErrorContent(maxLines = 2)` 限制行数
+
+```kotlin
+val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+LaunchedEffect(viewModel) {
+    viewModel.load()
+}
+
+val pageState = when {
+    uiState.isLoading -> PageState.Loading
+    uiState.error != null -> PageState.Error(uiState.error)
+    uiState.items.isEmpty() -> PageState.Empty
+    else -> PageState.Content
+}
+
+StatePage(
+    state = pageState,
+    onRetry = viewModel::load,
+    emptyContent = { Text("还没有收藏") },
+) {
+    LazyColumn {
+        items(uiState.items) { item -> Text(item.title) }
+    }
+}
+```
 
 ### 5. module_permission - 权限请求模块
 - 基于 Fragment 封装统一的权限请求流程

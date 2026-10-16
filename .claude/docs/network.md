@@ -122,10 +122,19 @@ val result = requestResult { api.getHeaders() }.fold(
 )
 ```
 
+### `requestRawResult` - 非 `BaseHttpResult` 包装的响应
+
+异常语义同 `requestResult`（失败恒为 `ApiException`，取消重抛），但不做错误码校验，适用于直接返回实体的接口（如 httpbin）：
+
+```kotlin
+override suspend fun initHttpBinData(): Result<Headers> = requestRawResult { httpBinApi.getHeaders().headers }
+```
+
 | 场景 | 推荐 | 原因 |
 |------|------|------|
 | 列表/详情加载 | `requestStateFlow` | 需要 Loading 状态 |
 | 上传/提交/同步 | `requestResult` | 一次性后台操作 |
+| 响应无 `BaseHttpResult` 包装 | `requestRawResult` | Repository 返回 `Result`，ViewModel 转 `RequestState` |
 
 ### `ApiConfig` - 全局错误码策略
 
@@ -153,7 +162,7 @@ ApiConfig.errorCodeChecker = { it !in setOf(0, 1) }
 
 ## 网络层 DI
 
-HttpClient 通过 Koin 注入（插件：HttpTimeout / ContentNegotiation / DefaultRequest / HttpRequestRetry / Logging），完整配置参见 [dependency-injection.md](dependency-injection.md) 的"网络层 DI"章节。
+HttpClient 通过 Koin 注入（插件：HttpTimeout / ContentNegotiation / DefaultRequest / CommonHeaders / HttpRequestRetry / Logging；CommonHeaders 来自 module_network，公共请求头每次请求重新求值并强制覆盖同名头），完整配置参见 [dependency-injection.md](dependency-injection.md) 的"网络层 DI"章节。
 
 ## 注意事项
 
