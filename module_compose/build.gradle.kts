@@ -38,7 +38,7 @@ afterEvaluate {
         publications {
             create<MavenPublication>("release") {
                 groupId = "com.yikwing"
-                artifactId = "proxy"
+                artifactId = "compose"
                 version = "1.0.1"
 
                 from(components["release"])
