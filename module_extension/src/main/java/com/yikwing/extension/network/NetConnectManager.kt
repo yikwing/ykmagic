@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import org.koin.core.annotation.Single
+import org.koin.core.annotation.Singleton
 
 /**
  * 网络连接类型
@@ -73,7 +73,7 @@ data class NetworkState(
  *
  * ### Compose 中使用
  * ```kotlin
- * val networkState by netConnectManager.networkState.collectAsState()
+ * val networkState by netConnectManager.networkState.collectAsStateWithLifecycle()
  *
  * if (networkState.isConnected) {
  *     Text("已连接: ${networkState.type}")
@@ -128,7 +128,7 @@ data class NetworkState(
  * }
  * ```
  */
-@Single
+@Singleton
 class NetConnectManager(
     context: Context,
 ) {
@@ -216,7 +216,7 @@ class NetConnectManager(
     /**
      * 解注册 [NetworkCallback] 并释放监听资源。
      *
-     * 作为 Koin `@Single` 通常由容器管理生命周期，无需手动调用；仅当你在运行时
+     * 作为 Koin `@Singleton` 通常由容器管理生命周期，无需手动调用；仅当你在运行时
      * 需要销毁此实例（例如在测试中或自行管理的场景）才需显式调用。
      */
     fun release() {
