@@ -15,8 +15,6 @@ plugins {
     id("ykmagic.android.room")
     id("ykmagic.android.koin")
     alias(libs.plugins.kotlin.serialization)
-
-    alias(libs.plugins.hotswan.compiler)
 }
 
 // 读取config
