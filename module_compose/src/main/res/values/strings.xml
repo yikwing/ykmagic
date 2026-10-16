@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="yk_compose_error">Unable to load. Please try again later.</string>
+    <string name="yk_compose_retry">Retry</string>
+    <string name="yk_compose_empty">No data</string>
+</resources>
