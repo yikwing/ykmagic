@@ -1,6 +1,5 @@
 package com.yikwing.ykquickdev.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,13 +30,13 @@ data class WanAndroidUiState(
 @KoinViewModel
 class WanAndroidViewModel(
     private val netRepository: NetRepository,
-    @InjectedParam private val name: String,
+    // Unused at runtime: kept as the project's reference example of an @InjectedParam (see dependency-injection.md).
+    @Suppress("unused") @InjectedParam private val name: String,
 ) : ViewModel() {
     // Lazy loading like HttpBinViewModel: the fetch starts when the UI subscribes, not at construction.
     // null = fetch still in progress; emitted first so combine can show cached chapters meanwhile.
     private val chaptersFetchResult: Flow<Result<Unit>?> =
         flow<Result<Unit>?> {
-            Log.d("==== initWanAndroidData", "assistedInject $name")
             emit(netRepository.fetchAndCacheChapters())
         }.onStart { emit(null) }
 

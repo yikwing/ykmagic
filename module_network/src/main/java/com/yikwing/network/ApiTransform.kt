@@ -1,5 +1,6 @@
 package com.yikwing.network
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -37,6 +38,7 @@ internal fun Throwable.toApiException(): ApiException = this as? ApiException ?:
  * [RequestState.Loading] 由最下游的 `onStart` 发出，因此它始终是第一个元素，
  * 且不受上游 `flowOn` 通道缓冲与异常传播的影响
  *
+ * @param dispatcher 执行 [block] 与响应转换的调度器，默认 [Dispatchers.IO]；测试时可注入替换
  * @param block API 调用的 suspend 函数
  * @return Flow<RequestState<T?>> 包含完整请求状态的流；服务端返回 null 时 Success.value 为 null
  *
@@ -52,11 +54,14 @@ internal fun Throwable.toApiException(): ApiException = this as? ApiException ?:
  *     }
  * ```
  */
-fun <T> requestStateFlow(block: suspend () -> BaseHttpResult<T>): Flow<RequestState<T?>> =
+fun <T> requestStateFlow(
+    dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    block: suspend () -> BaseHttpResult<T>,
+): Flow<RequestState<T?>> =
     flow<RequestState<T?>> {
         // 转换结果，错误码校验失败时抛出 ApiException，交由下游 catch 处理
         emit(RequestState.Success(transformHttpResult(block())))
-    }.flowOn(Dispatchers.IO)
+    }.flowOn(dispatcher)
         .catch { exception ->
             // 取消异常必须重抛，否则会吞掉协程取消信号
             if (exception is CancellationException) {

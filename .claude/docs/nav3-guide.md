@@ -45,7 +45,14 @@ data class ProductRoute(val id: String) : NavKey
 
 fun EntryProviderScope<NavKey>.otherPageEntry() {
     entry<ProductRoute> { product ->
-        OtherPageScreen(product.id)
+        // ViewModel 在 Entry 获取，Screen 只接收 state 与回调（状态提升，便于预览/测试）
+        val viewModel: HttpBinViewModel = koinViewModel()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        OtherPageScreen(
+            id = product.id,
+            uiState = uiState,
+            onUserAgentClick = { viewModel.updateName("abc") },
+        )
     }
 }
 ```

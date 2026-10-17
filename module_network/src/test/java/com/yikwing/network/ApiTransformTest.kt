@@ -1,5 +1,6 @@
 package com.yikwing.network
 
+import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
@@ -7,11 +8,13 @@ import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.CoreMatchers.sameInstance
+import org.hamcrest.CoreMatchers.startsWith
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import java.io.IOException
+import java.util.concurrent.Executors
 import kotlin.coroutines.cancellation.CancellationException
 
 /**
@@ -119,6 +122,23 @@ class ApiTransformTest {
             assertThat(states[0], `is`(RequestState.Loading))
             assertThat(states[1], instanceOf(RequestState.Success::class.java))
             assertThat((states[1] as RequestState.Success).value, `is`("ok"))
+        }
+
+    @Test
+    fun `requestStateFlow should run block on given dispatcher`() =
+        runBlocking {
+            val executor = Executors.newSingleThreadExecutor { Thread(it, "injected-dispatcher") }
+            try {
+                var blockThread: String? = null
+                requestStateFlow(executor.asCoroutineDispatcher()) {
+                    blockThread = Thread.currentThread().name
+                    BaseHttpResult(data = "ok", errorMsg = "", errorCode = 0)
+                }.toList()
+
+                assertThat(blockThread, startsWith("injected-dispatcher"))
+            } finally {
+                executor.shutdown()
+            }
         }
 
     @Test

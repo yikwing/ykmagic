@@ -32,3 +32,8 @@ annotation class DebugFlag
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ApplicationScope
+
+/** Dispatchers.Default，注入而非硬编码以便测试替换 */
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DefaultDispatcher

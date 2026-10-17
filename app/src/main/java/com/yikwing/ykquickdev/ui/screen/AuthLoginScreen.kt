@@ -27,19 +27,24 @@ data object AuthLoginRoute : NavKey
 fun EntryProviderScope<NavKey>.authLoginEntry() {
     entry<AuthLoginRoute> {
         val navigator = LocalNavigator.current
+        val viewModel: AuthLoginViewModel = koinViewModel()
+        val name by viewModel.name.collectAsStateWithLifecycle()
+        val navigationToRegister = dropUnlessResumed { navigator.navigate(AuthRegisterRoute) }
         AuthLoginScreen(
-            navigationToRegister = dropUnlessResumed { navigator.navigate(AuthRegisterRoute) },
+            name = name,
+            onNameClick = {
+                viewModel.changeName("changed")
+                navigationToRegister()
+            },
         )
     }
 }
 
 @Composable
 fun AuthLoginScreen(
-    navigationToRegister: () -> Unit,
-    viewModel: AuthLoginViewModel = koinViewModel(),
+    name: String,
+    onNameClick: () -> Unit,
 ) {
-    val name by viewModel.name.collectAsStateWithLifecycle()
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize(),
@@ -49,11 +54,7 @@ fun AuthLoginScreen(
             fontFamily = PermanentMarkerRegular,
             fontSize = 24.sp,
             color = Color.White,
-            modifier =
-                Modifier.clickable {
-                    viewModel.changeName("changed")
-                    navigationToRegister()
-                },
+            modifier = Modifier.clickable(onClick = onNameClick),
         )
     }
 }

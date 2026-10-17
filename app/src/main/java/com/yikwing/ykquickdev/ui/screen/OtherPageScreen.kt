@@ -29,6 +29,7 @@ import com.yikwing.network.onFailure
 import com.yikwing.network.onSuccess
 import com.yikwing.compose.layout.Center
 import com.yikwing.compose.layout.sdp
+import com.yikwing.ykquickdev.viewmodel.HttpBinUiState
 import com.yikwing.ykquickdev.viewmodel.HttpBinViewModel
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
@@ -40,17 +41,22 @@ data class ProductRoute(
 
 fun EntryProviderScope<NavKey>.otherPageEntry() {
     entry<ProductRoute> { product ->
-        OtherPageScreen(product.id)
+        val viewModel: HttpBinViewModel = koinViewModel()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+        OtherPageScreen(
+            id = product.id,
+            uiState = uiState,
+            onUserAgentClick = { viewModel.updateName("abc") },
+        )
     }
 }
 
 @Composable
 fun OtherPageScreen(
     id: String,
-    viewModel: HttpBinViewModel = koinViewModel(),
+    uiState: HttpBinUiState,
+    onUserAgentClick: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
     Surface(modifier = Modifier.fillMaxSize()) {
         Center {
             Column(
@@ -81,10 +87,7 @@ fun OtherPageScreen(
                         uiState.headers.onSuccess {
                             Text(
                                 text = it.userAgent,
-                                modifier =
-                                    Modifier.clickable {
-                                        viewModel.updateName("abc")
-                                    },
+                                modifier = Modifier.clickable(onClick = onUserAgentClick),
                             )
                         }
                     }
@@ -103,5 +106,9 @@ fun OtherPageScreen(
 @Composable
 @Preview
 private fun OtherPageScreenPreview() {
-    OtherPageScreen(id = "preview-product-123")
+    OtherPageScreen(
+        id = "preview-product-123",
+        uiState = HttpBinUiState(userName = "preview"),
+        onUserAgentClick = {},
+    )
 }

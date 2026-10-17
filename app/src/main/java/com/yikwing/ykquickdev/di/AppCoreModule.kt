@@ -1,5 +1,6 @@
 package com.yikwing.ykquickdev.di
 
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -18,13 +19,19 @@ import org.koin.core.annotation.Singleton
  */
 @Module
 object AppCoreModule {
+    @Singleton
+    @DefaultDispatcher
+    fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+
     /**
      * 提供应用级 CoroutineScope
      * - 使用 SupervisorJob：子协程失败不影响其他协程
-     * - 使用 Dispatchers.Main：默认在主线程执行
+     * - 使用注入的 Default 调度器：应用级任务不应占用主线程，需要更新 UI 时由调用方切换
      * - 生命周期：整个应用生命周期
      */
     @Singleton
     @ApplicationScope
-    fun provideApplicationScope(): CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    fun provideApplicationScope(
+        @DefaultDispatcher dispatcher: CoroutineDispatcher,
+    ): CoroutineScope = CoroutineScope(SupervisorJob() + dispatcher)
 }
