@@ -1,10 +1,12 @@
 package com.yikwing.ykquickdev.repository
 
+import com.yikwing.network.ApiConfig
 import com.yikwing.network.ApiException
 import com.yikwing.network.requestResult
 import com.yikwing.ykquickdev.api.apiserver.WanAndroidApi
 import com.yikwing.ykquickdev.api.entity.ChapterBean
 import com.yikwing.ykquickdev.db.ChapterDao
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.annotation.Singleton
 
@@ -32,9 +34,21 @@ class NetRepositoryImpl(
      * 写入：从网络获取数据并缓存到 Room
      * 调用后 Room 数据更新，observeChapters 自动收到新数据
      *
-     * @return 失败时为 [ApiException]，CancellationException 会重抛
+     * @return 失败时为 [ApiException]（网络与写库失败均是），CancellationException 会重抛
      */
-    override suspend fun fetchAndCacheChapters(): Result<Unit> =
-        requestResult { wanAndroidApi.getChapters() }
-            .map { data -> if (data != null) chapterDao.insertChapters(data) }
+    override suspend fun fetchAndCacheChapters(): Result<Unit> {
+        val chapters = requestResult { wanAndroidApi.getChapters() }.getOrElse { return Result.failure(it) }
+        if (chapters == null) return Result.success(Unit)
+        // Not mapCatching: it would also swallow CancellationException.
+        return try {
+            chapterDao.insertChapters(chapters)
+            Result.success(Unit)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            // Must log here: once the cache is non-empty the UI keeps showing it and hides this failure.
+            ApiConfig.logger("fetchAndCacheChapters", "Cache chapters failed: ${e.message}", e)
+            Result.failure(ApiException.createDefault(e.message, e))
+        }
+    }
 }

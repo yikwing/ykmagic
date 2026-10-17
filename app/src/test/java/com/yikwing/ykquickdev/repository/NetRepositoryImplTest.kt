@@ -13,6 +13,7 @@ import kotlinx.coroutines.runBlocking
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
+import org.hamcrest.CoreMatchers.sameInstance
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.After
 import org.junit.Before
@@ -89,6 +90,43 @@ class NetRepositoryImplTest {
 
             assertThat(caught, notNullValue())
             assertThat(caught!!.message, `is`("user-cancel"))
+        }
+
+    @Test
+    fun `fetchAndCacheChapters should return failure when caching throws`() =
+        runBlocking {
+            val chapters = listOf(chapter(id = 1))
+            coEvery { wanAndroidApi.getChapters() } returns
+                BaseHttpResult(data = chapters, errorMsg = "", errorCode = 0)
+            val cause = IllegalStateException("disk full")
+            coEvery { chapterDao.insertChapters(any()) } throws cause
+            var logged: Throwable? = null
+            ApiConfig.logger = { _, _, throwable -> logged = throwable }
+
+            val result = repository.fetchAndCacheChapters()
+
+            assertThat(result.exceptionOrNull(), instanceOf(ApiException::class.java))
+            assertThat(result.exceptionOrNull()!!.message, `is`("disk full"))
+            assertThat(logged, sameInstance<Throwable>(cause))
+        }
+
+    @Test
+    fun `fetchAndCacheChapters should rethrow CancellationException from caching`() =
+        runBlocking {
+            coEvery { wanAndroidApi.getChapters() } returns
+                BaseHttpResult(data = listOf(chapter(id = 1)), errorMsg = "", errorCode = 0)
+            coEvery { chapterDao.insertChapters(any()) } throws CancellationException("cache-cancel")
+
+            val caught =
+                try {
+                    repository.fetchAndCacheChapters()
+                    null
+                } catch (e: CancellationException) {
+                    e
+                }
+
+            assertThat(caught, notNullValue())
+            assertThat(caught!!.message, `is`("cache-cancel"))
         }
 
     private fun chapter(id: Int) =
