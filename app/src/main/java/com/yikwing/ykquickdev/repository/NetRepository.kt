@@ -31,8 +31,8 @@ class NetRepositoryImpl(
     override fun observeChapters(): Flow<List<ChapterBean>> = chapterDao.observeAllChapters()
 
     /**
-     * 写入：从网络获取数据并缓存到 Room
-     * 调用后 Room 数据更新，observeChapters 自动收到新数据
+     * 写入：从网络获取完整列表并在事务中替换 Room 缓存，空列表会清空缓存。
+     * 服务端返回 null 时保留原缓存；成功替换后 observeChapters 自动收到新数据。
      *
      * @return 失败时为 [ApiException]（网络与写库失败均是），CancellationException 会重抛
      */
@@ -41,7 +41,7 @@ class NetRepositoryImpl(
         if (chapters == null) return Result.success(Unit)
         // Not mapCatching: it would also swallow CancellationException.
         return try {
-            chapterDao.insertChapters(chapters)
+            chapterDao.replaceChapters(chapters)
             Result.success(Unit)
         } catch (e: CancellationException) {
             throw e
