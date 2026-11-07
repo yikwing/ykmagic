@@ -127,21 +127,22 @@ fun compressBitmap(
 }
 
 /**
- * 保存压缩后的图片
+ * 保存压缩后的图片，写入失败时返回 false。
  */
 fun saveCompressedImage(
     savePath: String,
     compressedBytes: ByteArray,
-) {
+): Boolean =
     try {
         File(savePath).sink().buffer().use { sink ->
             sink.write(compressedBytes)
         }
         Log.d(TAG, "图片保存成功，路径: $savePath")
+        true
     } catch (e: Exception) {
         Log.e(TAG, "图片保存失败: ${e.message}")
+        false
     }
-}
 
 /**
  * 压缩图片并保存到指定路径
@@ -153,8 +154,10 @@ fun compressImageFromUri(
     maxSizeKB: Int,
 ): Boolean {
     val bitmap = getCompressedBitmapByResolution(context, uri) ?: return false
-    val compressedBytes = compressBitmap(bitmap, maxSizeKB)
-    saveCompressedImage(savePath, compressedBytes)
-    bitmap.recycle() // 回收资源
-    return true
+    return try {
+        val compressedBytes = compressBitmap(bitmap, maxSizeKB)
+        saveCompressedImage(savePath, compressedBytes)
+    } finally {
+        bitmap.recycle()
+    }
 }
