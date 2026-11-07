@@ -17,17 +17,14 @@ import kotlinx.coroutines.flow.map
 suspend fun <T> DataStore<T>.getLatest(): T = data.first()
 
 /**
- * Update data and return the updated value.
+ * Update data and return the value committed by this update, even if another writer updates it later.
  *
  * ```kotlin
  * val updated = userPreferencesStore.updateAndGet { it.copy(name = "Alice") }
  * Log.d("TAG", "updated name: ${updated.name}")
  * ```
  */
-suspend fun <T> DataStore<T>.updateAndGet(transform: (T) -> T): T {
-    updateData(transform)
-    return data.first()
-}
+suspend fun <T> DataStore<T>.updateAndGet(transform: (T) -> T): T = updateData(transform)
 
 /**
  * Observe a specific field, only emitting when its value actually changes.
