@@ -59,7 +59,7 @@ fun NavBackStack<NavKey>.popTo(
 // ============ 组合导航 ============
 
 /**
- * 替换到指定路由（清理中间路由）
+ * 替换到指定路由（清理中间路由）；未找到 upTo 时直接追加新路由。
  *
  * 示例：栈 A -> B -> C
  * - replaceUpTo(D, upTo = A) → A -> D
@@ -70,8 +70,13 @@ fun NavBackStack<NavKey>.replaceUpTo(
     upTo: NavKey,
     inclusive: Boolean = false,
 ) {
-    popTo(upTo, inclusive)
+    val targetIndex = indexOfLast { it == upTo }
+    // 先添加新路由，确保 inclusive 替换根路由时栈也始终非空。
     navigate(route)
+    if (targetIndex >= 0) {
+        val targetSize = if (inclusive) targetIndex else targetIndex + 1
+        subList(targetSize, lastIndex).clear()
+    }
 }
 
 // ============ 栈管理 ============
