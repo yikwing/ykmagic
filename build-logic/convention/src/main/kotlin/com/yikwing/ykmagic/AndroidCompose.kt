@@ -14,6 +14,8 @@ import org.gradle.kotlin.dsl.dependencies
  */
 internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
     commonExtension.buildFeatures.compose = true
+    // Compose Preview 的 runfiles 任务需要单元测试变体中编译后的 Android 资源。
+    commonExtension.testOptions.unitTests.isIncludeAndroidResources = true
 
     dependencies {
         val composeBom = libs.findLibrary("compose-bom").get()
