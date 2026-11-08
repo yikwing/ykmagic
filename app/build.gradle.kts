@@ -94,12 +94,14 @@ android {
         }
 
         ndk {
-            abiFilters += "arm64-v8a"
+            abiFilters += listOf("arm64-v8a", "x86_64")
         }
+    }
 
-        androidResources {
-            localeFilters += listOf("en")
-        }
+    // localeFilters 是官方语言过滤 API，目前仍标记为 Incubating。
+    @Suppress("UnstableApiUsage")
+    androidResources {
+        localeFilters += listOf("en")
     }
 
     signingConfigs {
