@@ -13,7 +13,11 @@ internal fun Project.configureKotlinAndroid(
     enableBuildConfig: Boolean = false,
 ) {
     commonExtension.apply {
-        compileSdk = ProjectConfig.COMPILE_SDK
+        compileSdk {
+            version = release(ProjectConfig.COMPILE_SDK) {
+                minorApiLevel = ProjectConfig.COMPILE_SDK_MINOR
+            }
+        }
 
         buildFeatures.buildConfig = enableBuildConfig
     }

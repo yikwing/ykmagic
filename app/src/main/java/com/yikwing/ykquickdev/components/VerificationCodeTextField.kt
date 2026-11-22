@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -21,10 +24,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -48,38 +54,36 @@ fun BaseVerificationCodeTextField(
     onVerify: (String) -> Unit = {},
     codeBox: @Composable RowScope.(codeLength: Int, index: Int, code: String) -> Unit
 ) {
-    //  存储文本输出的值
-    var text by remember { mutableStateOf("") }
-
-    // 管理当前获得焦点的文本值
+    val textFieldState = remember { TextFieldState() }
+    val currentCodeLength by rememberUpdatedState(codeLength)
+    val currentOnVerify by rememberUpdatedState(onVerify)
     val focusManager = LocalFocusManager.current
-
-    //  用于请求焦点以显示软键盘
     val focusRequester = remember { FocusRequester() }
-
-    //  控制软键盘显示与隐藏
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 
-    BasicTextField(
-        value = text,
-        singleLine = true,
-        onValueChange = { newText ->
-            if (newText.length <= codeLength && newText.all { it.isDigit() }) {
-                text = newText
+    LaunchedEffect(textFieldState, focusManager) {
+        snapshotFlow { textFieldState.text.toString() }.collect { code ->
+            if (code.isNotEmpty() && code.length == currentCodeLength) {
+                currentOnVerify(code)
+                focusManager.clearFocus()
+            }
+        }
+    }
 
-                if (newText.length == codeLength) {
-                    onVerify(newText)
-                    focusManager.clearFocus()
-                }
+    BasicTextField(
+        state = textFieldState,
+        lineLimits = TextFieldLineLimits.SingleLine,
+        inputTransformation = InputTransformation {
+            if (length > codeLength || !asCharSequence().all { it.isDigit() }) {
+                revertAllChanges()
             }
         },
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Done
+            keyboardType = KeyboardType.Number, imeAction = ImeAction.Done
         ),
         modifier = Modifier
             .padding(horizontal = 26.dp)
@@ -90,32 +94,39 @@ fun BaseVerificationCodeTextField(
                     keyboardController?.show()
                 }
             }
-            .wrapContentHeight()
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Transparent),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround
-        ) {
-            for (i in 0 until codeLength) {
-                codeBox(codeLength, i, text)
+            .wrapContentHeight(),
+        decorator = { innerTextField ->
+            Box {
+                val code = textFieldState.text.toString()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Transparent),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    for (i in 0 until codeLength) {
+                        codeBox(codeLength, i, code)
+                    }
+                }
+                Box(
+                    Modifier
+                        .matchParentSize()
+                        .alpha(0f)
+                ) {
+                    innerTextField()
+                }
             }
-        }
-    }
+        })
 }
 
 private enum class CodeState {
-    ENTERED,
-    INPUTTING,
-    PENDING
+    ENTERED, INPUTTING, PENDING
 }
 
 @Composable
 fun VerificationCodeTextField(
-    modifier: Modifier = Modifier,
-    onVerify: (String) -> Unit = {}
+    modifier: Modifier = Modifier, onVerify: (String) -> Unit = {}
 ) {
     BaseVerificationCodeTextField(
         onVerify = onVerify
@@ -160,23 +171,19 @@ fun VerificationCodeTextField(
 
         key(elevation) {
             Card(
-                modifier = Modifier.size(46.dp),
-                colors = CardDefaults.cardColors(
+                modifier = Modifier.size(46.dp), colors = CardDefaults.cardColors(
                     containerColor = cardColor
-                ),
-                elevation = CardDefaults.cardElevation(
+                ), elevation = CardDefaults.cardElevation(
                     defaultElevation = elevation
                 )
             ) {
                 Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                    modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
                     when (codeState) {
                         CodeState.ENTERED -> {
                             Text(
-                                code[index].toString(),
-                                style = TextStyle(
+                                code[index].toString(), style = TextStyle(
                                     fontSize = fontSize,
                                     color = textColor,
                                     textAlign = TextAlign.Center
@@ -187,8 +194,7 @@ fun VerificationCodeTextField(
                         CodeState.INPUTTING -> {
                             if (isVisible) {
                                 Text(
-                                    "-",
-                                    style = TextStyle(
+                                    "-", style = TextStyle(
                                         fontSize = fontSize,
                                         color = textColor,
                                         textAlign = TextAlign.Center

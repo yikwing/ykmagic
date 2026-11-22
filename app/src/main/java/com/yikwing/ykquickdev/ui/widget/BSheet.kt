@@ -21,8 +21,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ShapeDefaults
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,18 +44,16 @@ import kotlinx.coroutines.launch
 fun MyMaterial3ModalBottomSheetExample() {
     // 控制 Bottom Sheet 的显示与隐藏
     var showBottomSheet by remember { mutableStateOf(false) }
-    // M3 的 SheetState, 同样可以控制 HalfExpanded
-    val sheetState =
-        rememberModalBottomSheetState(
-            skipPartiallyExpanded = true, // true 会跳过半展开状态
-        )
+    val sheetState = rememberBottomSheetState(
+        initialValue = SheetValue.Hidden,
+        enabledValues = setOf(SheetValue.Hidden, SheetValue.Expanded),
+    )
     val scope = rememberCoroutineScope()
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(16.sdp)
-                .background(Color.LightGray),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.sdp)
+            .background(Color.LightGray),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
     ) {
@@ -74,13 +73,12 @@ fun MyMaterial3ModalBottomSheetExample() {
             sheetState = sheetState,
             containerColor = MaterialTheme.colorScheme.surface, // M3 主题的表面色
             contentColor = MaterialTheme.colorScheme.onSurface, // M3 主题的表面内容色
-            shape =
-                RoundedCornerShape(
-                    topStart = 16.sdp,
-                    topEnd = 16.sdp,
-                    bottomEnd = 0.0.dp,
-                    bottomStart = 0.0.dp,
-                ),
+            shape = RoundedCornerShape(
+                topStart = 16.sdp,
+                topEnd = 16.sdp,
+                bottomEnd = 0.0.dp,
+                bottomStart = 0.0.dp,
+            ),
             // 例如：RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
             // 你提供的 dragHandle 自定义示例
             dragHandle = {
@@ -116,18 +114,16 @@ fun CustomDragHandle(
 ) {
     if (showDragIndicator) {
         Box(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.sdp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.sdp),
             contentAlignment = Alignment.Center,
         ) {
             Box(
-                modifier =
-                    Modifier
-                        .size(40.sdp, 4.sdp)
-                        .clip(CircleShape)
-                        .background(indicatorColor),
+                modifier = Modifier
+                    .size(40.sdp, 4.sdp)
+                    .clip(CircleShape)
+                    .background(indicatorColor),
             )
         }
     }
@@ -137,11 +133,10 @@ fun CustomDragHandle(
 @Composable
 fun BottomSheetContentM3(onCloseClicked: () -> Unit) {
     Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .heightIn(min = 200.sdp, max = 500.sdp) // 限定 Bottom Sheet 的最小/最大高度
-                .padding(16.sdp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 200.sdp, max = 500.sdp) // 限定 Bottom Sheet 的最小/最大高度
+            .padding(16.sdp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.sdp),
     ) {
@@ -154,10 +149,9 @@ fun BottomSheetContentM3(onCloseClicked: () -> Unit) {
         }
         // 模拟一个可以拖动的长内容
         LazyColumn(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight(),
             // 填充剩余空间并可滚动
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
